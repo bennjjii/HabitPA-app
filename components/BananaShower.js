@@ -12,7 +12,10 @@ const BananaShower = () => {
   const {loading, error, data} = useQuery(GET_BANANA);
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>{error.message}</Text>;
-  return <Text>{data?.banana}</Text>;
+  {
+    data?.banana;
+  }
+  return <Text>PooPoo</Text>;
 };
 
 export default BananaShower;
