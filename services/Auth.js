@@ -1,52 +1,39 @@
-import React from 'react';
-import {useContext} from 'react/cjs/react.production.min';
-const bcrypt = require('bcrypt');
+import createDataContext from './createDataContext';
 
-export const AuthContext = React.createContext();
-
-export const useAuth = () => {
-  return useContext(AuthContext);
+const authReducer = (state, action) => {
+  switch (action.type) {
+    case 'SIGN_OUT':
+      return {token: null, email: ''};
+    case 'SIGN_IN':
+      return {
+        token: action.token,
+        email: action.email,
+      };
+    default:
+      return state;
+  }
 };
 
-const [state, dispatch] = React.useReducer(
-  (prevState, action) => {
-    switch (action.type) {
-      case 'SIGN_IN':
-        return {
-          ...prevState,
-          userToken: action.token,
-        };
-      case 'SIGN_OUT':
-        return {
-          ...prevState,
-          userToken: null,
-        };
-    }
-  },
-  {
-    userToken: null,
-    banana: true,
-  },
-);
-
-const useContextDefinition = React.useMemo(() => {
-  return {
-    register: async data => {},
-    signIn: async data => {
-      dispatch({type: 'SIGN_IN', userToken: 'token_1'});
-    },
-    signOut: async data => {
-      dispatch({type: 'SIGN_OUT'});
-    },
-    getUser: () => state.userToken,
-    getBananaValidity: () => state.banana,
+const signin = dispatch => {
+  return ({email, password}) => {
+    // Do some API Request here
+    console.log('Signin');
+    dispatch({
+      type: 'SIGN_IN',
+      token: 'some access token here',
+      email,
+    });
   };
-});
-
-export const AuthProvider = ({children}) => {
-  return (
-    <AuthContext.Provider value={useContextDefinition}>
-      {children}
-    </AuthContext.Provider>
-  );
 };
+
+const signout = dispatch => {
+  return () => {
+    dispatch({type: 'SIGN_OUT'});
+  };
+};
+
+export const {Provider, Context} = createDataContext(
+  authReducer,
+  {signin, signout},
+  {token: null, email: ''},
+);

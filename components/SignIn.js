@@ -1,16 +1,29 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import {useAuth} from '../services/Auth';
+import {StyleSheet, Text, SafeAreaView, Button} from 'react-native';
+import React, {useContext} from 'react';
+import {Context as AuthContext} from '../services/Auth';
 
 const SignIn = () => {
-  const auth = useAuth();
+  const {state, signin} = useContext(AuthContext);
+
   return (
-    <View>
-      <Text>SignIn</Text>
-    </View>
+    <SafeAreaView style={styles.signInWrapper}>
+      <Text>{state.email}</Text>
+      <Button
+        title="Sign In"
+        onPress={() => {
+          signin({email: 'some email', token: 'some password'});
+        }}
+      />
+    </SafeAreaView>
   );
 };
 
 export default SignIn;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  signInWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

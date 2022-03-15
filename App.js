@@ -19,7 +19,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -33,9 +33,7 @@ import {
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-//import {ProvideAuth} from './services/AuthService';
-import {AuthProvider} from './services/Auth';
-import BananaShower from './components/BananaShower';
+import {Context as AuthContext} from './services/Auth';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
@@ -53,18 +51,22 @@ client
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const {state} = useContext(AuthContext);
+  console.log(state);
   return (
-    <AuthProvider>
-      <ApolloProvider client={client}>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="SignIn" component={SignIn} />
-            <Stack.Screen name="SignUp" component={SignUp} />
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Home" component={Home} />
+          {state.email ? (
             <Stack.Screen name="Home" component={Home} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </ApolloProvider>
-    </AuthProvider>
+          ) : (
+            <Stack.Screen name="SignIn" component={SignIn} />
+          )}
+          <Stack.Screen name="SignUp" component={SignUp} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ApolloProvider>
   );
 };
 
