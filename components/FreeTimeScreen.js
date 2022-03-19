@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const Tab2 = () => {
+const FreeTimeScreen = () => {
   return (
     <View>
       <Text>Tab2</Text>
@@ -9,6 +9,6 @@ const Tab2 = () => {
   );
 };
 
-export default Tab2;
+export default FreeTimeScreen;
 
 const styles = StyleSheet.create({});
