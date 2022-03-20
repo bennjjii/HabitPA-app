@@ -1,15 +1,21 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const Card = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.cardText}>Card</Text>
-    </View>
-  );
-};
-
-export default Card;
+class Card extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    console.log(this.props.cardIndex);
+    return (
+      <View style={styles.container}>
+        <Text style={styles.cardText}>
+          {this.props.name.toString() || 'crd name here'}
+        </Text>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -32,3 +38,5 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
+
+export default Card;

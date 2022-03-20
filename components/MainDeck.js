@@ -11,73 +11,29 @@ It is a bit like agile where you have a backlog and a sprint
 And the main deck is like your sprint for the day, 
 So the app's job is to decide what cards are in your hand at any given time
 Answers the question - what should I do right now
+There will be logic which decides which cards are shown to you right now
+Question is - put this logic on the frontend or the backend??
 */
 
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
+  runOnJS,
   useAnimatedGestureHandler,
+  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
+  useDerivedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {PanGestureHandler, State} from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  State,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
-
-const {
-  add,
-  multiply,
-  neq,
-  spring,
-  cond,
-  eq,
-  event,
-  lessThan,
-  greaterThan,
-  and,
-  call,
-  set,
-  clockRunning,
-  startClock,
-  stopClock,
-  Clock,
-  concat,
-  interpolate,
-  Extrapolate,
-} = Animated;
-
-const runSpring = (clock, value, dest) => {
-  const state = {
-    finished: useSharedValue(0),
-    velocity: useSharedValue(0),
-    position: useSharedValue(0),
-    time: useSharedValue(0),
-  };
-
-  const config = {
-    damping: 20,
-    mass: 1,
-    stiffness: 100,
-    overshootClamping: false,
-    restSpeedThreshold: 1,
-    restDisplacementThreshold: 0.5,
-    toValue: useSharedValue(0),
-  };
-
-  return [
-    cond(clockRunning(clock), 0, [
-      set(state.finished, 0),
-      set(state.velocity, 0),
-      set(state.position, value),
-      set(config.toValue, dest),
-      startClock(clock),
-    ]),
-    spring(clock, state, config),
-    cond(state.finished, stopClock(clock)),
-    state.position,
-  ];
-};
+import testCards from '../assets/data/testCards';
 
 const {width, height} = Dimensions.get('window');
 const toRadians = angle => angle * (Math.PI / 180);
@@ -85,13 +41,15 @@ const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
+  const AnimatedCard = Animated.createAnimatedComponent(Card);
+
   const {state, signout} = useContext(AuthContext);
+  const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
-  const velocityX = useSharedValue(0);
-  const offsetX = useSharedValue(0);
-  const offsetY = useSharedValue(0);
-  const gestureState = useSharedValue(State.UNDETERMINED);
+  const currentCard = useSharedValue(0);
+  let deckSize = testCards.length;
+
   const panGestureEvent = useAnimatedGestureHandler({
     onStart: (event, ctx) => {
       ctx.translateX = translationX.value;
@@ -104,10 +62,26 @@ const MainDeck = () => {
     onEnd: (event, ctx) => {
       switch (true) {
         case event.velocityX < -2500:
-          translationX.value = withSpring(-500);
+          translationX.value = withSpring(
+            -500,
+            {overshootClamping: true},
+            () => {
+              currentCard.value = currentCard.value + 1;
+              translationX.value = 0;
+              translationY.value = 0;
+            },
+          );
           break;
         case event.velocityX > 2500:
-          translationX.value = withSpring(500);
+          translationX.value = withSpring(
+            500,
+            {overshootClamping: true},
+            () => {
+              currentCard.value = currentCard.value + 1;
+              translationX.value = 0;
+              translationY.value = 0;
+            },
+          );
           break;
         default:
           translationX.value = withSpring(0);
@@ -115,21 +89,19 @@ const MainDeck = () => {
       }
     },
   });
+
   const rotateZ = () => {
     'worklet';
     return translationX.value / (width / 30) + 'deg';
   };
 
-  // const rotateZ = concat(
-  //   interpolate(translateX, {
-  //     inputRange: [-width / 2, width / 2],
-  //     outputRange: [15, -15],
-  //     extrapolate: Extrapolate.CLAMP,
-  //   }),
-  //   "deg",
-  // );
+  const updateIndex = args => {
+    setIndex(args);
+  };
 
-  //
+  useDerivedValue(() => {
+    runOnJS(updateIndex)(currentCard.value);
+  });
 
   const rStyle = useAnimatedStyle(() => {
     return {
@@ -151,7 +123,7 @@ const MainDeck = () => {
     <SafeAreaView style={styles.viewWrapper}>
       <PanGestureHandler onHandlerStateChange={panGestureEvent}>
         <Animated.View style={rStyle}>
-          <Card />
+          <Card index={index} name={testCards[index].name} />
         </Animated.View>
       </PanGestureHandler>
     </SafeAreaView>
