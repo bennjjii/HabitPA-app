@@ -20,20 +20,16 @@ import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
   runOnJS,
   useAnimatedGestureHandler,
-  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   useDerivedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {
-  PanGestureHandler,
-  State,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import {PanGestureHandler} from 'react-native-gesture-handler';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import testCards from '../assets/data/testCards';
+import {useQuery, gql} from '@apollo/client';
 
 const {width, height} = Dimensions.get('window');
 const toRadians = angle => angle * (Math.PI / 180);
@@ -41,14 +37,22 @@ const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
-  const AnimatedCard = Animated.createAnimatedComponent(Card);
-
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
   let deckSize = testCards.length;
+
+  const CARDQUERY = gql`
+    query {
+      cards {
+        name
+      }
+    }
+  `;
+
+  const {data, loading, error} = useQuery(CARDQUERY);
 
   const panGestureEvent = useAnimatedGestureHandler({
     onStart: (event, ctx) => {
@@ -118,12 +122,16 @@ const MainDeck = () => {
       ],
     };
   });
-
+  console.log(data?.cards[index].name);
   return (
     <SafeAreaView style={styles.viewWrapper}>
       <PanGestureHandler onHandlerStateChange={panGestureEvent}>
         <Animated.View style={rStyle}>
-          <Card index={index} name={testCards[index].name} />
+          {data ? (
+            <Card index={index} name={data.cards[index].name} />
+          ) : (
+            <Card index={index} name={'loading...'} />
+          )}
         </Animated.View>
       </PanGestureHandler>
     </SafeAreaView>

@@ -6,13 +6,7 @@
  * @flow strict-local
  */
 
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  useQuery,
-  gql,
-} from '@apollo/client';
+import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
 
 const client = new ApolloClient({
   uri: 'http://127.0.0.1:4000',
@@ -20,15 +14,7 @@ const client = new ApolloClient({
 });
 
 import React, {useContext} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -37,16 +23,6 @@ import {Context as AuthContext} from './services/Auth';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
-
-client
-  .query({
-    query: gql`
-      query {
-        banana
-      }
-    `,
-  })
-  .then(result => console.log(result));
 
 const Stack = createNativeStackNavigator();
 

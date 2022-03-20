@@ -1,21 +1,15 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-class Card extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    console.log(this.props.cardIndex);
-    return (
-      <View style={styles.container}>
-        <Text style={styles.cardText}>
-          {this.props.name.toString() || 'crd name here'}
-        </Text>
-      </View>
-    );
-  }
-}
+const Card = props => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.cardText}>
+        {props.name.toString() || 'crd name here'}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
