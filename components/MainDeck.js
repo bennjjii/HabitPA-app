@@ -19,13 +19,12 @@ import React, {useContext, useState} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
   runOnJS,
-  useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   useDerivedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import testCards from '../assets/data/testCards';
@@ -54,16 +53,12 @@ const MainDeck = () => {
 
   const {data, loading, error} = useQuery(CARDQUERY);
 
-  const panGestureEvent = useAnimatedGestureHandler({
-    onStart: (event, ctx) => {
-      ctx.translateX = translationX.value;
-      ctx.translateY = translationY.value;
-    },
-    onActive: (event, ctx) => {
-      translationX.value = event.translationX + ctx.translateX;
-      translationY.value = event.translationY + ctx.translateY;
-    },
-    onEnd: (event, ctx) => {
+  const gesture = Gesture.Pan()
+    .onUpdate(event => {
+      translationX.value = event.translationX;
+      translationY.value = event.translationY;
+    })
+    .onEnd(event => {
       switch (true) {
         case event.velocityX < -2500:
           translationX.value = withSpring(
@@ -91,8 +86,8 @@ const MainDeck = () => {
           translationX.value = withSpring(0);
           translationY.value = withSpring(0);
       }
-    },
-  });
+    })
+    .onFinalize(event => {});
 
   const rotateZ = () => {
     'worklet';
@@ -125,15 +120,16 @@ const MainDeck = () => {
   console.log(data?.cards[index].name);
   return (
     <SafeAreaView style={styles.viewWrapper}>
-      <PanGestureHandler onHandlerStateChange={panGestureEvent}>
+      <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
-          {data ? (
+          {/* {data ? (
             <Card index={index} name={data.cards[index].name} />
           ) : (
             <Card index={index} name={'loading...'} />
-          )}
+          )} */}
+          <Card index={index} name={testCards[index].name} />
         </Animated.View>
-      </PanGestureHandler>
+      </GestureDetector>
     </SafeAreaView>
   );
 };
