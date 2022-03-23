@@ -35,5 +35,5 @@ const signout = dispatch => {
 export const {Provider, Context} = createDataContext(
   authReducer,
   {signin, signout},
-  {token: null, email: ''},
+  {token: null, email: '', time: '12P', day: 'M'},
 );

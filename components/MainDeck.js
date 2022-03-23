@@ -25,6 +25,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
+import colours from '../assets/colours/colours';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import testCards from '../assets/data/testCards';
@@ -119,7 +120,7 @@ const MainDeck = () => {
   });
   console.log(data?.cards[index].name);
   return (
-    <SafeAreaView style={styles.viewWrapper}>
+    <SafeAreaView style={styles.container}>
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {/* {data ? (
@@ -137,7 +138,8 @@ const MainDeck = () => {
 export default MainDeck;
 
 const styles = StyleSheet.create({
-  viewWrapper: {
+  container: {
+    backgroundColor: colours.background,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

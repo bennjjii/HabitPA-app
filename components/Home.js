@@ -6,6 +6,7 @@ import Tab3 from './Tab3';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import AddCard from './AddCard';
 
 Entypo.loadFont();
 
@@ -26,15 +27,15 @@ const Home = () => {
         }}
       />
       <Tab.Screen
-        name="Free Time"
-        component={FreeTimeScreen}
+        name="Add Card"
+        component={AddCard}
         options={{
           headerShown: false,
           tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
         }}
       />
       <Tab.Screen
-        name="Tab3"
+        name="Progress"
         component={Tab3}
         options={{
           headerShown: false,
