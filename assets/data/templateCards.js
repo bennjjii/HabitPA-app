@@ -19,63 +19,85 @@ export default {
   ED: {
     code: 'ED',
     name: 'Every day',
-    timeOfDay: [undefined],
+    parameters: {
+      timeOfDay: [undefined],
+    },
   },
   XpD: {
     code: 'XpD',
     name: 'X times a day',
-    numberOfTimes: undefined,
+    parameters: {
+      numberOfTimes: undefined,
+    },
   },
   EW: {
     code: 'EW',
     name: 'Every week on...',
-    weekDay: [undefined],
+    parameters: {
+      weekDay: [undefined],
+    },
   },
   XpW: {
     code: 'XpW',
     name: 'X times in a week',
-    numberOfTimes: undefined,
-    taperIn: undefined,
+    parameters: {
+      numberOfTimes: undefined,
+      taperIn: undefined,
+    },
   },
   EM: {
     code: 'EM',
     name: 'Every month on...',
-    dayOfMonth: [],
+    parameters: {
+      dayOfMonth: [],
+    },
   },
   XpM: {
     code: 'XpM',
     name: 'X times in a month',
-    numberOfTimes: undefined,
-    taperIn: undefined,
+    parameters: {
+      numberOfTimes: undefined,
+      taperIn: undefined,
+    },
   },
   XpY: {
     code: 'XpY',
     name: 'X times every Y days',
-    numberOfTimes: undefined,
-    days: undefined,
-    taperIn: undefined,
+    parameters: {
+      numberOfTimes: undefined,
+      days: undefined,
+      taperIn: undefined,
+    },
   },
   XiT: {
     code: 'XiT',
     name: 'X times in total',
-    numberOfTimes: undefined,
-    numberOfDays: undefined,
+    parameters: {
+      numberOfTimes: undefined,
+      numberOfDays: undefined,
+    },
   },
   SpT: {
     code: 'SpT',
     name: 'At a specific time',
-    date: undefined,
-    timeOfDay: undefined,
+    parameters: {
+      date: undefined,
+      timeOfDay: undefined,
+    },
   },
   DL: {
     code: 'DL',
     name: 'By a deadline',
-    date: undefined,
+    parameters: {
+      date: undefined,
+    },
   },
   EY: {code: 'EY', name: 'Every year on...', date: [undefined]},
   XpY: {
     code: 'XpY',
     name: 'X times a year',
-    numberOfTimes: undefined,
+    parameters: {
+      numberOfTimes: undefined,
+    },
   },
 };

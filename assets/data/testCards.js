@@ -18,77 +18,97 @@ const TimeOfDay = {
 module.exports = [
   {
     name: 'Boxing',
+    id: 1,
     freq: {
-      EW: {
-        name: 'Every week on...',
+      code: 'EW',
+      name: 'Every week on...',
+      parameters: {
         weekDay: [Day.Monday, Day.Wednesday, Day.Sunday],
       },
     },
   },
   {
     name: 'Gym',
+    id: 2,
     freq: {
-      XpW: {
-        name: 'X times in a week',
+      code: 'XpW',
+      name: 'X times in a week',
+      parameters: {
         numberOfTimes: 3,
+        taperIn: false,
       },
     },
   },
   {
     name: 'Study Italian',
+    id: 3,
   },
   {
     name: 'Take creatine',
+    id: 4,
     freq: {
-      ED: {
-        name: 'Every day',
+      code: 'ED',
+      name: 'Every day',
+      parameters: {
         timeOfDay: [TimeOfDay.Morning],
       },
     },
   },
   {
     name: 'Wake up early',
+    id: 5,
     freq: {
-      ED: {
-        name: 'Every day',
+      code: 'ED',
+      name: 'Every day',
+      parameters: {
         timeOfDay: [TimeOfDay.Morning],
       },
     },
   },
   {
     name: 'Take vitamins',
+    id: 6,
     freq: {
-      ED: {
-        name: 'Every day',
+      code: 'ED',
+      name: 'Every day',
+      parameters: {
         timeOfDay: [TimeOfDay.Morning],
       },
     },
   },
   {
     name: 'Meditate',
+    id: 7,
   },
   {
     name: 'File taxes',
+    id: 8,
     freq: {
-      EY: {
-        name: 'Every year on...',
+      code: 'EY',
+      name: 'Every year on...',
+      parameters: {
         date: ['01 / 06'],
       },
     },
   },
   {
     name: 'Tidy Room 10 mins',
+    id: 9,
   },
   {
     name: 'Work on tunes for 30 mins',
+    id: 10,
   },
   {
     name: 'Write one song',
+    id: 11,
   },
   {
     name: 'Write diary',
+    id: 12,
   },
   {
     name: 'Plan tomorrow',
+    id: 13,
   },
 ];

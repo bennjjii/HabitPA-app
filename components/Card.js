@@ -3,6 +3,7 @@ import React from 'react';
 import colours from '../assets/colours/colours';
 
 const Card = props => {
+  console.log('card loaded');
   return (
     <View style={styles.container}>
       <Text style={styles.cardText}>

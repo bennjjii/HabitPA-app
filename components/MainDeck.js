@@ -55,6 +55,12 @@ const MainDeck = () => {
   const {data, loading, error} = useQuery(CARDQUERY);
 
   const gesture = Gesture.Pan()
+    .onBegin(event => {
+      console.log('gesture handler loaded');
+    })
+    .onStart(event => {
+      console.log('gesture handler started');
+    })
     .onUpdate(event => {
       translationX.value = event.translationX;
       translationY.value = event.translationY;
