@@ -13,7 +13,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -22,6 +22,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {Context as AuthContext} from './services/Auth';
+import {getConnection, createTables, listTables} from './services/SQLite';
+
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
@@ -29,6 +31,20 @@ import Home from './components/Home';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const dbCallback = useCallback(async () => {
+    try {
+      const db = await getConnection();
+      await createTables(db);
+      const tables = await listTables(db);
+      console.log(tables[0].rows.item(0));
+    } catch (err) {
+      console.log(err);
+    }
+  });
+  useEffect(() => {
+    dbCallback();
+  }, []);
+
   const {state} = useContext(AuthContext);
   console.log(state);
   return (

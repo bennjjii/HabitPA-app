@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, SafeAreaView, ScrollView} from 'react-native';
 import React from 'react';
 import colours from '../assets/colours/colours';
-import templateCards from '../assets/data/templateCards';
+import cardDefinitions from '../assets/data/cardDefinitions';
 
 const cardAspect = 400 / 280;
 const cardWidth = 160;
@@ -16,13 +16,13 @@ const TemplateCard = props => {
 };
 
 const AddCard = () => {
-  console.log(templateCards);
+  console.log(cardDefinitions);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrView}>
         <View style={styles.cardFlexContainer}>
-          {Object.keys(templateCards).map((card, i) => {
-            return <TemplateCard name={templateCards[card].name} />;
+          {Object.keys(cardDefinitions).map((card, i) => {
+            return <TemplateCard name={cardDefinitions[card].name} key={cardDefinitions[card].code}/>;
           })}
         </View>
       </ScrollView>
