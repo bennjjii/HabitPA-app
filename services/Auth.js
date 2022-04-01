@@ -1,3 +1,5 @@
+//consider replacing this with zustand, looks much simpler
+
 import createDataContext from './createDataContext';
 
 const authReducer = (state, action) => {

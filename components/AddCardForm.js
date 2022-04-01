@@ -1,16 +1,26 @@
-import {StyleSheet, Text, View} from 'react-native';
+//use react-hook-form, react native date time picker modal
+//could use hoc to take very simple definition of each card's form
+//and wrap it with all this stuff
+
 import React from 'react';
+import {StyleSheet, Text, View, TextInput, Button} from 'react-native';
+
 import colours from '../assets/colours/colours';
 
-const Card = props => {
+const AddCardForm = () => {
+  const onSubmit = data => {
+    console.log(data);
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.cardText}>
-        {props.name.toString() || 'crd name here'}
-      </Text>
+      <Text>Form input</Text>
+      <TextInput name="name" label="Name" />
+      <Button title="Submit" onPress={onSubmit} />
     </View>
   );
 };
+
+export default AddCardForm;
 
 const styles = StyleSheet.create({
   container: {
@@ -30,10 +40,4 @@ const styles = StyleSheet.create({
     shadowRadius: 6.27,
     elevation: 10,
   },
-  cardText: {
-    color: '#ffffff',
-    color: colours.text,
-  },
 });
-
-export default Card;

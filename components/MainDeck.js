@@ -24,12 +24,22 @@ import Animated, {
   useDerivedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {GestureDetector, Gesture} from 'react-native-gesture-handler';
+import {
+  GestureDetector,
+  Gesture,
+  TouchableOpacity,
+} from 'react-native-gesture-handler';
 import colours from '../assets/colours/colours';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import testCards from '../assets/data/testCards';
 import {useQuery, gql} from '@apollo/client';
+
+import {
+  getConnection,
+  syncGetConnection,
+  addHistoryInstance,
+} from '../services/SQLite';
 
 const {width, height} = Dimensions.get('window');
 const toRadians = angle => angle * (Math.PI / 180);
@@ -54,13 +64,17 @@ const MainDeck = () => {
 
   const {data, loading, error} = useQuery(CARDQUERY);
 
+  const updateHistory = async args => {
+    try {
+      const db = await getConnection();
+
+      await addHistoryInstance(db, args[0] + 1);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const gesture = Gesture.Pan()
-    .onBegin(event => {
-      console.log('gesture handler loaded');
-    })
-    .onStart(event => {
-      console.log('gesture handler started');
-    })
     .onUpdate(event => {
       translationX.value = event.translationX;
       translationY.value = event.translationY;
@@ -72,7 +86,12 @@ const MainDeck = () => {
             -500,
             {overshootClamping: true},
             () => {
-              currentCard.value = currentCard.value + 1;
+              runOnJS(updateHistory)([currentCard.value]);
+              if (currentCard.value + 1 < deckSize) {
+                currentCard.value = currentCard.value + 1;
+              } else {
+                currentCard.value = 0;
+              }
               translationX.value = 0;
               translationY.value = 0;
             },
@@ -83,7 +102,11 @@ const MainDeck = () => {
             500,
             {overshootClamping: true},
             () => {
-              currentCard.value = currentCard.value + 1;
+              if (currentCard.value + 1 < deckSize) {
+                currentCard.value = currentCard.value + 1;
+              } else {
+                currentCard.value = 0;
+              }
               translationX.value = 0;
               translationY.value = 0;
             },
@@ -124,9 +147,17 @@ const MainDeck = () => {
       ],
     };
   });
-  console.log(data?.cards[index].name);
+
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={{width: 100, height: 50, backgroundColor: 'blue'}}
+        onPress={async () => {
+          const db = await getConnection();
+          const rows = await db.executeSql(`SELECT * FROM history;`);
+          console.log(rows[0].rows.raw());
+        }}
+      />
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {/* {data ? (

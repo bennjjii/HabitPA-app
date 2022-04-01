@@ -1,7 +1,9 @@
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, SafeAreaView, ScrollView} from 'react-native';
-import React from 'react';
+import Modal from 'react-native-modal';
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
+import AddCardForm from './AddCardForm';
 
 const cardAspect = 400 / 280;
 const cardWidth = 160;
@@ -16,16 +18,25 @@ const TemplateCard = props => {
 };
 
 const AddCard = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   console.log(cardDefinitions);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrView}>
         <View style={styles.cardFlexContainer}>
           {Object.keys(cardDefinitions).map((card, i) => {
-            return <TemplateCard name={cardDefinitions[card].name} key={cardDefinitions[card].code}/>;
+            return (
+              <TemplateCard
+                name={cardDefinitions[card].name}
+                key={cardDefinitions[card].code}
+              />
+            );
           })}
         </View>
       </ScrollView>
+      <Modal isVisible={true} style={styles.modal}>
+        <AddCardForm />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -35,6 +46,11 @@ export default AddCard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrView: {
     flex: 1,

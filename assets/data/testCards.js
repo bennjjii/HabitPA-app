@@ -79,6 +79,7 @@ module.exports = [
   {
     name: 'Meditate',
     id: 7,
+    freq: {},
   },
   {
     name: 'File taxes',
@@ -94,21 +95,27 @@ module.exports = [
   {
     name: 'Tidy Room 10 mins',
     id: 9,
+    freq: {},
   },
   {
     name: 'Work on tunes for 30 mins',
     id: 10,
+
+    freq: {},
   },
   {
     name: 'Write one song',
     id: 11,
+    freq: {},
   },
   {
     name: 'Write diary',
     id: 12,
+    freq: {},
   },
   {
     name: 'Plan tomorrow',
     id: 13,
+    freq: {},
   },
 ];
