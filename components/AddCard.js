@@ -4,6 +4,7 @@ import Modal from 'react-native-modal';
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
 import AddCardForm from './AddCardForm';
+import ED from './TemplateCards/ED';
 
 const cardAspect = 400 / 280;
 const cardWidth = 160;
@@ -35,7 +36,9 @@ const AddCard = () => {
         </View>
       </ScrollView>
       <Modal isVisible={true} style={styles.modal}>
-        <AddCardForm />
+        <AddCardForm>
+          <ED />
+        </AddCardForm>
       </Modal>
     </SafeAreaView>
   );

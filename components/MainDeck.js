@@ -35,6 +35,8 @@ import Card from './Card';
 import testCards from '../assets/data/testCards';
 import {useQuery, gql} from '@apollo/client';
 
+import {useStore} from '../services/zustandContext';
+
 import {
   getConnection,
   syncGetConnection,
@@ -47,6 +49,7 @@ const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
+  const {deck, addCardToDeck} = useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
@@ -152,11 +155,17 @@ const MainDeck = () => {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
-        onPress={async () => {
-          const db = await getConnection();
-          const rows = await db.executeSql(`SELECT * FROM history;`);
-          console.log(rows[0].rows.raw());
-        }}
+        onPress={
+          () => {
+            addCardToDeck({name: 'card1'});
+            console.log(deck);
+          }
+          //   async () => {
+          //   const db = await getConnection();
+          //   const rows = await db.executeSql(`SELECT * FROM history;`);
+          //   console.log(rows[0].rows.raw());
+          // }
+        }
       />
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>

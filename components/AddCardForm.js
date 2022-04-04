@@ -1,20 +1,23 @@
 //use react-hook-form, react native date time picker modal
 //could use hoc to take very simple definition of each card's form
 //and wrap it with all this stuff
+//could toss state up from here via callbacks
 
-import React from 'react';
-import {StyleSheet, Text, View, TextInput, Button} from 'react-native';
+import React, {Children} from 'react';
+import {StyleSheet, View, Button, Text} from 'react-native';
 
 import colours from '../assets/colours/colours';
 
-const AddCardForm = () => {
+const AddCardForm = ({children}) => {
   const onSubmit = data => {
     console.log(data);
   };
   return (
     <View style={styles.container}>
-      <Text>Form input</Text>
-      <TextInput name="name" label="Name" />
+      {Children.map(children, child => {
+        console.log(child.props.children);
+        return child;
+      })}
       <Button title="Submit" onPress={onSubmit} />
     </View>
   );
