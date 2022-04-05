@@ -56,7 +56,7 @@ export const uploadTestCards = async (db, testCards) => {
       await db.executeSql(
         `INSERT INTO cards VALUES(${card.id},"${
           card.name
-        }", true, "${encodeURIComponent(JSON.stringify(card.freq))}");`,
+        }", 1, "${encodeURIComponent(JSON.stringify(card.freq))}");`,
       );
     } catch (err) {
       console.log(err);

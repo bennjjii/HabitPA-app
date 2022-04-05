@@ -3,23 +3,94 @@
 //and wrap it with all this stuff
 //could toss state up from here via callbacks
 
-import React, {Children} from 'react';
-import {StyleSheet, View, Button, Text} from 'react-native';
+import React, {Children, useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  Button,
+  Keyboard,
+  Text,
+  Pressable,
+} from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
+import uuid from 'react-native-uuid';
+
+import {useStore} from '../services/zustandContext';
 
 import colours from '../assets/colours/colours';
 
+import ED from './TemplateCards/ED';
+import CommonInputCard from './TemplateCards/CommonInputCard';
+
+const cardAspect = 400 / 280;
+const cardWidth = 350;
+const cardHeight = cardWidth * cardAspect;
+
 const AddCardForm = ({children}) => {
-  const onSubmit = data => {
-    console.log(data);
+  const {register, handleSubmit, formState, control, setValue} = useForm();
+  const {addCardToDeck, hideModal, modalCode} = useStore();
+
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const [parameters, setParameters] = useState({
+    timeOfDay: {
+      Morning: false,
+      Afternoon: false,
+      Evening: false,
+      Night: false,
+    },
+    dayOfWeek: {
+      Monday: false,
+      Tuesday: false,
+      Wednesday: false,
+      Thursday: false,
+      Friday: false,
+      Saturday: false,
+      Sunday: false,
+    },
+    dayOfMonth: [],
+    dayOfYear: [],
+    date: undefined,
+    numberOfTimes: undefined,
+    periodInDays: undefined,
+    rolling: false,
+    taperIn: false,
+  });
+
+  const onSubmit = () => {
+    hideModal();
+
+    addCardToDeck({
+      code: modalCode,
+      uuid: uuid.v4(),
+      name,
+      desc,
+      parameters,
+    });
   };
+
+  //not DRY
   return (
-    <View style={styles.container}>
-      {Children.map(children, child => {
-        console.log(child.props.children);
-        return child;
-      })}
-      <Button title="Submit" onPress={onSubmit} />
-    </View>
+    <Pressable
+      onPress={() => {
+        Keyboard.dismiss();
+      }}>
+      <View style={styles.container}>
+        <CommonInputCard
+          name={name}
+          setName={setName}
+          desc={desc}
+          setDesc={setDesc}
+          parameters={parameters}
+          setParameters={setParameters}
+        />
+        <Button
+          title="Submit"
+          style={styles.submitButtton}
+          onPress={handleSubmit(onSubmit)}
+        />
+      </View>
+    </Pressable>
   );
 };
 
@@ -27,8 +98,8 @@ export default AddCardForm;
 
 const styles = StyleSheet.create({
   container: {
-    width: 280,
-    height: 400,
+    width: cardWidth,
+    height: cardHeight,
     backgroundColor: '#222222',
     backgroundColor: colours.foreground,
     justifyContent: 'center',

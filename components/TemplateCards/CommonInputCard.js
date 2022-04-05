@@ -2,8 +2,10 @@ import {Text, TextInput, View} from 'react-native';
 import React, {useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import colours from '../../assets/colours/colours';
+import cardDefinitions from '../../assets/data/cardDefinitions';
+import {useStore} from '../../services/zustandContext';
 
-export default ED = ({
+export default CommonInputCard = ({
   name,
   setName,
   desc,
@@ -11,13 +13,16 @@ export default ED = ({
   parameters,
   setParameters,
 }) => {
+  const {modalCode} = useStore();
   return (
     <View style={styles.container}>
-      <Text style={styles.cardTitleText}>Every day</Text>
-      <Text style={styles.explanationText}>
-        Use this card to schedule a habit every day. Optionally, specify times
-        of day for which it is appropriate.
+      <Text style={styles.cardTitleText}>
+        {cardDefinitions[modalCode]?.name}
       </Text>
+      <Text style={styles.explanationText}>
+        {cardDefinitions[modalCode]?.explanation}
+      </Text>
+
       <TextInput
         placeholder="card title"
         style={styles.textInput}

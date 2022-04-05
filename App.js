@@ -21,6 +21,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
+import {useStore} from './services/zustandContext';
 import {Context as AuthContext} from './services/Auth';
 import {
   getConnection,
@@ -38,6 +39,7 @@ import testCards from './assets/data/testCards';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const contextListener = useStore.subscribe(console.log);
   const dbCallback = useCallback(async () => {
     try {
       const db = await getConnection();
@@ -45,7 +47,7 @@ const App = () => {
       await uploadTestCards(db, testCards);
       const tables = await listTables(db);
       const cards = await listCards(db);
-      console.log(cards[0].rows.raw());
+      //console.log(cards[0].rows.raw());
       // console.log(
       //   JSON.parse(decodeURIComponent(cards[0].rows.raw()[0].parameters)),
       // );

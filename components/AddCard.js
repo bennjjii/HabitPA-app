@@ -1,26 +1,43 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, SafeAreaView, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  ScrollView,
+  Pressable,
+  Dimensions,
+} from 'react-native';
 import Modal from 'react-native-modal';
+import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
 import AddCardForm from './AddCardForm';
 import ED from './TemplateCards/ED';
 
+import {useStore} from '../services/zustandContext';
+
 const cardAspect = 400 / 280;
-const cardWidth = 160;
+const cardWidth = Dimensions.get('window').width / 2 - 30;
 const cardHeight = cardWidth * cardAspect;
 
 const TemplateCard = props => {
+  const {toggleModalVisible, showModal, hideModal} = useStore();
   return (
-    <View style={styles.templateCard}>
-      <Text style={styles.cardText}>{props.name}</Text>
-    </View>
+    <Pressable
+      onPress={() => {
+        showModal(props.code);
+      }}>
+      <View style={styles.templateCard}>
+        <Text style={styles.cardText}>{props.name}</Text>
+      </View>
+    </Pressable>
   );
 };
 
 const AddCard = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  console.log(cardDefinitions);
+  const {modalVisible, hideModal} = useStore();
+  //console.log(cardDefinitions);
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrView}>
@@ -30,15 +47,25 @@ const AddCard = () => {
               <TemplateCard
                 name={cardDefinitions[card].name}
                 key={cardDefinitions[card].code}
+                code={cardDefinitions[card].code}
               />
             );
           })}
         </View>
       </ScrollView>
-      <Modal isVisible={true} style={styles.modal}>
-        <AddCardForm>
-          <ED />
-        </AddCardForm>
+      <Modal
+        isVisible={modalVisible}
+        style={styles.modal}
+        onRequestClose={() => {
+          hideModal();
+        }}>
+        <KeyboardAvoidingView
+          enabled
+          behavior={Platform.OS === 'android' ? undefined : 'position'}>
+          <AddCardForm>
+            <ED />
+          </AddCardForm>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

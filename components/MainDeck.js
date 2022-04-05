@@ -32,7 +32,6 @@ import {
 import colours from '../assets/colours/colours';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
-import testCards from '../assets/data/testCards';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
@@ -55,7 +54,7 @@ const MainDeck = () => {
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
-  let deckSize = testCards.length;
+  let deckSize = deck.length;
 
   const CARDQUERY = gql`
     query {
@@ -157,7 +156,6 @@ const MainDeck = () => {
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
         onPress={
           () => {
-            addCardToDeck({name: 'card1'});
             console.log(deck);
           }
           //   async () => {
@@ -174,7 +172,7 @@ const MainDeck = () => {
           ) : (
             <Card index={index} name={'loading...'} />
           )} */}
-          <Card index={index} name={testCards[index].name} />
+          <Card index={index} name={deck[index].name} />
         </Animated.View>
       </GestureDetector>
     </SafeAreaView>
