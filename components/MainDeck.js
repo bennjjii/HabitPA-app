@@ -13,6 +13,10 @@ So the app's job is to decide what cards are in your hand at any given time
 Answers the question - what should I do right now
 There will be logic which decides which cards are shown to you right now
 Question is - put this logic on the frontend or the backend??
+Sub decks
+RxW
+RxM
+Will need some kind of stable random seed for long term randomisation
 */
 
 import React, {useContext, useState} from 'react';

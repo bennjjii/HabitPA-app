@@ -48,9 +48,9 @@ const AddCardForm = ({children}) => {
       Saturday: false,
       Sunday: false,
     },
-    dayOfMonth: [],
-    dayOfYear: [],
-    date: undefined,
+    dayOfMonth: undefined, //make this an array at some point
+    dayOfYear: undefined, //make this an array at some point
+    date: new Date(0),
     numberOfTimes: undefined,
     periodInDays: undefined,
     rolling: false,

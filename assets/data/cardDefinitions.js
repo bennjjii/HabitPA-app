@@ -20,7 +20,7 @@ const commonParameters = {
   dayOfWeek: [],
   dayOfMonth: [],
   dayOfYear: [],
-  date: undefined,
+  date: new Date(0),
   numberOfTimes: undefined,
   periodInDays: undefined,
   rolling: undefined,
@@ -77,7 +77,7 @@ export default {
     code: 'RxW',
     name: 'Roughly x times in a week',
     explanation:
-      'Schedule the practise of a habit roughly X times in 7 days. This card can be tapered in.',
+      'Schedule the practise of a habit to work out to roughly X times in 7 days. This card can be tapered in.',
     parameters: {
       numberOfTimes: undefined,
       taperIn: undefined,
@@ -105,10 +105,22 @@ export default {
       rolling: true,
     },
   },
+  RxM: {
+    enabled: true,
+    code: 'RxM',
+    name: 'Roughly x times in a month',
+    explanation:
+      'Schedule the practise of a habit to work out to roughly X times per 30 days. This card can be tapered in.',
+    parameters: {
+      numberOfTimes: undefined,
+      taperIn: undefined,
+    },
+  },
   XpY: {
     enabled: true,
     code: 'XpY',
     name: 'X times every Y days',
+    explanation: 'Schedule the practise of a habit roughly X times in Y days',
     parameters: {
       numberOfTimes: undefined,
       periodInDays: undefined,
@@ -120,6 +132,8 @@ export default {
     enabled: true,
     code: 'XiT',
     name: 'X times in total',
+    explanation:
+      'Schedule the practise of a habit X times in total. Optionally specify a period.',
     parameters: {
       numberOfTimes: undefined,
       periodInDays: undefined,
@@ -129,6 +143,8 @@ export default {
     enabled: true,
     code: 'SpT',
     name: 'At a specific time',
+    explanation:
+      'Schedule the practise of a habit or activity for a certain date.',
     parameters: {
       date: undefined,
       timeOfDay: undefined,
@@ -138,6 +154,7 @@ export default {
     enabled: true,
     code: 'DL',
     name: 'By a deadline',
+    explanation: 'Schedule the completion of a habit by a deadline.',
     parameters: {
       date: undefined,
     },
@@ -146,6 +163,7 @@ export default {
     enabled: true,
     code: 'EY',
     name: 'Every year on...',
+    explanation: 'Schedule a habit or activity on a certain day of the year.',
     parameters: {
       dayOfYear: [undefined],
     },
@@ -154,6 +172,18 @@ export default {
     enabled: true,
     code: 'XpY',
     name: 'X times a year',
+    explanation: 'Schedule the practise of a habit X times in a given year.',
+    parameters: {
+      numberOfTimes: undefined,
+      rolling: true,
+    },
+  },
+  RxY: {
+    enabled: true,
+    code: 'RxY',
+    name: 'Roughly X times a year',
+    explanation:
+      'Schedule the practise of a habit to work out roughly X times in any year.',
     parameters: {
       numberOfTimes: undefined,
       rolling: true,
@@ -163,6 +193,7 @@ export default {
     enabled: true,
     code: 'AsP',
     name: 'At some point',
+    explanation: 'Something to be completed at some point.',
     parameters: {},
   },
 };

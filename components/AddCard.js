@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Modal from 'react-native-modal';
+
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
@@ -57,6 +58,9 @@ const AddCard = () => {
         isVisible={modalVisible}
         style={styles.modal}
         onRequestClose={() => {
+          hideModal();
+        }}
+        onBackdropPress={() => {
           hideModal();
         }}>
         <KeyboardAvoidingView
