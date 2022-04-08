@@ -14,7 +14,6 @@ import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/Key
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
 import AddCardForm from './AddCardForm';
-import ED from './TemplateCards/ED';
 
 import {useStore} from '../services/zustandContext';
 
@@ -67,9 +66,7 @@ const AddCard = () => {
         <KeyboardAvoidingView
           enabled
           behavior={Platform.OS === 'android' ? undefined : 'position'}>
-          <AddCardForm>
-            <ED />
-          </AddCardForm>
+          <AddCardForm />
         </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
