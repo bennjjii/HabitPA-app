@@ -24,9 +24,11 @@ export const createTables = async db => {
       `DROP TABLE IF EXISTS history;`,
       `DROP TABLE IF EXISTS cards`,
       `CREATE TABLE IF NOT EXISTS cards ( 
-          cardid INTEGER PRIMARY KEY,
+          uuid TEXT PRIMARY KEY,
+          current BOOLEAN NOT NULL,
+          code TEXT NOT NULL,
           name TEXT NOT NULL, 
-          valid BOOLEAN NOT NULL,
+          desc TEXT,
           parameters JSON NOT NULL 
           );`,
       `CREATE TABLE IF NOT EXISTS history ( 
@@ -53,11 +55,16 @@ export const listTables = async db => {
 export const uploadTestCards = async (db, testCards) => {
   testCards.forEach(async (card, index) => {
     try {
-      await db.executeSql(
-        `INSERT INTO cards VALUES(${card.id},"${
-          card.name
-        }", 1, "${encodeURIComponent(JSON.stringify(card.freq))}");`,
+      const result = await db.executeSql(
+        `INSERT INTO cards VALUES(
+          ${card.uuid},
+          ${card.current ? 1 : 0},
+          "${card.code}",
+          "${card.name}", ${
+          card.desc ? '"' + card.desc + '"' : null
+        }, "${encodeURIComponent(JSON.stringify(card.parameters))}");`,
       );
+      console.log(result[0].rows.raw());
     } catch (err) {
       console.log(err);
     }
@@ -65,6 +72,7 @@ export const uploadTestCards = async (db, testCards) => {
 };
 
 export const listCards = async db => {
+  console.log('Listing cards');
   const results = await db.executeSql(`SELECT * FROM cards;`);
   return results;
 };

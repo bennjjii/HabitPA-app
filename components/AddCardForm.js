@@ -19,7 +19,6 @@ import {useStore} from '../services/zustandContext';
 
 import colours from '../assets/colours/colours';
 
-import ED from './TemplateCards/ED';
 import CommonInputCard from './TemplateCards/CommonInputCard';
 
 const cardAspect = 400 / 280;
@@ -48,8 +47,11 @@ const AddCardForm = ({children}) => {
       Saturday: false,
       Sunday: false,
     },
-    dayOfMonth: undefined, //make this an array at some point
-    dayOfYear: undefined, //make this an array at some point
+    dayOfMonth: undefined, //make this an array at some point//
+    dayOfYear: {
+      day: undefined,
+      month: undefined,
+    }, //make this an array at some point//
     date: new Date(0),
     numberOfTimes: undefined,
     periodInDays: undefined,

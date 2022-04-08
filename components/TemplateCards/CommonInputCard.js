@@ -2,6 +2,7 @@ import {Text, TextInput, View, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import NumberPlease from '../CustomPicker/NumberPlease';
 import colours from '../../assets/colours/colours';
 import cardDefinitions from '../../assets/data/cardDefinitions';
 import {useStore} from '../../services/zustandContext';
@@ -27,15 +28,19 @@ export default CommonInputCard = ({
 }) => {
   const {modalCode} = useStore();
 
+  //set up year date spinner
+  const initialValues = [
+    {id: 'day', value: 1},
+    {id: 'month', value: 1},
+  ];
+  const [date, setDate] = useState(initialValues);
+  const [spinners, setSpinners] = useState([
+    {id: 'day', label: '', min: 1, max: 31},
+    {id: 'month', label: '', min: 1, max: 12},
+  ]);
+
   return (
     <View style={styles.container}>
-      {
-        //   checkForParam(modalCode, 'dayOfYear')
-        true && <View style={styles.dayOfYear}></View>
-      }
-      <Text style={styles.cardTitleText}>
-        {cardDefinitions[modalCode]?.name}
-      </Text>
       <Text style={styles.explanationText}>
         {cardDefinitions[modalCode]?.explanation}
       </Text>
@@ -63,6 +68,22 @@ export default CommonInputCard = ({
               setParameters(state => ({
                 ...state,
                 numberOfTimes: val,
+              }));
+            }}
+          />
+        </View>
+      )}
+
+      {checkForParam(modalCode, 'periodInDays') && (
+        <View style={styles.periodInDaysContainer}>
+          <TextInput
+            placeholder="period in days"
+            style={styles.textInput}
+            value={parameters.periodInDays}
+            onChangeText={val => {
+              setParameters(state => ({
+                ...state,
+                periodInDays: val,
               }));
             }}
           />
@@ -202,6 +223,57 @@ export default CommonInputCard = ({
         </View>
       )}
 
+      {checkForParam(modalCode, 'dayOfYear') && (
+        <View style={styles.dayOfYear}>
+          <NumberPlease
+            pickers={spinners}
+            values={date}
+            onChange={values => {
+              console.log(values['month']);
+              setDate(values);
+              switch (values['month']) {
+                case 1:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+                case 2:
+                  setSpinners(state => [{...state[0], max: 28}, {...state[1]}]);
+                  break;
+                case 3:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+                case 4:
+                  setSpinners(state => [{...state[0], max: 30}, {...state[1]}]);
+                  break;
+                case 5:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+                case 6:
+                  setSpinners(state => [{...state[0], max: 30}, {...state[1]}]);
+                  break;
+                case 7:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+                case 8:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+                case 9:
+                  setSpinners(state => [{...state[0], max: 30}, {...state[1]}]);
+                  break;
+                case 10:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+                case 11:
+                  setSpinners(state => [{...state[0], max: 30}, {...state[1]}]);
+                  break;
+                case 12:
+                  setSpinners(state => [{...state[0], max: 31}, {...state[1]}]);
+                  break;
+              }
+            }}
+          />
+        </View>
+      )}
+
       {checkForParam(modalCode, 'date') && (
         <View style={styles.date}>
           <DateTimePicker value={new Date()} />
@@ -273,6 +345,42 @@ export default CommonInputCard = ({
               }}
             />
             <Text style={styles.checkboxText}>Nighttime</Text>
+          </View>
+        </View>
+      )}
+
+      {checkForParam(modalCode, 'rolling') && (
+        <View style={styles.checkboxContainer}>
+          <View style={styles.checkBoxView}>
+            <CheckBox
+              disabled={false}
+              value={parameters.rolling}
+              onValueChange={val => {
+                setParameters(state => ({
+                  ...state,
+                  rolling: val,
+                }));
+              }}
+            />
+            <Text style={styles.checkboxText}>Rolling</Text>
+          </View>
+        </View>
+      )}
+
+      {checkForParam(modalCode, 'taperIn') && (
+        <View style={styles.checkboxContainer}>
+          <View style={styles.checkBoxView}>
+            <CheckBox
+              disabled={false}
+              value={parameters.taperIn}
+              onValueChange={val => {
+                setParameters(state => ({
+                  ...state,
+                  taperIn: val,
+                }));
+              }}
+            />
+            <Text style={styles.checkboxText}>Taper in</Text>
           </View>
         </View>
       )}

@@ -38,12 +38,13 @@ const TemplateCard = props => {
 
 const AddCard = () => {
   const {modalVisible, hideModal} = useStore();
-  //console.log(cardDefinitions);
+  //console.log(Object.keys(cardDefinitions));
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrView}>
         <View style={styles.cardFlexContainer}>
           {Object.keys(cardDefinitions).map((card, i) => {
+            //console.log(cardDefinitions[card].code + '\n');
             return (
               <TemplateCard
                 name={cardDefinitions[card].name}

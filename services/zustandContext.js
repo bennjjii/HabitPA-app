@@ -1,9 +1,10 @@
 import create from 'zustand';
 import {Day, TimeOfDay} from '../utilities/enums';
-import testCards from '../assets/data/testCards';
+import testCards from '../assets/data/testCards2';
 
 export const useStore = create(set => ({
   deck: [...testCards],
+  history: [],
   //deck: [],
   addCardToDeck: card =>
     set(state => {

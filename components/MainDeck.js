@@ -17,6 +17,7 @@ Sub decks
 RxW
 RxM
 Will need some kind of stable random seed for long term randomisation
+need persist option for a card to persist once drawn
 */
 
 import React, {useContext, useState} from 'react';
@@ -44,6 +45,7 @@ import {
   getConnection,
   syncGetConnection,
   addHistoryInstance,
+  listCards,
 } from '../services/SQLite';
 
 const {width, height} = Dimensions.get('window');
@@ -158,27 +160,27 @@ const MainDeck = () => {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
-        onPress={
-          () => {
-            console.log(deck);
-          }
-          //   async () => {
-          //   const db = await getConnection();
-          //   const rows = await db.executeSql(`SELECT * FROM history;`);
-          //   console.log(rows[0].rows.raw());
-          // }
-        }
+        onPress={async () => {
+          //console.log(deck);
+
+          const db = await getConnection();
+          const res = await listCards(db);
+          // const rows = await db.executeSql(`SELECT * FROM cards;`);
+          console.log(res[0].rows.raw());
+        }}
       />
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={rStyle}>
-          {/* {data ? (
+      {deck.length > 0 && (
+        <GestureDetector gesture={gesture}>
+          <Animated.View style={rStyle}>
+            {/* {data ? (
             <Card index={index} name={data.cards[index].name} />
           ) : (
             <Card index={index} name={'loading...'} />
           )} */}
-          <Card index={index} name={deck[index].name} />
-        </Animated.View>
-      </GestureDetector>
+            <Card index={index} name={deck[index].name} />
+          </Animated.View>
+        </GestureDetector>
+      )}
     </SafeAreaView>
   );
 };

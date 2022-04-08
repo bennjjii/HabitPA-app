@@ -40,11 +40,12 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
   const contextListener = useStore.subscribe(console.log);
+  const {deck} = useStore();
   const dbCallback = useCallback(async () => {
     try {
       const db = await getConnection();
       await createTables(db);
-      await uploadTestCards(db, testCards);
+      await uploadTestCards(db, deck);
       const tables = await listTables(db);
       const cards = await listCards(db);
       //console.log(cards[0].rows.raw());

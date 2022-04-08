@@ -27,6 +27,11 @@ const commonParameters = {
   taperIn: undefined,
 };
 
+//should one card be for calendar weeks etc and one for rolling quantities
+//after all what we really want it for the habit to be maintained for us
+//We should reduce the number of cards probably
+//should night be bedtime??
+
 export default {
   ED: {
     enabled: true,
@@ -61,6 +66,7 @@ export default {
   },
   //X times in a set week, and x times in the last 7 days are different
   XpW: {
+    //default calendar week. randomise if less than 7
     enabled: true,
     code: 'XpW',
     name: 'X times in a week',
@@ -116,10 +122,10 @@ export default {
       taperIn: undefined,
     },
   },
-  XpY: {
+  XiY: {
     enabled: true,
-    code: 'XpY',
-    name: 'X times every Y days',
+    code: 'XiY',
+    name: 'X times in every Y days',
     explanation: 'Schedule the practise of a habit roughly X times in Y days',
     parameters: {
       numberOfTimes: undefined,
