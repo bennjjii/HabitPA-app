@@ -4,8 +4,7 @@ import testCards from '../assets/data/testCards2';
 
 export const useStore = create(set => ({
   deck: [...testCards],
-  history: [],
-  //deck: [],
+
   addCardToDeck: card =>
     set(state => {
       return {
@@ -21,6 +20,21 @@ export const useStore = create(set => ({
         ],
       };
     }),
+  history: [],
+  pushCardToHistory: card => {
+    set(state => {
+      return {
+        history: [
+          ...state.history,
+          {
+            uuid: card.uuid,
+            timestamp: new Date(),
+          },
+        ],
+      };
+    });
+  },
+  //modals
   modalVisible: false,
   modalCode: undefined,
   toggleModalVisible: () => {

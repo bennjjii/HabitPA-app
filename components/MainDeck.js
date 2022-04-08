@@ -54,7 +54,7 @@ const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
-  const {deck, addCardToDeck} = useStore();
+  const {deck, pushCardToHistory} = useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
@@ -73,13 +73,14 @@ const MainDeck = () => {
   const {data, loading, error} = useQuery(CARDQUERY);
 
   const updateHistory = async args => {
-    try {
-      const db = await getConnection();
+    pushCardToHistory(deck[args[0]]);
+    // try {
+    //   const db = await getConnection();
 
-      await addHistoryInstance(db, args[0] + 1);
-    } catch (err) {
-      console.log(err);
-    }
+    //   await addHistoryInstance(db, args[0] + 1);
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   const gesture = Gesture.Pan()
