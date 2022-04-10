@@ -2,7 +2,7 @@ import create from 'zustand';
 import {Day, TimeOfDay} from '../utilities/enums';
 import testCards from '../assets/data/testCards2';
 
-export const useStore = create(set => ({
+export const useStore = create((set, get) => ({
   deck: [...testCards],
 
   addCardToDeck: card =>
@@ -34,6 +34,11 @@ export const useStore = create(set => ({
       };
     });
   },
+  //time of day
+  Morning: [7, 12],
+  Afternoon: [13, 17],
+  Evening: [18, 22],
+  Night: [22, 23],
   //modals
   modalVisible: false,
   modalCode: undefined,

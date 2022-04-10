@@ -64,7 +64,7 @@ export const uploadTestCards = async (db, testCards) => {
           card.desc ? '"' + card.desc + '"' : null
         }, "${encodeURIComponent(JSON.stringify(card.parameters))}");`,
       );
-      console.log(result[0].rows.raw());
+      //console.log(result[0].rows.raw());
     } catch (err) {
       console.log(err);
     }

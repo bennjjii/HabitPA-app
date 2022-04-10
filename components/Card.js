@@ -6,7 +6,7 @@ const Card = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.cardText}>
-        {props.name.toString() || 'crd name here'}
+        {props.name?.toString() || 'crd name here'}
       </Text>
     </View>
   );

@@ -20,7 +20,7 @@ Will need some kind of stable random seed for long term randomisation
 need persist option for a card to persist once drawn
 */
 
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
   runOnJS,
@@ -48,19 +48,37 @@ import {
   listCards,
 } from '../services/SQLite';
 
+import useFilterCards from '../utilities/useFilterCards';
+
 const {width, height} = Dimensions.get('window');
 const toRadians = angle => angle * (Math.PI / 180);
 const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
-  const {deck, pushCardToHistory} = useStore();
+  //Obvious a silly way to do this vv
+  const {deck, history, pushCardToHistory, Morning, Afternoon, Evening, Night} =
+    useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
+  let filteredDeck = undefined;
   let deckSize = deck.length;
+
+  useEffect(() => {
+    //do this all in the context module
+    filteredDeck = useFilterCards(
+      deck,
+      history,
+      Morning,
+      Afternoon,
+      Evening,
+      Night,
+    );
+    console.log(filteredDeck);
+  }, []);
 
   const CARDQUERY = gql`
     query {
