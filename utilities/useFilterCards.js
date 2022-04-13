@@ -20,9 +20,8 @@ const defaultReturn = false;
 const numberOfCardsInAmountOfTime = () => {};
 
 const getTimeOfDay = (m, a, e, n) => {
-  const currentHour = new Date().getHours();
-  //const currentHour = 22;
-  console.log(currentHour);
+  //const currentHour = new Date().getHours();
+  const currentHour = 11;
   switch (true) {
     case currentHour < m[1] && currentHour >= m[0]:
       return TimeOfDay.Morning;
@@ -40,17 +39,25 @@ const getTimeOfDay = (m, a, e, n) => {
   }
 };
 
+const filterHistoryByDate = (history, cutOffDate) => {
+  const filteredHistory = history.filter(instance => {
+    if (instance.timestamp.getTime() > cutOffDate.getTime()) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  return filteredHistory;
+};
+
 export default useFilterCards = (deck, history, m, a, e, n) => {
-  //console.log(deck);
   const timeOfDay = getTimeOfDay(m, a, e, n);
-  console.log(timeOfDay);
   const returnedCards = deck.filter(card => {
     switch (card.code) {
       case 'ED':
         return Object.keys(card.parameters.timeOfDay).some(time => {
           return timeOfDay === time && card.parameters.timeOfDay[time];
         });
-
       case 'XpD':
         //if we count x cards from history today or more, return false, else return true
         return defaultReturn;
@@ -58,8 +65,27 @@ export default useFilterCards = (deck, history, m, a, e, n) => {
         //if it is one of the specified days, AND it is the specified time of day, true, else false
         return defaultReturn;
       case 'XpW':
-        //if we count x or more cards in the past 7 days, return false, else true
-        return defaultReturn;
+        console.log('history', history);
+        //const instanceOfExecution = [];
+        let filteredHistory = filterHistoryByDate(
+          history,
+          new Date(new Date().setDate(-7)),
+        );
+        filteredHistory = filteredHistory.filter(instance => {
+          if (card.uuid === instance.uuid) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+        if (card.parameters.numberOfTimes < filteredHistory.length) {
+          return true;
+        } else {
+          return false;
+        }
+
+      //if we count x or more cards in the past 7 days, return false, else true
+
       case 'RxW':
         return defaultReturn;
       case 'EM':

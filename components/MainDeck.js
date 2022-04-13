@@ -20,7 +20,7 @@ Will need some kind of stable random seed for long term randomisation
 need persist option for a card to persist once drawn
 */
 
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
   runOnJS,
@@ -57,6 +57,7 @@ const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
+  console.log('Maindeck loading');
   //Obvious a silly way to do this vv
   const {deck, history, pushCardToHistory, Morning, Afternoon, Evening, Night} =
     useStore();
@@ -65,31 +66,29 @@ const MainDeck = () => {
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
-  let filteredDeck = undefined;
-  let deckSize = deck.length;
+  const filteredDeck = useFilterCards(
+    deck,
+    history,
+    Morning,
+    Afternoon,
+    Evening,
+    Night,
+  );
 
-  useEffect(() => {
-    //do this all in the context module
-    filteredDeck = useFilterCards(
-      deck,
-      history,
-      Morning,
-      Afternoon,
-      Evening,
-      Night,
-    );
-    console.log(filteredDeck);
-  }, []);
+  // useEffect(() => {
+  //   //do this all in the context module
+  //   console.log('deck', deck);
+  //   filteredDeck = useFilterCards(
+  //     deck,
+  //     history,
+  //     Morning,
+  //     Afternoon,
+  //     Evening,
+  //     Night,
+  //   );
 
-  const CARDQUERY = gql`
-    query {
-      cards {
-        name
-      }
-    }
-  `;
-
-  const {data, loading, error} = useQuery(CARDQUERY);
+  //   console.log('filter', filteredDeck);
+  // }, []);
 
   const updateHistory = async args => {
     pushCardToHistory(deck[args[0]]);
@@ -115,7 +114,7 @@ const MainDeck = () => {
             {overshootClamping: true},
             () => {
               runOnJS(updateHistory)([currentCard.value]);
-              if (currentCard.value + 1 < deckSize) {
+              if (currentCard.value + 1 < filteredDeck.length) {
                 currentCard.value = currentCard.value + 1;
               } else {
                 currentCard.value = 0;
@@ -130,7 +129,7 @@ const MainDeck = () => {
             500,
             {overshootClamping: true},
             () => {
-              if (currentCard.value + 1 < deckSize) {
+              if (currentCard.value + 1 < filteredDeck.length) {
                 currentCard.value = currentCard.value + 1;
               } else {
                 currentCard.value = 0;
@@ -181,26 +180,19 @@ const MainDeck = () => {
       <TouchableOpacity
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
         onPress={async () => {
-          //console.log(deck);
-
-          const db = await getConnection();
-          const res = await listCards(db);
-          // const rows = await db.executeSql(`SELECT * FROM cards;`);
-          console.log(res[0].rows.raw());
+          console.log('filterlog', filteredDeck);
         }}
       />
-      {deck.length > 0 && (
-        <GestureDetector gesture={gesture}>
-          <Animated.View style={rStyle}>
-            {filteredDeck ? (
-              <Card index={index} name={filteredDeck.cards[index].name} />
-            ) : (
-              <NoCards />
-            )}
-            {/* <Card index={index} name={deck[index].name} /> */}
-          </Animated.View>
-        </GestureDetector>
-      )}
+
+      <GestureDetector gesture={gesture}>
+        <Animated.View style={rStyle}>
+          {filteredDeck.length > 0 ? (
+            <Card index={index} name={filteredDeck[index].name} />
+          ) : (
+            <NoCards />
+          )}
+        </Animated.View>
+      </GestureDetector>
     </SafeAreaView>
   );
 };
