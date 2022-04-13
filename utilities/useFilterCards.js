@@ -25,13 +25,10 @@ const getTimeOfDay = (m, a, e, n) => {
   switch (true) {
     case currentHour < m[1] && currentHour >= m[0]:
       return TimeOfDay.Morning;
-
     case currentHour < a[1] && currentHour >= a[0]:
       return TimeOfDay.Afternoon;
-
     case currentHour < e[1] && currentHour >= e[0]:
       return TimeOfDay.Evening;
-
     case currentHour < n[1] && currentHour >= n[0]:
       return TimeOfDay.Night;
     default:
@@ -41,6 +38,9 @@ const getTimeOfDay = (m, a, e, n) => {
 
 const filterHistoryByDate = (history, cutOffDate) => {
   const filteredHistory = history.filter(instance => {
+    // console.log('cutoff', cutOffDate.getTime() / 1000000, cutOffDate);
+
+    // console.log('instance', instance.timestamp.getTime() / 1000000);
     if (instance.timestamp.getTime() > cutOffDate.getTime()) {
       return true;
     } else {
@@ -69,16 +69,20 @@ export default useFilterCards = (deck, history, m, a, e, n) => {
         //const instanceOfExecution = [];
         let filteredHistory = filterHistoryByDate(
           history,
-          new Date(new Date().setDate(-7)),
+          new Date(new Date() - 86400000 * 7),
         );
         filteredHistory = filteredHistory.filter(instance => {
+          console.log('card', card.uuid);
+          console.log('instance', instance.uuid);
           if (card.uuid === instance.uuid) {
             return true;
           } else {
             return false;
           }
         });
-        if (card.parameters.numberOfTimes < filteredHistory.length) {
+        console.log('filteredHistory', filteredHistory.length);
+        console.log(card.parameters.numberOfTimes);
+        if (card.parameters.numberOfTimes > filteredHistory.length) {
           return true;
         } else {
           return false;

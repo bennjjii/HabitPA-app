@@ -22,7 +22,12 @@ export const useStore = create((set, get) => ({
         ],
       };
     }),
-  history: [],
+  history: [
+    {uuid: 2, timestamp: new Date(2022, 3, 13)},
+    {uuid: 2, timestamp: new Date(2022, 3, 12)},
+    {uuid: 2, timestamp: new Date(2022, 3, 10)},
+    {uuid: 2, timestamp: new Date(2022, 3, 9)},
+  ],
   pushCardToHistory: card => {
     set(state => {
       return {
