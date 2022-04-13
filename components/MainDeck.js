@@ -37,6 +37,7 @@ import {
 import colours from '../assets/colours/colours';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
+import NoCards from './NoCards';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
@@ -191,12 +192,12 @@ const MainDeck = () => {
       {deck.length > 0 && (
         <GestureDetector gesture={gesture}>
           <Animated.View style={rStyle}>
-            {/* {data ? (
-            <Card index={index} name={data.cards[index].name} />
-          ) : (
-            <Card index={index} name={'loading...'} />
-          )} */}
-            <Card index={index} name={deck[index].name} />
+            {filteredDeck ? (
+              <Card index={index} name={filteredDeck.cards[index].name} />
+            ) : (
+              <NoCards />
+            )}
+            {/* <Card index={index} name={deck[index].name} /> */}
           </Animated.View>
         </GestureDetector>
       )}

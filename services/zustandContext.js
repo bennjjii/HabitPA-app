@@ -1,6 +1,8 @@
 import create from 'zustand';
+import {persist} from 'zustand/middleware';
 import {Day, TimeOfDay} from '../utilities/enums';
 import testCards from '../assets/data/testCards2';
+//use immer
 
 export const useStore = create((set, get) => ({
   deck: [...testCards],
