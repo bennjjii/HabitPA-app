@@ -61,6 +61,7 @@ export default {
       'Schedule the practise of a habit every week on specific days. Choose the time of day if you like.',
     parameters: {
       dayOfWeek: [undefined],
+      //default this to all selected vv
       timeOfDay: [],
     },
   },
@@ -142,6 +143,7 @@ export default {
       'Schedule the practise of a habit X times in total. Optionally specify a period.',
     parameters: {
       numberOfTimes: undefined,
+      //to use this need to record a creation time
       periodInDays: undefined,
     },
   },
@@ -153,6 +155,7 @@ export default {
       'Schedule the practise of a habit or activity for a certain date.',
     parameters: {
       date: undefined,
+      //seems like would be easy to miss to have at a specific time here
       timeOfDay: undefined,
     },
   },
@@ -171,7 +174,10 @@ export default {
     name: 'Every year on...',
     explanation: 'Schedule a habit or activity on a certain day of the year.',
     parameters: {
-      dayOfYear: [undefined],
+      dayOfYear: {
+        day: undefined,
+        month: undefined,
+      },
     },
   },
   XpY: {

@@ -18,6 +18,8 @@ export const useStore = create((set, get) => ({
             name: card.name,
             desc: card.desc,
             parameters: card.parameters,
+            created: new Date(),
+            valid: true,
           },
         ],
       };
