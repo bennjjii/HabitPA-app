@@ -33,7 +33,7 @@ module.exports = [
         Monday: true,
         Tuesday: false,
         Wednesday: true,
-        Thursday: false,
+        Thursday: true,
         Friday: false,
         Saturday: false,
         Sunday: true,

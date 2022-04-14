@@ -49,7 +49,7 @@ import {
   listCards,
 } from '../services/SQLite';
 
-import useFilterCards from '../utilities/useFilterCards';
+import filterCards from '../utilities/filterCards';
 
 const {width, height} = Dimensions.get('window');
 const toRadians = angle => angle * (Math.PI / 180);
@@ -66,7 +66,7 @@ const MainDeck = () => {
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
-  const filteredDeck = useFilterCards(
+  const filteredDeck = filterCards(
     deck,
     history,
     Morning,

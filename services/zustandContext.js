@@ -1,12 +1,11 @@
 import create from 'zustand';
 import {persist} from 'zustand/middleware';
-import {Day, TimeOfDay} from '../utilities/enums';
 import testCards from '../assets/data/testCards2';
+import filterCards from '../utilities/filterCards';
 //use immer
 
 export const useStore = create((set, get) => ({
   deck: [...testCards],
-
   addCardToDeck: card =>
     set(state => {
       return {
@@ -43,6 +42,16 @@ export const useStore = create((set, get) => ({
       };
     });
   },
+  getFilteredDeck: () => {
+    return filterCards(
+      get().deck,
+      get().history,
+      get().Morning,
+      get().Afternoon,
+      get().Evening,
+      get().Night,
+    );
+  },
   //time of day
   Morning: [7, 12],
   Afternoon: [13, 17],
@@ -55,7 +64,7 @@ export const useStore = create((set, get) => ({
     set(state => ({modalVisible: !state.modalVisible}));
   },
   showModal: code => {
-    set(state => ({
+    set(() => ({
       modalVisible: true,
       modalCode: code,
     }));
