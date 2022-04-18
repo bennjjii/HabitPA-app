@@ -3,7 +3,7 @@
 //and wrap it with all this stuff
 //could toss state up from here via callbacks
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -18,12 +18,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {useForm, Controller} from 'react-hook-form';
 import uuid from 'react-native-uuid';
-
 import {useStore} from '../services/zustandContext';
-
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
-
+import {TimeOfDay, Day} from '../utilities/enums';
 const cardAspect = 400 / 280;
 const cardWidth = 350;
 const cardHeight = cardWidth * cardAspect;
@@ -35,12 +33,55 @@ const checkForParam = (modalCode, paramName) => {
     : false;
 };
 
-const AddCardForm = props => {
-  const {register, handleSubmit, formState, control, setValue} = useForm();
-  const {addCardToDeck, hideModal, modalCode} = useStore();
+const atLeastOneDayOfWeek = v => {
+  return true;
+};
 
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
+const atLeastOneTimeOfDay = v => {
+  return true;
+};
+
+const AddCardForm = props => {
+  const {
+    register,
+    handleSubmit,
+    formState,
+    formState: {errors},
+    control,
+    setValue,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      name: '',
+      desc: '',
+      timeOfDay: {
+        Morning: false,
+        Afternoon: false,
+        Evening: false,
+        Night: false,
+      },
+      dayOfWeek: {
+        Monday: false,
+        Tuesday: false,
+        Wednesday: false,
+        Thursday: false,
+        Friday: false,
+        Saturday: false,
+        Sunday: false,
+      },
+      dayOfMonth: undefined,
+      day: undefined,
+      month: undefined,
+      date: new Date(0),
+      numberOfTimes: undefined,
+      periodInDays: undefined,
+      rolling: false,
+      taperIn: false,
+    },
+  });
+  const {addCardToDeck, hideModal, modalCode} = useStore();
+  // const [name, setName] = useState('');
+  // const [desc, setDesc] = useState('');
   const [parameters, setParameters] = useState({
     timeOfDay: {
       Morning: false,
@@ -68,7 +109,6 @@ const AddCardForm = props => {
     rolling: false,
     taperIn: false,
   });
-
   //set up year date spinner
   const initialValues = [
     {id: 'day', value: 1},
@@ -79,15 +119,17 @@ const AddCardForm = props => {
     {id: 'day', label: '', min: 1, max: 31},
     {id: 'month', label: '', min: 1, max: 12},
   ]);
-
-  const onSubmit = () => {
+  //set up checkboxes
+  const timesOfDay = [...Object.keys(TimeOfDay)];
+  const daysOfWeek = [...Object.keys(Day)];
+  const onSubmit = formData => {
+    console.log(formData);
     hideModal();
-
     addCardToDeck({
       code: modalCode,
       uuid: uuid.v4(),
-      name,
-      desc,
+      name: formData.cardTitle,
+      desc: formData.cardDescription,
       parameters: {
         ...parameters,
         dayOfYear: {
@@ -98,7 +140,11 @@ const AddCardForm = props => {
     });
   };
 
-  //not DRY
+  useEffect(() => {
+    console.log('state', getValues());
+    console.log('errors', errors);
+  }, [formState]);
+
   return (
     <Pressable
       onPress={() => {
@@ -110,165 +156,119 @@ const AddCardForm = props => {
             {cardDefinitions[modalCode]?.explanation}
           </Text>
 
-          <TextInput
-            placeholder="card title"
-            style={styles.textInput}
-            value={name}
-            onChangeText={setName}
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.textInput}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="card title"
+              />
+            )}
+            name="cardTitle"
           />
-          <TextInput
-            placeholder="description of habit or task"
-            style={styles.textInput}
-            value={desc}
-            onChangeText={setDesc}
+          {errors.cardTitle && <Text>Name required</Text>}
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.textInput}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="description of habit or task"
+              />
+            )}
+            name="cardDescription"
           />
 
           {checkForParam(modalCode, 'numberOfTimes') && (
             <View style={styles.numberOfTimesContainer}>
-              <TextInput
-                placeholder="number of times"
-                style={styles.textInput}
-                value={parameters.numberOfTimes}
-                onChangeText={val => {
-                  setParameters(state => ({
-                    ...state,
-                    numberOfTimes: val,
-                  }));
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                  // validate: v => String(v).length === 1,
+                  pattern: /^[0-9]$/g,
                 }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    style={styles.textInput}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder="number of times"
+                  />
+                )}
+                name="numberOfTimes"
               />
+              {errors.numberOfTimes && <Text>Number required</Text>}
             </View>
           )}
 
           {checkForParam(modalCode, 'periodInDays') && (
             <View style={styles.periodInDaysContainer}>
-              <TextInput
-                placeholder="period in days"
-                style={styles.textInput}
-                value={parameters.periodInDays}
-                onChangeText={val => {
-                  setParameters(state => ({
-                    ...state,
-                    periodInDays: val,
-                  }));
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                  // validate: v => String(v).length === 1,
+                  pattern: /^[0-9]$/g,
                 }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    placeholder="period in days"
+                    style={styles.textInput}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="periodInDays"
               />
+              {errors.periodInDays && <Text>Number required</Text>}
             </View>
           )}
 
           {checkForParam(modalCode, 'dayOfWeek') && (
             <View style={styles.checkboxContainer}>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Monday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Monday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Monday</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Tuesday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Tuesday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Tuesday</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Wednesday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Wednesday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Wednesday</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Thursday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Thursday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Thursday</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Friday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Friday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Friday</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Saturday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Saturday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Saturday</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.dayOfWeek.Sunday}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      dayOfWeek: {
-                        ...state.dayOfWeek,
-                        Sunday: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Sunday</Text>
-              </View>
+              {daysOfWeek.map(day => {
+                return (
+                  <>
+                    <View style={styles.checkBoxView}>
+                      <Controller
+                        control={control}
+                        name={`dayOfWeek.${day}`}
+                        rules={{
+                          validate: v => {
+                            return Object.keys(getValues('dayOfWeek')).some(
+                              day => {
+                                return getValues('dayOfWeek')[day];
+                              },
+                            );
+                          },
+                        }}
+                        render={({field: {onChange, value}}) => (
+                          <CheckBox
+                            disabled={false}
+                            value={value}
+                            onValueChange={e => {
+                              onChange(e);
+                            }}
+                          />
+                        )}
+                      />
+                      <Text style={styles.checkboxText}>{day}</Text>
+                    </View>
+                  </>
+                );
+              })}
+              {errors.dayOfWeek && <Text>Please select a day of the week</Text>}
             </View>
           )}
 
@@ -383,70 +383,38 @@ const AddCardForm = props => {
 
           {checkForParam(modalCode, 'timeOfDay') && (
             <View style={styles.checkboxContainer}>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.timeOfDay.Morning}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      timeOfDay: {
-                        ...state.timeOfDay,
-                        Morning: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Morning</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.timeOfDay.Afternoon}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      timeOfDay: {
-                        ...state.timeOfDay,
-                        Afternoon: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Afternoon</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.timeOfDay.Evening}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      timeOfDay: {
-                        ...state.timeOfDay,
-                        Evening: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Evening</Text>
-              </View>
-              <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={parameters.timeOfDay.Night}
-                  onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      timeOfDay: {
-                        ...state.timeOfDay,
-                        Night: val,
-                      },
-                    }));
-                  }}
-                />
-                <Text style={styles.checkboxText}>Nighttime</Text>
-              </View>
+              {timesOfDay.map(time => {
+                return (
+                  <>
+                    <View style={styles.checkBoxView}>
+                      <Controller
+                        control={control}
+                        name={`timeOfDay.${time}`}
+                        rules={{
+                          validate: v => {
+                            return Object.keys(getValues('timeOfDay')).some(
+                              day => {
+                                return getValues('timeOfDay')[day];
+                              },
+                            );
+                          },
+                        }}
+                        render={({field: {onChange, value}}) => (
+                          <CheckBox
+                            disabled={false}
+                            value={value}
+                            onValueChange={e => {
+                              onChange(e);
+                            }}
+                          />
+                        )}
+                      />
+                      <Text style={styles.checkboxText}>{time}</Text>
+                    </View>
+                  </>
+                );
+              })}
+              {errors.timeOfDay && <Text>Please select a time of day</Text>}
             </View>
           )}
 
