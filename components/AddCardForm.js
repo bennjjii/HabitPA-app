@@ -274,17 +274,25 @@ const AddCardForm = props => {
 
           {checkForParam(modalCode, 'dayOfMonth') && (
             <View style={styles.dayOfMonth}>
-              <TextInput
-                placeholder="day of month"
-                style={styles.textInput}
-                value={parameters.dayOfMonth}
-                onChangeText={val => {
-                  setParameters(state => ({
-                    ...state,
-                    dayOfMonth: val,
-                  }));
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                  // validate: v => String(v).length === 1,
+                  pattern: /^(3[01]|[12][0-9]|[1-9])$/g,
                 }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    placeholder="day of month"
+                    style={styles.textInput}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                )}
+                name="dayOfMonth"
               />
+              {errors.dayOfMonth && <Text>Number required</Text>}
             </View>
           )}
 

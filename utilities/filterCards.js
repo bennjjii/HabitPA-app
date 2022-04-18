@@ -96,7 +96,7 @@ export default (deck, history, m, a, e, n) => {
             return date === new Date().getDate();
           });
         } else {
-          return date === new Date().getDate();
+          return card.parameters.dayOfMonth === new Date().getDate();
         }
       case 'XpM':
         //if we count x or more cards in the past 30 days return false, else return true
