@@ -17,7 +17,6 @@ import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {useForm, Controller} from 'react-hook-form';
-import uuid from 'react-native-uuid';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
@@ -42,6 +41,7 @@ const atLeastOneTimeOfDay = v => {
 };
 
 const AddCardForm = props => {
+  const {addCardToDeck, hideModal, modalCode} = useStore();
   const {
     register,
     handleSubmit,
@@ -70,45 +70,48 @@ const AddCardForm = props => {
         Sunday: false,
       },
       dayOfMonth: undefined,
-      day: undefined,
-      month: undefined,
+      dayOfYear: {day: undefined, month: undefined},
       date: new Date(0),
       numberOfTimes: undefined,
       periodInDays: undefined,
-      rolling: false,
-      taperIn: false,
     },
   });
-  const {addCardToDeck, hideModal, modalCode} = useStore();
-  // const [name, setName] = useState('');
-  // const [desc, setDesc] = useState('');
-  const [parameters, setParameters] = useState({
-    timeOfDay: {
-      Morning: false,
-      Afternoon: false,
-      Evening: false,
-      Night: false,
-    },
-    dayOfWeek: {
-      Monday: false,
-      Tuesday: false,
-      Wednesday: false,
-      Thursday: false,
-      Friday: false,
-      Saturday: false,
-      Sunday: false,
-    },
-    dayOfMonth: undefined, //make this an array at some point//
-    dayOfYear: {
-      day: undefined,
-      month: undefined,
-    }, //make this an array at some point//
-    date: new Date(0),
-    numberOfTimes: undefined,
-    periodInDays: undefined,
-    rolling: false,
-    taperIn: false,
-  });
+
+  const [rolling, setRolling] = useState(false);
+  const [taperIn, setTaperIn] = useState(false);
+
+  const onSubmit = formData => {
+    console.log(formData);
+    hideModal();
+    addCardToDeck({
+      code: modalCode,
+      name: formData.name,
+      desc: formData.desc,
+      parameters: {
+        timeOfDay: {
+          ...formData.timeOfDay,
+        },
+        dayOfWeek: {
+          ...formData.dayOfWeek,
+        },
+        dayOfMonth: formData.dayOfMonth,
+        dayOfYear: {
+          day: checkForParam(modalCode, 'dayOfYear')
+            ? date[0].value
+            : undefined,
+          month: checkForParam(modalCode, 'dayOfYear')
+            ? date[1].value
+            : undefined,
+        },
+        date: formData.date,
+        numberOfTimes: formData.numberOfTimes,
+        periodInDays: formData.periodInDays,
+        rolling,
+        taperIn,
+      },
+    });
+  };
+
   //set up year date spinner
   const initialValues = [
     {id: 'day', value: 1},
@@ -122,23 +125,6 @@ const AddCardForm = props => {
   //set up checkboxes
   const timesOfDay = [...Object.keys(TimeOfDay)];
   const daysOfWeek = [...Object.keys(Day)];
-  const onSubmit = formData => {
-    console.log(formData);
-    hideModal();
-    addCardToDeck({
-      code: modalCode,
-      uuid: uuid.v4(),
-      name: formData.cardTitle,
-      desc: formData.cardDescription,
-      parameters: {
-        ...parameters,
-        dayOfYear: {
-          day: date[0].value,
-          month: date[1].value,
-        },
-      },
-    });
-  };
 
   useEffect(() => {
     console.log('state', getValues());
@@ -431,12 +417,9 @@ const AddCardForm = props => {
               <View style={styles.checkBoxView}>
                 <CheckBox
                   disabled={false}
-                  value={parameters.rolling}
+                  value={rolling}
                   onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      rolling: val,
-                    }));
+                    setRolling(val);
                   }}
                 />
                 <Text style={styles.checkboxText}>Rolling</Text>
@@ -449,12 +432,9 @@ const AddCardForm = props => {
               <View style={styles.checkBoxView}>
                 <CheckBox
                   disabled={false}
-                  value={parameters.taperIn}
+                  value={taperIn}
                   onValueChange={val => {
-                    setParameters(state => ({
-                      ...state,
-                      taperIn: val,
-                    }));
+                    setTaperIn(val);
                   }}
                 />
                 <Text style={styles.checkboxText}>Taper in</Text>

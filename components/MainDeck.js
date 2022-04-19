@@ -20,7 +20,7 @@ Will need some kind of stable random seed for long term randomisation
 need persist option for a card to persist once drawn
 */
 
-import React, {useContext, useState, useEffect, useRef} from 'react';
+import React, {useContext, useState} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
   runOnJS,
@@ -59,36 +59,22 @@ const rotatedWidth =
 const MainDeck = () => {
   console.log('Maindeck loading');
   //Obvious a silly way to do this vv
-  const {deck, history, pushCardToHistory, Morning, Afternoon, Evening, Night} =
-    useStore();
+  const {
+    deck,
+    history,
+    pushCardToHistory,
+    Morning,
+    Afternoon,
+    Evening,
+    Night,
+    getFilteredDeck,
+  } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
-  const filteredDeck = filterCards(
-    deck,
-    history,
-    Morning,
-    Afternoon,
-    Evening,
-    Night,
-  );
-
-  // useEffect(() => {
-  //   //do this all in the context module
-  //   console.log('deck', deck);
-  //   filteredDeck = useFilterCards(
-  //     deck,
-  //     history,
-  //     Morning,
-  //     Afternoon,
-  //     Evening,
-  //     Night,
-  //   );
-
-  //   console.log('filter', filteredDeck);
-  // }, []);
+  const filteredDeck = getFilteredDeck();
 
   const updateHistory = async args => {
     pushCardToHistory(deck[args[0]]);
@@ -177,12 +163,12 @@ const MainDeck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
         onPress={async () => {
           console.log('filterlog', filteredDeck);
         }}
-      />
+      /> */}
 
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>

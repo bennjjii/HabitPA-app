@@ -16,15 +16,35 @@ const TimeOfDay = {
 };
 
 const commonParameters = {
-  timeOfDay: [],
-  dayOfWeek: [],
-  dayOfMonth: [],
-  dayOfYear: [],
+  name: '',
+  desc: '',
+  timeOfDay: {
+    Morning: false,
+    Afternoon: false,
+    Evening: false,
+    Night: false,
+  },
+  dayOfWeek: {
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false,
+  },
+  dayOfMonth: undefined,
+  dayOfYear: {
+    day: undefined,
+    month: undefined,
+  },
+  day: undefined,
+  month: undefined,
   date: new Date(0),
   numberOfTimes: undefined,
   periodInDays: undefined,
-  rolling: undefined,
-  taperIn: undefined,
+  rolling: false,
+  taperIn: false,
 };
 
 //should one card be for calendar weeks etc and one for rolling quantities

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useStore} from '../services/zustandContext';
 
 const Tab3 = () => {
@@ -16,6 +17,13 @@ const Tab3 = () => {
       {getFilteredDeck().map(card => {
         return <Text>{card.name}</Text>;
       })}
+      <TouchableOpacity
+        style={{width: 100, height: 50, backgroundColor: 'orange'}}
+        onPress={() => {
+          console.log('first');
+          useStore.persist.clearStorage();
+        }}
+      />
     </SafeAreaView>
   );
 };

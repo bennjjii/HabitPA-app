@@ -55,6 +55,7 @@ export default (deck, history, m, a, e, n) => {
   return deck.filter(card => {
     switch (card.code) {
       case 'ED':
+        //except if u have already done this morning...
         return card.parameters.timeOfDay[timeOfDay];
       case 'XpD':
         //if we count x cards from history today or more, return false, else return true
