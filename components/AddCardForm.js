@@ -158,7 +158,7 @@ const AddCardForm = props => {
             )}
             name="name"
           />
-          {errors.cardTitle && <Text>Name required</Text>}
+          {errors.name && <Text>Name required</Text>}
           <Controller
             control={control}
             render={({field: {onChange, onBlur, value}}) => (

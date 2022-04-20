@@ -50,9 +50,9 @@ import {useStore} from '../services/zustandContext';
 // } from '../services/SQLite';
 
 const {width, height} = Dimensions.get('window');
-const toRadians = angle => angle * (Math.PI / 180);
-const rotatedWidth =
-  width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
+//const toRadians = angle => angle * (Math.PI / 180);
+// const rotatedWidth =
+//   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
   //console.log('Maindeck loading');
@@ -61,20 +61,29 @@ const MainDeck = () => {
     deck,
     history,
     pushCardToHistory,
+    deleteCardFromDeck,
     getFilteredDeck,
     logHistory,
     logDeck,
+    logFilteredDeck,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
-  const filteredDeck = getFilteredDeck();
+  let filteredDeck = getFilteredDeck();
 
   const updateHistory = async args => {
     //this sends the wrong card to history
-    pushCardToHistory(deck[args[0]]);
+    console.log('card sent to history', filteredDeck[args[0]]);
+    console.log('card index', args[0]);
+    pushCardToHistory(filteredDeck[args[0]]);
+  };
+
+  const deleteCard = () => {
+    deleteCardFromDeck(filteredDeck[index]);
+    filteredDeck = getFilteredDeck();
   };
 
   const gesture = Gesture.Pan()
@@ -157,14 +166,18 @@ const MainDeck = () => {
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
         onPress={async () => {
           logHistory();
-          logDeck();
+          logFilteredDeck();
         }}
       />
 
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
-            <Card index={index} name={filteredDeck[index].name} />
+            <Card
+              index={index}
+              name={filteredDeck[index].name}
+              delete={deleteCard}
+            />
           ) : (
             <NoCards />
           )}

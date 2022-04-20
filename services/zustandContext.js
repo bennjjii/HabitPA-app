@@ -42,6 +42,15 @@ export const useStore = create(
             ],
           };
         }),
+      deleteCardFromDeck: cardToDelete => {
+        set(state => {
+          return {
+            deck: state.deck.filter(card => {
+              return cardToDelete.uuid !== card.uuid;
+            }),
+          };
+        });
+      },
       history: [
         {uuid: 2, timestamp: new Date(2022, 3, 13)},
         {uuid: 2, timestamp: new Date(2022, 3, 12)},
@@ -108,6 +117,23 @@ export const useStore = create(
           });
           console.log('-----------------------------');
         });
+      },
+      logFilteredDeck: () => {
+        console.log('Filtered deck:');
+        console.log('\n');
+        get()
+          .getFilteredDeck()
+          .forEach((item, index) => {
+            console.log('\n');
+            console.log('-----------------------------');
+            console.log('Index: ', index);
+            let mergedCard = _.flatMap(item);
+            Object.keys(mergedCard).forEach(item2 => {
+              console.log(mergedCard[item2]);
+            });
+            console.log('-----------------------------');
+          });
+        console.log('\n');
       },
     }),
     {
