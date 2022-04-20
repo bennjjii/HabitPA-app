@@ -7,7 +7,7 @@ const errorCB = err => {
 };
 
 const successCB = () => {
-  console.log('DB opened');
+  //console.log('DB opened');
 };
 
 export const getConnection = async () => {

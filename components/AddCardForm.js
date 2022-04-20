@@ -81,7 +81,7 @@ const AddCardForm = props => {
   const [taperIn, setTaperIn] = useState(false);
 
   const onSubmit = formData => {
-    console.log(formData);
+    console.log('formData', formData);
     hideModal();
     addCardToDeck({
       code: modalCode,
@@ -156,7 +156,7 @@ const AddCardForm = props => {
                 placeholder="card title"
               />
             )}
-            name="cardTitle"
+            name="name"
           />
           {errors.cardTitle && <Text>Name required</Text>}
           <Controller
@@ -170,7 +170,7 @@ const AddCardForm = props => {
                 placeholder="description of habit or task"
               />
             )}
-            name="cardDescription"
+            name="desc"
           />
 
           {checkForParam(modalCode, 'numberOfTimes') && (

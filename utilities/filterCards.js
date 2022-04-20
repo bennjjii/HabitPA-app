@@ -17,17 +17,21 @@ const TimeOfDay = {
 
 const defaultReturn = false;
 
-const getTimeOfDay = (m, a, e, n) => {
-  //const currentHour = new Date().getHours();
-  const currentHour = 3;
+const getTimeOfDay = timesOfDay => {
+  const currentHour = new Date().getHours();
+  //const currentHour = 3;
   switch (true) {
-    case currentHour < m[1] && currentHour >= m[0]:
+    case currentHour < timesOfDay.Morning[1] &&
+      currentHour >= timesOfDay.Morning[0]:
       return TimeOfDay.Morning;
-    case currentHour < a[1] && currentHour >= a[0]:
+    case currentHour < timesOfDay.Afternoon[1] &&
+      currentHour >= timesOfDay.Afternoon[0]:
       return TimeOfDay.Afternoon;
-    case currentHour < e[1] && currentHour >= e[0]:
+    case currentHour < timesOfDay.Evening[1] &&
+      currentHour >= timesOfDay.Evening[0]:
       return TimeOfDay.Evening;
-    case currentHour < n[1] && currentHour >= n[0]:
+    case currentHour < timesOfDay.Night[1] &&
+      currentHour >= timesOfDay.Night[0]:
       return TimeOfDay.Night;
     default:
       return undefined;
@@ -49,14 +53,25 @@ const countCardsAfterDate = (history, card, cutoffDate) => {
   );
 };
 
-export default (deck, history, m, a, e, n) => {
-  const timeOfDay = getTimeOfDay(m, a, e, n);
+export default (deck, history, timesOfDay) => {
+  const currentTimeOfDay = getTimeOfDay(timesOfDay);
   const today = new Date(new Date()).toLocaleString('en-us', {weekday: 'long'});
   return deck.filter(card => {
     switch (card.code) {
       case 'ED':
         //except if u have already done this morning...
-        return card.parameters.timeOfDay[timeOfDay];
+        return (
+          card.parameters.timeOfDay[currentTimeOfDay] &&
+          history
+            .filter(
+              instance =>
+                instance.timestamp.getTime() >
+                new Date(
+                  new Date().setHours(timesOfDay[currentTimeOfDay][0]),
+                ).getTime(),
+            )
+            .filter(instance => card.uuid === instance.uuid).length === 0
+        );
       case 'XpD':
         //if we count x cards from history today or more, return false, else return true
         return countCardsAfterDate(
@@ -75,7 +90,7 @@ export default (deck, history, m, a, e, n) => {
           (Object.keys(card.parameters.timeOfDay).some(time => {
             return card.parameters.timeOfDay[time];
           })
-            ? card.parameters.timeOfDay[timeOfDay]
+            ? card.parameters.timeOfDay[currentTimeOfDay]
             : true)
         );
       case 'XpW':
@@ -141,7 +156,7 @@ export default (deck, history, m, a, e, n) => {
         return Object.keys(card.parameters.timeOfDay).some(time => {
           return card.parameters.timeOfDay[time];
         })
-          ? card.parameters.timeOfDay[timeOfDay] &&
+          ? card.parameters.timeOfDay[currentTimeOfDay] &&
               new Date().toLocaleDateString('en-GB') ===
                 card.parameters.date.toLocaleDateString('en-GB')
           : new Date().toLocaleDateString('en-GB') ===

@@ -42,14 +42,12 @@ import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
 
-import {
-  getConnection,
-  syncGetConnection,
-  addHistoryInstance,
-  listCards,
-} from '../services/SQLite';
-
-import filterCards from '../utilities/filterCards';
+// import {
+//   getConnection,
+//   syncGetConnection,
+//   addHistoryInstance,
+//   listCards,
+// } from '../services/SQLite';
 
 const {width, height} = Dimensions.get('window');
 const toRadians = angle => angle * (Math.PI / 180);
@@ -57,17 +55,15 @@ const rotatedWidth =
   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
 const MainDeck = () => {
-  console.log('Maindeck loading');
-  //Obvious a silly way to do this vv
+  //console.log('Maindeck loading');
+
   const {
     deck,
     history,
     pushCardToHistory,
-    Morning,
-    Afternoon,
-    Evening,
-    Night,
     getFilteredDeck,
+    logHistory,
+    logDeck,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
@@ -77,14 +73,8 @@ const MainDeck = () => {
   const filteredDeck = getFilteredDeck();
 
   const updateHistory = async args => {
+    //this sends the wrong card to history
     pushCardToHistory(deck[args[0]]);
-    // try {
-    //   const db = await getConnection();
-
-    //   await addHistoryInstance(db, args[0] + 1);
-    // } catch (err) {
-    //   console.log(err);
-    // }
   };
 
   const gesture = Gesture.Pan()
@@ -163,12 +153,13 @@ const MainDeck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
         onPress={async () => {
-          console.log('filterlog', filteredDeck);
+          logHistory();
+          logDeck();
         }}
-      /> */}
+      />
 
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>

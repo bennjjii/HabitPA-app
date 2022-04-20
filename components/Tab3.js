@@ -9,13 +9,13 @@ const Tab3 = () => {
   return (
     <SafeAreaView style={styles.container}>
       {deck.map(card => {
-        return <Text>{card.name}</Text>;
+        return <Text key={card.uuid}>{card.name}</Text>;
       })}
       <Text>...</Text>
 
       <Text>...</Text>
       {getFilteredDeck().map(card => {
-        return <Text>{card.name}</Text>;
+        return <Text key={card.uuid}>{card.name}</Text>;
       })}
       <TouchableOpacity
         style={{width: 100, height: 50, backgroundColor: 'orange'}}

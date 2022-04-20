@@ -27,13 +27,13 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {useStore} from './services/zustandContext';
 import {Context as AuthContext} from './services/Auth';
-import {
-  getConnection,
-  createTables,
-  listTables,
-  uploadTestCards,
-  listCards,
-} from './services/SQLite';
+// import {
+//   getConnection,
+//   createTables,
+//   listTables,
+//   uploadTestCards,
+//   listCards,
+// } from './services/SQLite';
 
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
@@ -42,26 +42,26 @@ import Home from './components/Home';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  //const contextListener = useStore.subscribe(console.log);
+  const contextListener = useStore.subscribe(console.log);
   const {deck} = useStore();
-  const dbCallback = useCallback(async () => {
-    try {
-      const db = await getConnection();
-      await createTables(db);
-      await uploadTestCards(db, deck);
-      const tables = await listTables(db);
-      const cards = await listCards(db);
-      //console.log(cards[0].rows.raw());
-      // console.log(
-      //   JSON.parse(decodeURIComponent(cards[0].rows.raw()[0].parameters)),
-      // );
-    } catch (err) {
-      console.log(err);
-    }
-  });
-  useEffect(() => {
-    dbCallback();
-  }, []);
+  // const dbCallback = useCallback(async () => {
+  //   try {
+  //     const db = await getConnection();
+  //     await createTables(db);
+  //     await uploadTestCards(db, deck);
+  //     const tables = await listTables(db);
+  //     const cards = await listCards(db);
+  //     //console.log(cards[0].rows.raw());
+  //     // console.log(
+  //     //   JSON.parse(decodeURIComponent(cards[0].rows.raw()[0].parameters)),
+  //     // );
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // });
+  // useEffect(() => {
+  //   dbCallback();
+  // }, []);
 
   const {state} = useContext(AuthContext);
 
