@@ -20,7 +20,7 @@ Will need some kind of stable random seed for long term randomisation
 need persist option for a card to persist once drawn
 */
 
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
 import Animated, {
   runOnJS,
@@ -83,8 +83,12 @@ const Deck = () => {
 
   const deleteCard = () => {
     deleteCardFromDeck(filteredDeck[index]);
-    filteredDeck = getFilteredDeck();
   };
+
+  useEffect(() => {
+    console.log('updating deck');
+    filteredDeck = getFilteredDeck();
+  }, [deck]);
 
   const gesture = Gesture.Pan()
     .onUpdate(event => {
@@ -166,7 +170,7 @@ const Deck = () => {
         style={{width: 100, height: 50, backgroundColor: 'blue'}}
         onPress={async () => {
           logHistory();
-          logFilteredDeck();
+          logDeck();
         }}
       />
 
@@ -175,7 +179,7 @@ const Deck = () => {
           {filteredDeck.length > 0 ? (
             <Card
               index={index}
-              name={filteredDeck[index].name}
+              name={filteredDeck[index]?.name}
               delete={deleteCard}
             />
           ) : (

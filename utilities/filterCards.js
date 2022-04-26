@@ -38,11 +38,11 @@ const getTimeOfDay = timesOfDay => {
   }
 };
 
-const filterHistoryByDate = (history, cutoffDate) => {
-  return history.filter(
-    instance => instance.timestamp.getTime() > cutoffDate.getTime(),
-  );
-};
+// const filterHistoryByDate = (history, cutoffDate) => {
+//   return history.filter(
+//     instance => instance.timestamp.getTime() > cutoffDate.getTime(),
+//   );
+// };
 
 const countCardsAfterDate = (history, card, cutoffDate) => {
   return (
@@ -57,11 +57,11 @@ export default (deck, history, timesOfDay) => {
   const currentTimeOfDay = getTimeOfDay(timesOfDay);
   const today = new Date(new Date()).toLocaleString('en-us', {weekday: 'long'});
   return deck.filter(card => {
-    //let isReturned = false;
+    let isReturned = false;
     switch (card.code) {
       case 'ED':
         //except if u have already done this morning...
-        return (
+        isReturned =
           card.parameters.timeOfDay[currentTimeOfDay] &&
           history
             .filter(
@@ -71,19 +71,20 @@ export default (deck, history, timesOfDay) => {
                   new Date().setHours(timesOfDay[currentTimeOfDay][0]),
                 ).getTime(),
             )
-            .filter(instance => card.uuid === instance.uuid).length === 0
-        );
+            .filter(instance => card.uuid === instance.uuid).length === 0;
+        break;
       case 'XpD':
         //if we count x cards from history today or more, return false, else return true
-        return countCardsAfterDate(
+        isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date().setHours(0, 0, 0, 0)),
         );
+        break;
       case 'EW':
         //if it is one of the specified days, AND it is the specified time of day, true, else false
         //check if today is true and...
-        return (
+        isReturned =
           card.parameters.dayOfWeek[today] &&
           //if any one of the time of day parameters has been set, do the check
           //for if we are in the time of day and return that coparameter
@@ -92,100 +93,113 @@ export default (deck, history, timesOfDay) => {
             return card.parameters.timeOfDay[time];
           })
             ? card.parameters.timeOfDay[currentTimeOfDay]
-            : true)
-        );
+            : true);
+        break;
       case 'XpW':
         //if we count x or more cards in the past 7 days, return false, else true
-        return countCardsAfterDate(
+        isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * 7),
         );
+        break;
       case 'RxW':
         //need to figure out how this differs from XpW and if it is worth having two different cards
-        return defaultReturn;
+        isReturned = defaultReturn;
+        break;
       case 'EM':
         //if we are on the day of the month that is specified, return true, else return false
         //because we have not implemented multiple dates yet, both
         //functionalities are implemented
         if (Array.isArray(card.parameters.dayOfMonth)) {
-          return card.parameters.dayOfMonth.some(date => {
+          isReturned = card.parameters.dayOfMonth.some(date => {
             return date === new Date().getDate();
           });
         } else {
-          return card.parameters.dayOfMonth === new Date().getDate();
+          console.log('checking');
+          console.log(card.parameters.dayOfMonth);
+          console.log(new Date().getDate());
+          isReturned =
+            parseInt(card.parameters.dayOfMonth) === new Date().getDate();
         }
+        break;
       case 'XpM':
         //if we count x or more cards in the past 30 days return false, else return true
-        return countCardsAfterDate(
+        isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * 30),
         );
+        break;
       case 'RxM':
         //need to figure out how this differs from XpW and if it is worth having two different cards
-        return defaultReturn;
+        isReturned = defaultReturn;
+        break;
       case 'XiY':
         //if we count x or more cards in the past Y days return false, else return true
-        return countCardsAfterDate(
+        isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * card.parameters.periodInDays),
         );
+        break;
       case 'XiT':
         //if we count X or more cards return false, else return true,
         //we could have some kind of scatter function here
         if (card.parameters.periodInDays) {
-          return (
+          isReturned =
             new Date(
-              new Date() + 86400000 * card.parameters.periodInDays,
+              card.created.getTime() + 86400000 * card.parameters.periodInDays,
             ).getTime() > new Date().getTime() &&
             card.parameters.numberOfTimes >
               history.filter(instance => {
                 return instance.uuid === card.uuid;
-              }).length
-          );
+              }).length;
         } else {
-          return (
+          isReturned =
             card.parameters.numberOfTimes >
             history.filter(instance => {
               return instance.uuid === card.uuid;
-            }).length
-          );
+            }).length;
         }
+        break;
       case 'SpT':
-        return Object.keys(card.parameters.timeOfDay).some(time => {
+        isReturned = Object.keys(card.parameters.timeOfDay).some(time => {
           return card.parameters.timeOfDay[time];
         })
           ? card.parameters.timeOfDay[currentTimeOfDay] &&
-              new Date().toLocaleDateString('en-GB') ===
-                card.parameters.date.toLocaleDateString('en-GB')
+            new Date().toLocaleDateString('en-GB') ===
+              card.parameters.date.toLocaleDateString('en-GB')
           : new Date().toLocaleDateString('en-GB') ===
-              card.parameters.date.toLocaleDateString('en-GB');
+            card.parameters.date.toLocaleDateString('en-GB');
         //if we are at the specific date and time of day return true, else return false
-        return defaultReturn;
+        //return defaultReturn;
+        break;
       case 'DL':
-        return new Date().getTime() < card.parameters.date.getTime();
-      //if we are before the deadline, return true, else return false and discard card
-
+        isReturned = new Date().getTime() < card.parameters.date.getTime();
+        //if we are before the deadline, return true, else return false and discard card
+        break;
       case 'EY':
         //if we are on date return true, else return false
-        return (
+        isReturned =
           new Date().getDate() === card.parameters.dayOfYear.day &&
-          new Date().getMonth + 1 === card.parameters.dayOfYear.month
-        );
+          new Date().getMonth + 1 === card.parameters.dayOfYear.month;
+        break;
       case 'XpY':
         //if we count X times in the past year, return true, else return false
-        return countCardsAfterDate(
+        isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * 365),
         );
+        break;
       case 'RxY':
-        return defaultReturn;
+        isReturned = defaultReturn;
+        break;
       case 'AsP':
-        return true;
+        isReturned = true;
+        break;
     }
-    //return isReturned;
+    return isReturned;
   });
 };
