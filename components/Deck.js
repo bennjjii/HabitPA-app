@@ -54,7 +54,7 @@ const {width, height} = Dimensions.get('window');
 // const rotatedWidth =
 //   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
 
-const MainDeck = () => {
+const Deck = () => {
   //console.log('Maindeck loading');
 
   const {
@@ -187,7 +187,7 @@ const MainDeck = () => {
   );
 };
 
-export default MainDeck;
+export default Deck;
 
 const styles = StyleSheet.create({
   container: {

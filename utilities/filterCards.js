@@ -57,6 +57,7 @@ export default (deck, history, timesOfDay) => {
   const currentTimeOfDay = getTimeOfDay(timesOfDay);
   const today = new Date(new Date()).toLocaleString('en-us', {weekday: 'long'});
   return deck.filter(card => {
+    //let isReturned = false;
     switch (card.code) {
       case 'ED':
         //except if u have already done this morning...
@@ -185,5 +186,6 @@ export default (deck, history, timesOfDay) => {
       case 'AsP':
         return true;
     }
+    //return isReturned;
   });
 };

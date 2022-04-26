@@ -1,8 +1,8 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import MainDeck from './MainDeck';
+import Deck from './Deck';
 import FreeTimeScreen from './FreeTimeScreen';
-import Tab3 from './Tab3';
+import Piles from './Piles';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -20,7 +20,7 @@ const Home = () => {
       }}>
       <Tab.Screen
         name="Deck"
-        component={MainDeck}
+        component={Deck}
         options={{
           headerShown: false,
           tabBarIcon: () => <Entypo name="documents" size={32} />,
@@ -35,8 +35,8 @@ const Home = () => {
         }}
       />
       <Tab.Screen
-        name="Progress"
-        component={Tab3}
+        name="Piles"
+        component={Piles}
         options={{
           headerShown: false,
           tabBarIcon: () => <Entypo name="gauge" size={32} />,

@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useStore} from '../services/zustandContext';
 
-const Tab3 = () => {
+const Piles = () => {
   const {deck, getFilteredDeck} = useStore();
 
   return (
@@ -28,7 +28,7 @@ const Tab3 = () => {
   );
 };
 
-export default Tab3;
+export default Piles;
 
 const styles = StyleSheet.create({
   container: {
