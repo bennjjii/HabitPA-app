@@ -72,7 +72,7 @@ const Deck = () => {
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
   const currentCard = useSharedValue(0);
-  let filteredDeck = getFilteredDeck();
+  let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
   const updateHistory = async args => {
     //this sends the wrong card to history
@@ -82,12 +82,14 @@ const Deck = () => {
   };
 
   const deleteCard = () => {
+    console.log('card deleted');
     deleteCardFromDeck(filteredDeck[index]);
+    currentCard.value = 0;
   };
 
   useEffect(() => {
     console.log('updating deck');
-    filteredDeck = getFilteredDeck();
+    setFilteredDeck(getFilteredDeck());
   }, [deck]);
 
   const gesture = Gesture.Pan()
