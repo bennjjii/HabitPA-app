@@ -81,21 +81,37 @@ export const useStore = create(
         Night: [22, 23],
       },
       //modals
-      modalVisible: false,
+      modalVisibleAddCard: false,
       modalCode: undefined,
-      toggleModalVisible: () => {
-        set(state => ({modalVisible: !state.modalVisible}));
+      toggleModalVisibleAddCard: () => {
+        set(state => ({modalVisibleAddCard: !state.modalVisibleAddCard}));
       },
-      showModal: code => {
+      showModalAddCard: code => {
         set(() => ({
-          modalVisible: true,
+          modalVisibleAddCard: true,
           modalCode: code,
         }));
       },
-      hideModal: () => {
+      hideModalAddCard: () => {
         set(() => ({
-          modalVisible: false,
+          modalVisibleAddCard: false,
           modalCode: undefined,
+        }));
+      },
+      modalVisibleBackOfCard: false,
+      toggleModalVisibleBackOfCard: () => {
+        set(state => ({
+          modalVisibleBackOfCard: !state.modalVisibleBackOfCard,
+        }));
+      },
+      showModalBackOfCard: () => {
+        set(() => ({
+          modalVisibleBackOfCard: true,
+        }));
+      },
+      hideModalBackOfCard: () => {
+        set(() => ({
+          modalVisibleBackOfCard: false,
         }));
       },
       // Pretty print logging functions

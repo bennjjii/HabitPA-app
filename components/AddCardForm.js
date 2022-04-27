@@ -2,7 +2,7 @@
 //could use hoc to take very simple definition of each card's form
 //and wrap it with all this stuff
 //could toss state up from here via callbacks
-
+//react native date pciker looks nice
 import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -41,7 +41,7 @@ const atLeastOneTimeOfDay = v => {
 };
 
 const AddCardForm = props => {
-  const {addCardToDeck, hideModal, modalCode} = useStore();
+  const {addCardToDeck, hideModalAddCard, modalCode} = useStore();
   const {
     register,
     handleSubmit,
@@ -71,18 +71,22 @@ const AddCardForm = props => {
       },
       dayOfMonth: undefined,
       dayOfYear: {day: undefined, month: undefined},
-      date: new Date(0),
+      //date: checkForParam(modalCode, 'date') ? new Date() : undefined,
       numberOfTimes: undefined,
       periodInDays: undefined,
     },
   });
 
+  const [date, setDate] = useState(
+    checkForParam(modalCode, 'date') ? new Date() : undefined,
+  );
   const [rolling, setRolling] = useState(false);
   const [taperIn, setTaperIn] = useState(false);
 
   const onSubmit = formData => {
     console.log('formData', formData);
-    hideModal();
+    console.log(date);
+    hideModalAddCard();
     addCardToDeck({
       code: modalCode,
       name: formData.name,
@@ -97,13 +101,13 @@ const AddCardForm = props => {
         dayOfMonth: formData.dayOfMonth,
         dayOfYear: {
           day: checkForParam(modalCode, 'dayOfYear')
-            ? date[0].value
+            ? spinnerDate[0].value
             : undefined,
           month: checkForParam(modalCode, 'dayOfYear')
-            ? date[1].value
+            ? spinnerDate[1].value
             : undefined,
         },
-        date: formData.date,
+        date: date,
         numberOfTimes: formData.numberOfTimes,
         periodInDays: formData.periodInDays,
         rolling,
@@ -117,7 +121,7 @@ const AddCardForm = props => {
     {id: 'day', value: 1},
     {id: 'month', value: 1},
   ];
-  const [date, setDate] = useState(initialValues);
+  const [spinnerDate, setSpinnerDate] = useState(initialValues);
   const [spinners, setSpinners] = useState([
     {id: 'day', label: '', min: 1, max: 31},
     {id: 'month', label: '', min: 1, max: 12},
@@ -127,8 +131,8 @@ const AddCardForm = props => {
   const daysOfWeek = [...Object.keys(Day)];
 
   useEffect(() => {
-    console.log('state', getValues());
-    console.log('errors', errors);
+    // console.log('state', getValues());
+    // console.log('errors', errors);
   }, [formState]);
 
   return (
@@ -286,10 +290,10 @@ const AddCardForm = props => {
             <View style={styles.dayOfYear}>
               <NumberPlease
                 pickers={spinners}
-                values={date}
+                values={spinnerDate}
                 onChange={values => {
                   console.log(values['month']);
-                  setDate(values);
+                  setSpinnerDate(values);
                   switch (values['month']) {
                     case 1:
                       setSpinners(state => [
@@ -371,7 +375,14 @@ const AddCardForm = props => {
 
           {checkForParam(modalCode, 'date') && (
             <View style={styles.date}>
-              <DateTimePicker value={new Date()} />
+              <DateTimePicker
+                display="spinner"
+                minimumDate={new Date()}
+                onChange={(event, date) => {
+                  setDate(date);
+                }}
+                value={date}
+              />
             </View>
           )}
 
@@ -487,7 +498,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   date: {
-    width: 150,
+    width: 270,
   },
   checkboxContainer: {
     marginHorizontal: 30,

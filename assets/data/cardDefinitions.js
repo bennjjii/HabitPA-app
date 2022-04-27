@@ -40,7 +40,7 @@ const commonParameters = {
   },
   day: undefined,
   month: undefined,
-  date: new Date(0),
+  date: undefined,
   numberOfTimes: undefined,
   periodInDays: undefined,
   rolling: false,

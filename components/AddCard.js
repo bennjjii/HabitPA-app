@@ -22,11 +22,11 @@ const cardWidth = Dimensions.get('window').width / 2 - 30;
 const cardHeight = cardWidth * cardAspect;
 
 const TemplateCard = props => {
-  const {toggleModalVisible, showModal, hideModal} = useStore();
+  const {showModalAddCard} = useStore();
   return (
     <Pressable
       onPress={() => {
-        showModal(props.code);
+        showModalAddCard(props.code);
       }}>
       <View style={styles.templateCard}>
         <Text style={styles.cardText}>{props.name}</Text>
@@ -36,7 +36,7 @@ const TemplateCard = props => {
 };
 
 const AddCard = () => {
-  const {modalVisible, hideModal} = useStore();
+  const {modalVisibleAddCard, hideModalAddCard} = useStore();
   //console.log(Object.keys(cardDefinitions));
   return (
     <SafeAreaView style={styles.container}>
@@ -55,13 +55,13 @@ const AddCard = () => {
         </View>
       </ScrollView>
       <Modal
-        isVisible={modalVisible}
+        isVisible={modalVisibleAddCard}
         style={styles.modal}
         onRequestClose={() => {
-          hideModal();
+          hideModalAddCard();
         }}
         onBackdropPress={() => {
-          hideModal();
+          hideModalAddCard();
         }}>
         <KeyboardAvoidingView
           enabled

@@ -164,6 +164,9 @@ export default (deck, history, timesOfDay) => {
         }
         break;
       case 'SpT':
+        //temp fix
+
+        //if (card.parameters.date) {
         isReturned = Object.keys(card.parameters.timeOfDay).some(time => {
           return card.parameters.timeOfDay[time];
         })
@@ -172,11 +175,15 @@ export default (deck, history, timesOfDay) => {
               card.parameters.date.toLocaleDateString('en-GB')
           : new Date().toLocaleDateString('en-GB') ===
             card.parameters.date.toLocaleDateString('en-GB');
+        // }
         //if we are at the specific date and time of day return true, else return false
         //return defaultReturn;
         break;
       case 'DL':
+        //temp fix
+        //if (card.parameters.date) {
         isReturned = new Date().getTime() < card.parameters.date.getTime();
+        //}
         //if we are before the deadline, return true, else return false and discard card
         break;
       case 'EY':

@@ -21,7 +21,7 @@ need persist option for a card to persist once drawn
 */
 
 import React, {useContext, useState, useEffect} from 'react';
-import {StyleSheet, Dimensions, SafeAreaView} from 'react-native';
+import {StyleSheet, Dimensions, SafeAreaView, Pressable} from 'react-native';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -34,10 +34,13 @@ import {
   Gesture,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
+//
 import colours from '../assets/colours/colours';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import NoCards from './NoCards';
+import BackOfCard from './BackOfCard';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
@@ -66,6 +69,9 @@ const Deck = () => {
     logHistory,
     logDeck,
     logFilteredDeck,
+    modalVisibleBackOfCard,
+    showModalBackOfCard,
+    hideModalBackOfCard,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [index, setIndex] = useState(0);
@@ -75,7 +81,6 @@ const Deck = () => {
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
   const updateHistory = async args => {
-    //this sends the wrong card to history
     console.log('card sent to history', filteredDeck[args[0]]);
     console.log('card index', args[0]);
     pushCardToHistory(filteredDeck[args[0]]);
@@ -179,16 +184,31 @@ const Deck = () => {
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
-            <Card
-              index={index}
-              name={filteredDeck[index]?.name}
-              delete={deleteCard}
-            />
+            <Pressable
+              onPress={() => {
+                showModalBackOfCard();
+              }}>
+              <Card
+                index={index}
+                name={filteredDeck[index]?.name}
+                delete={deleteCard}
+              />
+            </Pressable>
           ) : (
             <NoCards />
           )}
         </Animated.View>
       </GestureDetector>
+      <Modal
+        isVisible={modalVisibleBackOfCard}
+        onRequestClose={() => {
+          hideModalBackOfCardd();
+        }}
+        onBackdropPress={() => {
+          hideModalBackOfCard();
+        }}>
+        <BackOfCard card={filteredDeck[currentCard.value]} />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -212,5 +232,10 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: 'white',
+  },
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

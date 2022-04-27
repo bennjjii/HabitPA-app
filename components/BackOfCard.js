@@ -1,32 +1,24 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React from 'react';
-import colours from '../assets/colours/colours';
-import Entypo from 'react-native-vector-icons/Entypo';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-FontAwesome.loadFont();
 
-const Card = props => {
+import colours from '../assets/colours/colours';
+
+const {width, height} = Dimensions.get('window');
+
+const BackOfCard = props => {
   return (
     <View style={styles.container}>
-      <FontAwesome
-        style={styles.icon}
-        name="close"
-        size={40}
-        onPress={() => {
-          props.delete();
-        }}
-      />
-      <Text style={styles.cardText}>
-        {props.name?.toString() || 'crd name here'}
-      </Text>
+      <Text style={styles.cardText}>{props.card.name}</Text>
     </View>
   );
 };
 
+export default BackOfCard;
+
 const styles = StyleSheet.create({
   container: {
-    width: 280,
-    height: 400,
+    width: width * 0.9,
+    height: (40 / 28) * (width * 0.9),
     backgroundColor: '#222222',
     backgroundColor: colours.foreground,
     justifyContent: 'center',
@@ -52,5 +44,3 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
 });
-
-export default Card;
