@@ -114,6 +114,22 @@ export const useStore = create(
           modalVisibleBackOfCard: false,
         }));
       },
+      modalVisiblePiles: false,
+      toggleModalVisiblePiles: () => {
+        set(state => ({
+          modalVisiblePiles: !state.modalVisiblePiles,
+        }));
+      },
+      showModalPiles: () => {
+        set(() => ({
+          modalVisiblePiles: true,
+        }));
+      },
+      hideModalPiles: () => {
+        set(() => ({
+          modalVisiblePiles: false,
+        }));
+      },
       // Pretty print logging functions
       logHistory: () => {
         console.log('History:');

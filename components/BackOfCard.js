@@ -8,7 +8,7 @@ const {width, height} = Dimensions.get('window');
 const BackOfCard = props => {
   return (
     <View style={styles.container}>
-      <Text style={styles.cardText}>{props.card.name}</Text>
+      <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
     </View>
   );
 };
