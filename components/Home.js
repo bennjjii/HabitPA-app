@@ -3,6 +3,7 @@ import React from 'react';
 import Deck from './Deck';
 import FreeTimeScreen from './FreeTimeScreen';
 import Piles from './Piles';
+import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -40,6 +41,14 @@ const Home = () => {
         options={{
           headerShown: false,
           tabBarIcon: () => <Entypo name="gauge" size={32} />,
+        }}
+      />
+      <Tab.Screen
+        name="Tooling"
+        component={ToolingPage}
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <Entypo name="code" size={32} />,
         }}
       />
     </Tab.Navigator>

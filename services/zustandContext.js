@@ -99,11 +99,6 @@ export const useStore = create(
         }));
       },
       modalVisibleBackOfCard: false,
-      toggleModalVisibleBackOfCard: () => {
-        set(state => ({
-          modalVisibleBackOfCard: !state.modalVisibleBackOfCard,
-        }));
-      },
       showModalBackOfCard: () => {
         set(() => ({
           modalVisibleBackOfCard: true,
@@ -112,6 +107,17 @@ export const useStore = create(
       hideModalBackOfCard: () => {
         set(() => ({
           modalVisibleBackOfCard: false,
+        }));
+      },
+      modalVisibleInAction: false,
+      showModalInAction: () => {
+        set(() => ({
+          modalVisibleInAction: true,
+        }));
+      },
+      hideModalInAction: () => {
+        set(() => ({
+          modalVisibleInAction: false,
         }));
       },
       modalVisiblePiles: false,

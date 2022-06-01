@@ -41,6 +41,7 @@ import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import NoCards from './NoCards';
 import BackOfCard from './BackOfCard';
+import InAction from './InAction';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
@@ -72,8 +73,11 @@ const Deck = () => {
     modalVisibleBackOfCard,
     showModalBackOfCard,
     hideModalBackOfCard,
+    modalVisibleInAction,
+    showModalInAction,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
+  const [cardInAction, setCardInAction] = useState(undefined);
   const [index, setIndex] = useState(0);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
@@ -84,6 +88,8 @@ const Deck = () => {
     console.log('card sent to history', filteredDeck[args[0]]);
     console.log('card index', args[0]);
     pushCardToHistory(filteredDeck[args[0]]);
+    setCardInAction(filteredDeck[args[0]]);
+    showModalInAction();
   };
 
   const deleteCard = () => {
@@ -95,7 +101,17 @@ const Deck = () => {
   useEffect(() => {
     console.log('updating deck');
     setFilteredDeck(getFilteredDeck());
+  }, [history]);
+
+  useEffect(() => {
+    console.log('updating deck');
+    setFilteredDeck(getFilteredDeck());
   }, [deck]);
+
+  const manualUpdate = () => {
+    console.log('manual update');
+    setFilteredDeck(getFilteredDeck());
+  };
 
   const gesture = Gesture.Pan()
     .onUpdate(event => {
@@ -109,14 +125,19 @@ const Deck = () => {
             -500,
             {overshootClamping: true},
             () => {
-              runOnJS(updateHistory)([currentCard.value]);
-              if (currentCard.value + 1 < filteredDeck.length) {
-                currentCard.value = currentCard.value + 1;
+              if (filteredDeck.length) {
+                runOnJS(updateHistory)([currentCard.value]);
+                if (currentCard.value + 1 < filteredDeck.length) {
+                  currentCard.value = currentCard.value + 1;
+                } else {
+                  currentCard.value = 0;
+                }
+                translationX.value = 0;
+                translationY.value = 0;
               } else {
-                currentCard.value = 0;
+                translationX.value = 0;
+                translationY.value = 0;
               }
-              translationX.value = 0;
-              translationY.value = 0;
             },
           );
           break;
@@ -125,13 +146,18 @@ const Deck = () => {
             500,
             {overshootClamping: true},
             () => {
-              if (currentCard.value + 1 < filteredDeck.length) {
-                currentCard.value = currentCard.value + 1;
+              if (filteredDeck.length) {
+                if (currentCard.value + 1 < filteredDeck.length) {
+                  currentCard.value = currentCard.value + 1;
+                } else {
+                  currentCard.value = 0;
+                }
+                translationX.value = 0;
+                translationY.value = 0;
               } else {
-                currentCard.value = 0;
+                translationX.value = 0;
+                translationY.value = 0;
               }
-              translationX.value = 0;
-              translationY.value = 0;
             },
           );
           break;
@@ -178,6 +204,7 @@ const Deck = () => {
         onPress={async () => {
           logHistory();
           logDeck();
+          manualUpdate();
         }}
       />
 
@@ -208,6 +235,9 @@ const Deck = () => {
           hideModalBackOfCard();
         }}>
         <BackOfCard card={filteredDeck[currentCard.value]} />
+      </Modal>
+      <Modal isVisible={modalVisibleInAction}>
+        <InAction card={cardInAction} />
       </Modal>
     </SafeAreaView>
   );
