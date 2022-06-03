@@ -37,10 +37,7 @@ export const useStore = create(
             deck: [
               ...state.deck,
               {
-                uuid: uuid.v4(),
                 ...card,
-                created: new Date(),
-                current: true,
               },
             ],
           };

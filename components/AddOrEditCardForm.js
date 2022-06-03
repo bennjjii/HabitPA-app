@@ -88,34 +88,36 @@ const AddOrEditCardForm = props => {
     console.log('formData', formData);
     console.log(date);
     hideModalAddCard();
-    addCardToDeck({
-      code: modalCode,
-      name: formData.name,
-      desc: formData.desc,
-      backburner: false,
-      parameters: {
-        timeOfDay: {
-          ...formData.timeOfDay,
+    addCardToDeck(
+      new CardClass({
+        code: modalCode,
+        name: formData.name,
+        desc: formData.desc,
+        backburner: false,
+        parameters: {
+          timeOfDay: {
+            ...formData.timeOfDay,
+          },
+          dayOfWeek: {
+            ...formData.dayOfWeek,
+          },
+          dayOfMonth: formData.dayOfMonth,
+          dayOfYear: {
+            day: checkForParam(modalCode, 'dayOfYear')
+              ? spinnerDate[0].value
+              : undefined,
+            month: checkForParam(modalCode, 'dayOfYear')
+              ? spinnerDate[1].value
+              : undefined,
+          },
+          date: date,
+          numberOfTimes: formData.numberOfTimes,
+          periodInDays: formData.periodInDays,
+          rolling,
+          taperIn,
         },
-        dayOfWeek: {
-          ...formData.dayOfWeek,
-        },
-        dayOfMonth: formData.dayOfMonth,
-        dayOfYear: {
-          day: checkForParam(modalCode, 'dayOfYear')
-            ? spinnerDate[0].value
-            : undefined,
-          month: checkForParam(modalCode, 'dayOfYear')
-            ? spinnerDate[1].value
-            : undefined,
-        },
-        date: date,
-        numberOfTimes: formData.numberOfTimes,
-        periodInDays: formData.periodInDays,
-        rolling,
-        taperIn,
-      },
-    });
+      }),
+    );
 
     console.log(
       'New card:  ',
