@@ -12,10 +12,13 @@ import Modal from 'react-native-modal';
 
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
-import cardDefinitions from '../assets/data/cardDefinitions';
+
 import AddOrEditCardForm from './AddOrEditCardForm';
+import CardClass from './CardClass';
 
 import {useStore} from '../services/zustandContext';
+
+const cardDefinitions = CardClass.getCardDefinitions();
 
 const cardAspect = 400 / 280;
 const cardWidth = Dimensions.get('window').width / 2 - 30;

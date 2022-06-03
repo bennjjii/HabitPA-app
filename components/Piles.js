@@ -78,7 +78,6 @@ const Piles = () => {
       {/* <ScrollView style={styles.scrView}> */}
       <View style={styles.cardFlexContainer}>
         {piles.map(pile => {
-          //console.log(cardDefinitions[card].code + '\n');
           return <Pile name={pile} setPileType={setPileType} />;
         })}
       </View>

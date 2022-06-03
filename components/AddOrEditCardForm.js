@@ -19,12 +19,14 @@ import NumberPlease from './CustomPicker/NumberPlease';
 import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
-import cardDefinitions from '../assets/data/cardDefinitions';
+//import cardDefinitions from '../assets/data/cardDefinitions';
 import {TimeOfDay, Day} from '../utilities/enums';
 import CardClass from './CardClass';
 const cardAspect = 400 / 280;
 const cardWidth = 350;
 const cardHeight = cardWidth * cardAspect;
+
+const cardDefinitions = CardClass.getCardDefinitions();
 
 const checkForParam = (modalCode, paramName) => {
   return cardDefinitions[modalCode]
@@ -52,30 +54,7 @@ const AddOrEditCardForm = props => {
     setValue,
     getValues,
   } = useForm({
-    defaultValues: {
-      name: '',
-      desc: '',
-      timeOfDay: {
-        Morning: false,
-        Afternoon: false,
-        Evening: false,
-        Night: false,
-      },
-      dayOfWeek: {
-        Monday: false,
-        Tuesday: false,
-        Wednesday: false,
-        Thursday: false,
-        Friday: false,
-        Saturday: false,
-        Sunday: false,
-      },
-      dayOfMonth: undefined,
-      dayOfYear: {day: undefined, month: undefined},
-      //date: checkForParam(modalCode, 'date') ? new Date() : undefined,
-      numberOfTimes: undefined,
-      periodInDays: undefined,
-    },
+    defaultValues: CardClass.getDefaultParameters(),
   });
 
   const [date, setDate] = useState(
