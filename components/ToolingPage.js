@@ -11,6 +11,7 @@ import {
   FlatList,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import {Button} from 'react-native-paper';
 //import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import colours from '../assets/colours/colours';
@@ -21,27 +22,39 @@ const cardWidth = Dimensions.get('window').width / 2 - 30;
 const cardHeight = cardWidth * cardAspect;
 
 const ToolingPage = () => {
-  const {deck, getFilteredDeck, modalVisiblePiles, hideModalPiles} = useStore();
+  const {
+    deck,
+    getFilteredDeck,
+    modalVisiblePiles,
+    hideModalPiles,
+    logHistory,
+    logDeck,
+    logFilteredDeck,
+  } = useStore();
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrView}>
+        <Text>Full deck:{'\n'}</Text>
         {deck.map(card => {
           return <Text key={card.uuid}>{card.name}</Text>;
         })}
-        <Text>...</Text>
-
-        <Text>...</Text>
+        <Text>
+          {'\n'}Filtered deck:{'\n'}
+        </Text>
         {getFilteredDeck().map(card => {
           return <Text key={card.uuid}>{card.name}</Text>;
         })}
-        <TouchableOpacity
-          style={{width: 100, height: 50, backgroundColor: 'orange'}}
+
+        <Button
           onPress={() => {
-            console.log('first');
             useStore.persist.clearStorage();
-          }}
-        />
+          }}>
+          Clear storage
+        </Button>
+        <Button onPress={logHistory}>log History</Button>
+        <Button onPress={logDeck}>log Deck</Button>
+        <Button onPress={logFilteredDeck}>log Filtered Deck</Button>
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -22,12 +22,11 @@ const piles = [
   'Current Hand',
   'Coming up',
   'Backburner',
-  'Drafts',
   'Inactive',
 ];
 
 const cardAspect = 400 / 280;
-const cardWidth = Dimensions.get('window').width / 2 - 30;
+const cardWidth = Dimensions.get('window').width / 2 - 50;
 const cardHeight = cardWidth * cardAspect;
 
 const Pile = props => {
@@ -35,6 +34,7 @@ const Pile = props => {
   return (
     <Pressable
       onPress={() => {
+        props.setPileType(props.name);
         showModalPiles();
       }}>
       <View style={styles.templateCard}>
@@ -45,40 +45,58 @@ const Pile = props => {
 };
 
 const Piles = () => {
-  const {deck, getFilteredDeck, modalVisiblePiles, hideModalPiles} = useStore();
+  const {
+    deck,
+    getFilteredDeck,
+    getComingUpDeck,
+    modalVisiblePiles,
+    hideModalPiles,
+  } = useStore();
+  const [pileType, setPileType] = useState(undefined);
+  const [cardsToRender, setCardsToRender] = useState([]);
+
+  useEffect(() => {
+    switch (pileType) {
+      case 'All Cards':
+        setCardsToRender(deck);
+        break;
+      case 'Current Hand':
+        setCardsToRender(getFilteredDeck());
+        break;
+      case 'Coming up':
+        setCardsToRender(getComingUpDeck());
+        break;
+      case 'Backburner':
+        break;
+      case 'Inactive':
+        break;
+    }
+  }, [pileType]);
 
   return (
     <SafeAreaView style={styles.container}>
-      {deck.map(card => {
-        return <Text key={card.uuid}>{card.name}</Text>;
-      })}
-      <Text>...</Text>
-
-      <Text>...</Text>
-      {getFilteredDeck().map(card => {
-        return <Text key={card.uuid}>{card.name}</Text>;
-      })}
-      <TouchableOpacity
-        style={{width: 100, height: 50, backgroundColor: 'orange'}}
-        onPress={() => {
-          console.log('first');
-          useStore.persist.clearStorage();
-        }}
-      />
-      <ScrollView style={styles.scrView}>
-        <View style={styles.cardFlexContainer}>
-          {piles.map(pile => {
-            //console.log(cardDefinitions[card].code + '\n');
-            return <Pile name={pile} />;
+      {/* <ScrollView style={styles.scrView}> */}
+      <View style={styles.cardFlexContainer}>
+        {piles.map(pile => {
+          //console.log(cardDefinitions[card].code + '\n');
+          return <Pile name={pile} setPileType={setPileType} />;
+        })}
+      </View>
+      {/* </ScrollView> */}
+      <Modal
+        isVisible={modalVisiblePiles}
+        onBackdropPress={() => {
+          setPileType(undefined);
+          setCardsToRender([]);
+          hideModalPiles();
+        }}>
+        <ScrollView>
+          {/* //replace this */}
+          <Text>{'\n\n\n\n'}</Text>
+          {cardsToRender.map(card => {
+            return <BackOfCard card={card} />;
           })}
-        </View>
-      </ScrollView>
-      <Modal isVisible={modalVisiblePiles} onBackdropPress={hideModalPiles}>
-        <FlatList
-          data={deck}
-          renderItem={item => <BackOfCard />}
-          keyExtractor={item => item.uuid}
-        />
+        </ScrollView>
       </Modal>
     </SafeAreaView>
   );
@@ -104,7 +122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     padding: 10,
   },
   templateCard: {
@@ -123,5 +141,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.34,
     shadowRadius: 6.27,
     elevation: 10,
+  },
+  flatList: {},
+  flatListContent: {
+    alignItems: 'center',
   },
 });

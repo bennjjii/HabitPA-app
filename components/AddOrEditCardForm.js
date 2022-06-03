@@ -7,12 +7,12 @@ import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
-  Button,
   Keyboard,
   Text,
   Pressable,
   TextInput,
 } from 'react-native';
+import {Button} from 'react-native-paper';
 import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
@@ -21,6 +21,7 @@ import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import cardDefinitions from '../assets/data/cardDefinitions';
 import {TimeOfDay, Day} from '../utilities/enums';
+import CardClass from './CardClass';
 const cardAspect = 400 / 280;
 const cardWidth = 350;
 const cardHeight = cardWidth * cardAspect;
@@ -40,7 +41,7 @@ const atLeastOneTimeOfDay = v => {
   return true;
 };
 
-const AddCardForm = props => {
+const AddOrEditCardForm = props => {
   const {addCardToDeck, hideModalAddCard, modalCode} = useStore();
   const {
     register,
@@ -91,6 +92,7 @@ const AddCardForm = props => {
       code: modalCode,
       name: formData.name,
       desc: formData.desc,
+      backburner: false,
       parameters: {
         timeOfDay: {
           ...formData.timeOfDay,
@@ -114,6 +116,38 @@ const AddCardForm = props => {
         taperIn,
       },
     });
+
+    console.log(
+      'New card:  ',
+      new CardClass({
+        code: modalCode,
+        name: formData.name,
+        desc: formData.desc,
+        backburner: false,
+        parameters: {
+          timeOfDay: {
+            ...formData.timeOfDay,
+          },
+          dayOfWeek: {
+            ...formData.dayOfWeek,
+          },
+          dayOfMonth: formData.dayOfMonth,
+          dayOfYear: {
+            day: checkForParam(modalCode, 'dayOfYear')
+              ? spinnerDate[0].value
+              : undefined,
+            month: checkForParam(modalCode, 'dayOfYear')
+              ? spinnerDate[1].value
+              : undefined,
+          },
+          date: date,
+          numberOfTimes: formData.numberOfTimes,
+          periodInDays: formData.periodInDays,
+          rolling,
+          taperIn,
+        },
+      }),
+    );
   };
 
   //set up year date spinner
@@ -453,17 +487,13 @@ const AddCardForm = props => {
             </View>
           )}
         </View>
-        <Button
-          title="Submit"
-          style={styles.submitButtton}
-          onPress={handleSubmit(onSubmit)}
-        />
+        <Button onPress={handleSubmit(onSubmit)}>ADD NEW CARD</Button>
       </View>
     </Pressable>
   );
 };
 
-export default AddCardForm;
+export default AddOrEditCardForm;
 
 const styles = StyleSheet.create({
   container: {
@@ -471,7 +501,8 @@ const styles = StyleSheet.create({
     height: cardHeight,
     backgroundColor: '#222222',
     backgroundColor: colours.foreground,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 50,
     alignItems: 'center',
     borderRadius: 20,
     shadowColor: '#000',

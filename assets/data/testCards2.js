@@ -19,6 +19,7 @@ module.exports = [
   {
     uuid: 1,
     current: true,
+    backburner: true,
     code: 'EW',
     name: 'Boxing',
     desc: 'Boxing',
@@ -53,6 +54,7 @@ module.exports = [
   {
     uuid: 2,
     current: true,
+    backburner: false,
     code: 'XpW',
     name: 'Gym',
     desc: 'Gym',
@@ -87,6 +89,7 @@ module.exports = [
   {
     uuid: 3,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Study Italian',
     desc: 'Study Italian',
@@ -121,6 +124,7 @@ module.exports = [
   {
     uuid: 4,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Take creatine',
     desc: 'Take creatine',
@@ -156,6 +160,7 @@ module.exports = [
   {
     uuid: 5,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Wake up early',
     desc: 'Wake up early',
@@ -190,6 +195,7 @@ module.exports = [
   {
     uuid: 6,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Take vitamins',
     desc: 'Take vitamins',
@@ -224,6 +230,7 @@ module.exports = [
   {
     uuid: 7,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Meditate',
     desc: 'Meditation',
@@ -258,6 +265,7 @@ module.exports = [
   {
     uuid: 8,
     current: true,
+    backburner: false,
     code: 'EY',
     name: 'File taxes',
     desc: 'File taxes',
@@ -292,6 +300,7 @@ module.exports = [
   {
     uuid: 9,
     current: true,
+    backburner: false,
     code: 'XpW',
     name: 'Tidy Room 10 mins',
     desc: 'Tidy room',
@@ -326,6 +335,7 @@ module.exports = [
   {
     uuid: 10,
     current: true,
+    backburner: false,
     code: 'RxM',
     name: 'Work on tunes for 30 mins',
     desc: 'Music',
@@ -360,6 +370,7 @@ module.exports = [
   {
     uuid: 11,
     current: true,
+    backburner: false,
     code: 'XpM',
     name: 'Write one song',
     desc: 'Songwriting',
@@ -394,6 +405,7 @@ module.exports = [
   {
     uuid: 12,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Write diary',
     desc: 'Diary',
@@ -428,6 +440,7 @@ module.exports = [
   {
     uuid: 13,
     current: true,
+    backburner: false,
     code: 'ED',
     name: 'Plan tomorrow',
     desc: 'Make plans',

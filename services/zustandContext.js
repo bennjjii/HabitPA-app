@@ -24,6 +24,9 @@ const dateReviver = (key, value) => {
   return value;
 };
 
+//this is where the magic happens
+//tried to abstract most of the logic up here
+
 export const useStore = create(
   persist(
     (set, get) => ({
@@ -42,6 +45,7 @@ export const useStore = create(
             ],
           };
         }),
+      editCard: updatedCard => {},
       deleteCardFromDeck: cardToDelete => {
         set(state => {
           return {
@@ -70,15 +74,37 @@ export const useStore = create(
           };
         });
       },
+      //get piles
       getFilteredDeck: () => {
         return filterCards(get().deck, get().history, get().timesOfDay);
       },
+      getComingUpDeck: () => {
+        return get().deck;
+      },
+      getInactiveDeck: () => {},
+      getBackburnerDeck: () => {},
       //time of day
       timesOfDay: {
         Morning: [7, 12],
         Afternoon: [13, 17],
         Evening: [18, 22],
         Night: [22, 23],
+      },
+      //this is to transfer state between modals
+      cardUnderInspection: undefined,
+      setCardUnderInspection: card => {
+        set(() => {
+          return {
+            cardUnderInspection: card,
+          };
+        });
+      },
+      clearCardUnderInspection: card => {
+        set(() => {
+          return {
+            cardUnderInspection: undefined,
+          };
+        });
       },
       //modals
       modalVisibleAddCard: false,
@@ -159,18 +185,21 @@ export const useStore = create(
       logFilteredDeck: () => {
         console.log('Filtered deck:');
         console.log('\n');
-        get()
-          .getFilteredDeck()
-          .forEach((item, index) => {
-            console.log('\n');
-            console.log('-----------------------------');
-            console.log('Index: ', index);
-            let mergedCard = _.flatMap(item);
-            Object.keys(mergedCard).forEach(item2 => {
-              console.log(mergedCard[item2]);
-            });
-            console.log('-----------------------------');
+        const filteredDeck = filterCards(
+          get().deck,
+          get().history,
+          get().timesOfDay,
+        );
+        filteredDeck.forEach((item, index) => {
+          console.log('\n');
+          console.log('-----------------------------');
+          console.log('Index: ', index);
+          let mergedCard = _.flatMap(item);
+          Object.keys(mergedCard).forEach(item2 => {
+            console.log(mergedCard[item2]);
           });
+          console.log('-----------------------------');
+        });
         console.log('\n');
       },
     }),

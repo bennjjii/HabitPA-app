@@ -87,7 +87,6 @@ const Deck = () => {
   const updateHistory = async args => {
     console.log('card sent to history', filteredDeck[args[0]]);
     console.log('card index', args[0]);
-    pushCardToHistory(filteredDeck[args[0]]);
     setCardInAction(filteredDeck[args[0]]);
     showModalInAction();
   };
@@ -199,15 +198,6 @@ const Deck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={{width: 100, height: 50, backgroundColor: 'blue'}}
-        onPress={async () => {
-          logHistory();
-          logDeck();
-          manualUpdate();
-        }}
-      />
-
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
@@ -233,7 +223,8 @@ const Deck = () => {
         }}
         onBackdropPress={() => {
           hideModalBackOfCard();
-        }}>
+        }}
+        style={styles.modalContainer}>
         <BackOfCard card={filteredDeck[currentCard.value]} />
       </Modal>
       <Modal isVisible={modalVisibleInAction}>
@@ -248,6 +239,11 @@ export default Deck;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colours.background,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
