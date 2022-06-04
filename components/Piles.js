@@ -49,6 +49,8 @@ const Piles = () => {
     deck,
     getFilteredDeck,
     getComingUpDeck,
+    getBackburnerDeck,
+    getInactiveDeck,
     modalVisiblePiles,
     hideModalPiles,
   } = useStore();
@@ -59,6 +61,7 @@ const Piles = () => {
     switch (pileType) {
       case 'All Cards':
         setCardsToRender(deck);
+
         break;
       case 'Current Hand':
         setCardsToRender(getFilteredDeck());
@@ -67,10 +70,15 @@ const Piles = () => {
         setCardsToRender(getComingUpDeck());
         break;
       case 'Backburner':
+        setCardsToRender(getBackburnerDeck());
         break;
       case 'Inactive':
+        setCardsToRender(getInactiveDeck());
         break;
     }
+    console.log('InactiveDeck', getInactiveDeck());
+    console.log('InactiveDeck', getBackburnerDeck());
+    console.log('InactiveDeck', getComingUpDeck());
   }, [pileType]);
 
   return (

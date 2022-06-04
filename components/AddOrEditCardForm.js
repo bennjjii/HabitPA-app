@@ -19,7 +19,6 @@ import NumberPlease from './CustomPicker/NumberPlease';
 import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
-//import cardDefinitions from '../assets/data/cardDefinitions';
 import {TimeOfDay, Day} from '../utilities/enums';
 import CardClass from './CardClass';
 const cardAspect = 400 / 280;
@@ -35,13 +34,13 @@ const checkForParam = (modalCode, paramName) => {
     : false;
 };
 
-const atLeastOneDayOfWeek = v => {
-  return true;
-};
+// const atLeastOneDayOfWeek = v => {
+//   return true;
+// };
 
-const atLeastOneTimeOfDay = v => {
-  return true;
-};
+// const atLeastOneTimeOfDay = v => {
+//   return true;
+// };
 
 const AddOrEditCardForm = props => {
   const {addCardToDeck, hideModalAddCard, modalCode} = useStore();

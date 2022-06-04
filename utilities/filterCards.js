@@ -57,6 +57,9 @@ export default (deck, history, timesOfDay) => {
   const currentTimeOfDay = getTimeOfDay(timesOfDay);
   const today = new Date(new Date()).toLocaleString('en-us', {weekday: 'long'});
   return deck.filter(card => {
+    if (card.backburner || !card.current) {
+      return false;
+    }
     let isReturned = false;
     switch (card.code) {
       case 'ED':

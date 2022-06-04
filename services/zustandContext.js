@@ -76,10 +76,14 @@ export const useStore = create(
         return filterCards(get().deck, get().history, get().timesOfDay);
       },
       getComingUpDeck: () => {
-        return get().deck;
+        return get().deck.filter(card => true);
       },
-      getInactiveDeck: () => {},
-      getBackburnerDeck: () => {},
+      getInactiveDeck: () => {
+        return get().deck.filter(card => !card.current);
+      },
+      getBackburnerDeck: () => {
+        return get().deck.filter(card => card.backburner);
+      },
       //time of day
       timesOfDay: {
         Morning: [7, 12],
