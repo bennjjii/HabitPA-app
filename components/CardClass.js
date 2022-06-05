@@ -7,7 +7,7 @@ export default class Card {
     //metadata
     this.created = new Date();
     //flags
-    this.current = true;
+    this.current = newCardData.current;
     this.backburner = newCardData.backburner;
     this.code = newCardData.code;
     this.name = newCardData.name;
@@ -39,6 +39,38 @@ export default class Card {
       periodInDays: newCardData.parameters.periodInDays,
       rolling: newCardData.parameters.rolling,
       taperIn: newCardData.parameters.taperIn,
+    };
+  }
+
+  static getBlankCard() {
+    return {
+      uuid: undefined,
+      code: undefined,
+      current: true,
+      backburner: false,
+      name: '',
+      desc: '',
+      timeOfDay: {
+        Morning: false,
+        Afternoon: false,
+        Evening: false,
+        Night: false,
+      },
+      dayOfWeek: {
+        Monday: false,
+        Tuesday: false,
+        Wednesday: false,
+        Thursday: false,
+        Friday: false,
+        Saturday: false,
+        Sunday: false,
+      },
+      dayOfMonth: undefined,
+      dayOfYear: {day: undefined, month: undefined},
+      numberOfTimes: undefined,
+      periodInDays: undefined,
+      rolling: false,
+      taperIn: false,
     };
   }
 
@@ -222,32 +254,6 @@ export default class Card {
         explanation: 'Something to be completed at some point.',
         parameters: {},
       },
-    };
-  }
-
-  static getDefaultParameters() {
-    return {
-      name: '',
-      desc: '',
-      timeOfDay: {
-        Morning: false,
-        Afternoon: false,
-        Evening: false,
-        Night: false,
-      },
-      dayOfWeek: {
-        Monday: false,
-        Tuesday: false,
-        Wednesday: false,
-        Thursday: false,
-        Friday: false,
-        Saturday: false,
-        Sunday: false,
-      },
-      dayOfMonth: undefined,
-      dayOfYear: {day: undefined, month: undefined},
-      numberOfTimes: undefined,
-      periodInDays: undefined,
     };
   }
 }

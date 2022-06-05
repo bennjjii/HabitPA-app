@@ -6,9 +6,8 @@ import {
   SafeAreaView,
   Pressable,
   Dimensions,
-  TouchableOpacity,
   ScrollView,
-  FlatList,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Modal from 'react-native-modal';
 //import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -16,6 +15,7 @@ import Modal from 'react-native-modal';
 import colours from '../assets/colours/colours';
 import {useStore} from '../services/zustandContext';
 import BackOfCard from './BackOfCard';
+import AddOrEditCardForm from './AddOrEditCardForm';
 
 const piles = [
   'All Cards',
@@ -52,7 +52,9 @@ const Piles = () => {
     getBackburnerDeck,
     getInactiveDeck,
     modalVisiblePiles,
+    modalVisibleAddCard,
     hideModalPiles,
+    hideModalAddCard,
   } = useStore();
   const [pileType, setPileType] = useState(undefined);
   const [cardsToRender, setCardsToRender] = useState([]);
@@ -104,6 +106,21 @@ const Piles = () => {
             return <BackOfCard card={card} />;
           })}
         </ScrollView>
+      </Modal>
+      <Modal
+        isVisible={modalVisibleAddCard}
+        style={styles.modal}
+        onRequestClose={() => {
+          hideModalAddCard();
+        }}
+        onBackdropPress={() => {
+          hideModalAddCard();
+        }}>
+        <KeyboardAvoidingView
+          enabled
+          behavior={Platform.OS === 'android' ? undefined : 'position'}>
+          <AddOrEditCardForm />
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

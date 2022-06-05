@@ -22,6 +22,7 @@ need persist option for a card to persist once drawn
 
 import React, {useContext, useState, useEffect} from 'react';
 import {StyleSheet, Dimensions, SafeAreaView, Pressable} from 'react-native';
+import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -42,6 +43,7 @@ import Card from './Card';
 import NoCards from './NoCards';
 import BackOfCard from './BackOfCard';
 import InAction from './InAction';
+import AddOrEditCardForm from './AddOrEditCardForm';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
@@ -64,17 +66,16 @@ const Deck = () => {
   const {
     deck,
     history,
-    pushCardToHistory,
     deleteCardFromDeck,
     getFilteredDeck,
-    logHistory,
-    logDeck,
-    logFilteredDeck,
     modalVisibleBackOfCard,
+    cardUnderInspection,
     showModalBackOfCard,
     hideModalBackOfCard,
     modalVisibleInAction,
     showModalInAction,
+    modalVisibleAddCard,
+    hideModalAddCard,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
@@ -203,7 +204,8 @@ const Deck = () => {
           {filteredDeck.length > 0 ? (
             <Pressable
               onPress={() => {
-                showModalBackOfCard();
+                console.log('cui', filteredDeck[index]);
+                showModalBackOfCard(filteredDeck[index]);
               }}>
               <Card
                 index={index}
@@ -225,10 +227,25 @@ const Deck = () => {
           hideModalBackOfCard();
         }}
         style={styles.modalContainer}>
-        <BackOfCard card={filteredDeck[currentCard.value]} />
+        <BackOfCard card={filteredDeck[index]} />
       </Modal>
       <Modal isVisible={modalVisibleInAction}>
         <InAction card={cardInAction} />
+      </Modal>
+      <Modal
+        isVisible={modalVisibleAddCard}
+        style={styles.modal}
+        onRequestClose={() => {
+          hideModalAddCard();
+        }}
+        onBackdropPress={() => {
+          hideModalAddCard();
+        }}>
+        <KeyboardAvoidingView
+          enabled
+          behavior={Platform.OS === 'android' ? undefined : 'position'}>
+          <AddOrEditCardForm />
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

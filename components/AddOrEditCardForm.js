@@ -43,7 +43,9 @@ const checkForParam = (modalCode, paramName) => {
 // };
 
 const AddOrEditCardForm = props => {
-  const {addCardToDeck, hideModalAddCard, modalCode} = useStore();
+  const {addCardToDeck, hideModalAddCard, modalCode, cardUnderInspection} =
+    useStore();
+
   const {
     register,
     handleSubmit,
@@ -53,89 +55,43 @@ const AddOrEditCardForm = props => {
     setValue,
     getValues,
   } = useForm({
-    defaultValues: CardClass.getDefaultParameters(),
+    defaultValues: cardUnderInspection
+      ? cardUnderInspection
+      : CardClass.getBlankCard(),
   });
 
   const [date, setDate] = useState(
-    checkForParam(modalCode, 'date') ? new Date() : undefined,
+    checkForParam(modalCode, 'date')
+      ? cardUnderInspection
+        ? cardUnderInspection.date
+        : new Date()
+      : undefined,
   );
-  const [rolling, setRolling] = useState(false);
-  const [taperIn, setTaperIn] = useState(false);
-
-  const onSubmit = formData => {
-    console.log('formData', formData);
-    console.log(date);
-    hideModalAddCard();
-    addCardToDeck(
-      new CardClass({
-        code: modalCode,
-        name: formData.name,
-        desc: formData.desc,
-        backburner: false,
-        parameters: {
-          timeOfDay: {
-            ...formData.timeOfDay,
-          },
-          dayOfWeek: {
-            ...formData.dayOfWeek,
-          },
-          dayOfMonth: formData.dayOfMonth,
-          dayOfYear: {
-            day: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate[0].value
-              : undefined,
-            month: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate[1].value
-              : undefined,
-          },
-          date: date,
-          numberOfTimes: formData.numberOfTimes,
-          periodInDays: formData.periodInDays,
-          rolling,
-          taperIn,
-        },
-      }),
-    );
-
-    console.log(
-      'New card:  ',
-      new CardClass({
-        code: modalCode,
-        name: formData.name,
-        desc: formData.desc,
-        backburner: false,
-        parameters: {
-          timeOfDay: {
-            ...formData.timeOfDay,
-          },
-          dayOfWeek: {
-            ...formData.dayOfWeek,
-          },
-          dayOfMonth: formData.dayOfMonth,
-          dayOfYear: {
-            day: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate[0].value
-              : undefined,
-            month: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate[1].value
-              : undefined,
-          },
-          date: date,
-          numberOfTimes: formData.numberOfTimes,
-          periodInDays: formData.periodInDays,
-          rolling,
-          taperIn,
-        },
-      }),
-    );
-  };
-
   //set up year date spinner
-  const initialValues = [
-    {id: 'day', value: 1},
-    {id: 'month', value: 1},
-  ];
+  console.log('cui', cardUnderInspection);
+  const initialValues =
+    // cardUnderInspection
+    // ? [
+    //     {
+    //       id: 'day',
+    //       value: cardUnderInspection.dayOfYear.day
+    //         ? cardUnderInspection.dayOfYear.day
+    //         : 1,
+    //     },
+    //     {
+    //       id: 'month',
+    //       value: cardUnderInspection.dayOfYear.month
+    //         ? cardUnderInspection.dayOfYear.month
+    //         : 1,
+    //     },
+    //   ]
+    // :
+    [
+      {id: 'day', value: 1},
+      {id: 'month', value: 1},
+    ];
   const [spinnerDate, setSpinnerDate] = useState(initialValues);
+  //configuring spinners
   const [spinners, setSpinners] = useState([
     {id: 'day', label: '', min: 1, max: 31},
     {id: 'month', label: '', min: 1, max: 12},
@@ -143,6 +99,45 @@ const AddOrEditCardForm = props => {
   //set up checkboxes
   const timesOfDay = [...Object.keys(TimeOfDay)];
   const daysOfWeek = [...Object.keys(Day)];
+
+  //date, dayOfYear, are handled separately
+
+  const onSubmit = formData => {
+    console.log('formData', formData);
+
+    hideModalAddCard();
+    addCardToDeck(
+      new CardClass({
+        code: modalCode,
+        name: formData.name,
+        desc: formData.desc,
+        backburner: formData.backburner,
+        current: formData.current,
+        parameters: {
+          timeOfDay: {
+            ...formData.timeOfDay,
+          },
+          dayOfWeek: {
+            ...formData.dayOfWeek,
+          },
+          dayOfMonth: formData.dayOfMonth,
+          dayOfYear: {
+            day: checkForParam(modalCode, 'dayOfYear')
+              ? spinnerDate[0].value
+              : undefined,
+            month: checkForParam(modalCode, 'dayOfYear')
+              ? spinnerDate[1].value
+              : undefined,
+          },
+          date: date,
+          numberOfTimes: formData.numberOfTimes,
+          periodInDays: formData.periodInDays,
+          rolling: formData.rolling,
+          taperIn: formData.taperIn,
+        },
+      }),
+    );
+  };
 
   useEffect(() => {
     // console.log('state', getValues());
@@ -156,6 +151,7 @@ const AddOrEditCardForm = props => {
       }}>
       <View style={styles.container}>
         <View style={styles.form}>
+          <Text style={styles.codeText}>{modalCode}</Text>
           <Text style={styles.explanationText}>
             {cardDefinitions[modalCode]?.explanation}
           </Text>
@@ -440,13 +436,20 @@ const AddOrEditCardForm = props => {
           {checkForParam(modalCode, 'rolling') && (
             <View style={styles.checkboxContainer}>
               <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={rolling}
-                  onValueChange={val => {
-                    setRolling(val);
-                  }}
+                <Controller
+                  control={control}
+                  name={`rolling`}
+                  render={({field: {onChange, value}}) => (
+                    <CheckBox
+                      disabled={false}
+                      value={value}
+                      onValueChange={e => {
+                        onChange(e);
+                      }}
+                    />
+                  )}
                 />
+
                 <Text style={styles.checkboxText}>Rolling</Text>
               </View>
             </View>
@@ -455,12 +458,18 @@ const AddOrEditCardForm = props => {
           {checkForParam(modalCode, 'taperIn') && (
             <View style={styles.checkboxContainer}>
               <View style={styles.checkBoxView}>
-                <CheckBox
-                  disabled={false}
-                  value={taperIn}
-                  onValueChange={val => {
-                    setTaperIn(val);
-                  }}
+                <Controller
+                  control={control}
+                  name={`taperIn`}
+                  render={({field: {onChange, value}}) => (
+                    <CheckBox
+                      disabled={false}
+                      value={value}
+                      onValueChange={e => {
+                        onChange(e);
+                      }}
+                    />
+                  )}
                 />
                 <Text style={styles.checkboxText}>Taper in</Text>
               </View>
@@ -536,5 +545,10 @@ const styles = StyleSheet.create({
   explanationText: {
     paddingHorizontal: 30,
     marginBottom: 20,
+  },
+  codeText: {
+    fontSize: 25,
+    marginBottom: 10,
+    color: colours.text,
   },
 });

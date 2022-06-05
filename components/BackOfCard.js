@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React from 'react';
+import {useStore} from '../services/zustandContext';
 
 import colours from '../assets/colours/colours';
 
@@ -9,7 +10,13 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
 
 const BackOfCard = props => {
-  console.log(props.card.item);
+  const {
+    deleteCardFromDeck,
+    cardUnderInspection,
+    hideModalBackOfCard,
+    switchToEditCard,
+  } = useStore();
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -26,7 +33,8 @@ const BackOfCard = props => {
           name="edit"
           size={40}
           onPress={() => {
-            props.edit();
+            console.log('POOPOOO');
+            switchToEditCard(props.card);
           }}
         />
         <FontAwesome
@@ -34,13 +42,12 @@ const BackOfCard = props => {
           name="trash-o"
           size={40}
           onPress={() => {
-            props.delete();
+            deleteCardFromDeck(cardUnderInspection);
+            hideModalBackOfCard();
           }}
         />
       </View>
-      <Text style={styles.cardText}>
-        {props.card.item ? props.card.item.name : props.card.name || '...'}
-      </Text>
+      <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
       <Text>X times per day etc...</Text>
       <Text>Progress this week...</Text>
     </View>

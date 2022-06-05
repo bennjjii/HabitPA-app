@@ -30,6 +30,7 @@ const ToolingPage = () => {
     logHistory,
     logDeck,
     logFilteredDeck,
+    logCardUnderInspection,
   } = useStore();
 
   return (
@@ -55,6 +56,9 @@ const ToolingPage = () => {
         <Button onPress={logHistory}>log History</Button>
         <Button onPress={logDeck}>log Deck</Button>
         <Button onPress={logFilteredDeck}>log Filtered Deck</Button>
+        <Button onPress={logCardUnderInspection}>
+          log Card Under Inspection
+        </Button>
       </ScrollView>
     </SafeAreaView>
   );

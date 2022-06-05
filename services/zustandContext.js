@@ -2,6 +2,7 @@ import create from 'zustand';
 import {persist} from 'zustand/middleware';
 import testCards from '../assets/data/testCards2';
 import filterCards from '../utilities/filterCards';
+//import dateReviver from '../utilities/dateReviver';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 var _ = require('lodash');
@@ -92,21 +93,6 @@ export const useStore = create(
         Night: [22, 23],
       },
       //this is to transfer state between modals
-      cardUnderInspection: undefined,
-      setCardUnderInspection: card => {
-        set(() => {
-          return {
-            cardUnderInspection: card,
-          };
-        });
-      },
-      clearCardUnderInspection: card => {
-        set(() => {
-          return {
-            cardUnderInspection: undefined,
-          };
-        });
-      },
       //modals
       modalVisibleAddCard: false,
       modalCode: undefined,
@@ -123,17 +109,37 @@ export const useStore = create(
         set(() => ({
           modalVisibleAddCard: false,
           modalCode: undefined,
+          cardUnderInspection: undefined,
         }));
       },
       modalVisibleBackOfCard: false,
+      cardUnderInspection: undefined,
       showModalBackOfCard: () => {
         set(() => ({
           modalVisibleBackOfCard: true,
+          //modalVisibleAddCard: true,
         }));
+      },
+      switchToEditCard: cardToEdit => {
+        console.log('Switch to edit card');
+        set(() => ({
+          cardUnderInspection: cardToEdit,
+          modalCode: cardToEdit.code,
+          modalVisiblePiles: false,
+          modalVisibleBackOfCard: false,
+        }));
+        setTimeout(() => {
+          set(() => ({
+            modalVisibleAddCard: true,
+          }));
+        }, 350);
       },
       hideModalBackOfCard: () => {
         set(() => ({
+          cardUnderInspection: undefined,
+          modalCode: undefined,
           modalVisibleBackOfCard: false,
+          modalVisiblePiles: false,
         }));
       },
       modalVisibleInAction: false,
@@ -202,6 +208,9 @@ export const useStore = create(
           console.log('-----------------------------');
         });
         console.log('\n');
+      },
+      logCardUnderInspection: () => {
+        console.log(get().cardUnderInspection);
       },
     }),
     {
