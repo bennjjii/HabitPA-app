@@ -55,7 +55,9 @@ const AddOrEditCardForm = props => {
     setValue,
     getValues,
   } = useForm({
-    defaultValues: cardUnderInspection ? cardUnderInspection : new Card(),
+    defaultValues: cardUnderInspection
+      ? {...cardUnderInspection, numberOfTimes: '2'}
+      : new Card(),
   });
 
   const [date, setDate] = useState(
@@ -66,7 +68,6 @@ const AddOrEditCardForm = props => {
       : undefined,
   );
   //set up year date spinner
-  console.log('cui', cardUnderInspection);
   const initialValues =
     //needs resolving
     // cardUnderInspection
@@ -103,7 +104,6 @@ const AddOrEditCardForm = props => {
 
   const onSubmit = formData => {
     console.log('formData', formData);
-
     hideModalAddCard();
     addCardToDeck(
       new Card({
