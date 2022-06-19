@@ -37,8 +37,6 @@ export default class Card {
       date: newCard?.parameters.date || undefined,
       numberOfTimes: newCard?.parameters.numberOfTimes || undefined,
       periodInDays: newCard?.parameters.periodInDays || undefined,
-      rolling: newCard?.parameters.rolling || false, // remove and replace with two types of cards
-      taperIn: newCard?.parameters.taperIn || false, // remove for now
     };
   }
 
@@ -82,8 +80,6 @@ export default class Card {
       explanation: 'Practise a habit X times in a calendar week.',
       parameters: {
         numberOfTimes: undefined,
-        taperIn: undefined,
-        rolling: true,
       },
     },
     RxW: {
@@ -93,7 +89,6 @@ export default class Card {
       explanation: 'Practise a habit roughly X times in 7 days.',
       parameters: {
         numberOfTimes: undefined,
-        taperIn: undefined,
       },
     },
     EM: {
@@ -112,8 +107,6 @@ export default class Card {
       explanation: 'Practise a habit X times in a calendar month.',
       parameters: {
         numberOfTimes: undefined,
-        taperIn: undefined,
-        rolling: true,
       },
     },
     RxM: {
@@ -123,7 +116,6 @@ export default class Card {
       explanation: 'Practise a habit roughly X times in 30 days.',
       parameters: {
         numberOfTimes: undefined,
-        taperIn: undefined,
       },
     },
     XiY: {
@@ -134,8 +126,6 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
         periodInDays: undefined,
-        taperIn: undefined,
-        rolling: true,
       },
     },
     XiT: {
@@ -190,7 +180,6 @@ export default class Card {
       explanation: 'Practise a habit X times in a calendar year.',
       parameters: {
         numberOfTimes: undefined,
-        rolling: true,
       },
     },
     RxY: {
@@ -200,7 +189,6 @@ export default class Card {
       explanation: 'Practise a habit roughly X times in 365 days.',
       parameters: {
         numberOfTimes: undefined,
-        rolling: true,
       },
     },
     AsP: {

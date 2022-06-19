@@ -131,8 +131,6 @@ const AddOrEditCardForm = props => {
           date: date,
           numberOfTimes: formData.numberOfTimes,
           periodInDays: formData.periodInDays,
-          rolling: formData.rolling,
-          taperIn: formData.taperIn,
         },
       }),
     );
@@ -429,49 +427,6 @@ const AddOrEditCardForm = props => {
                 );
               })}
               {errors.timeOfDay && <Text>Please select a time of day</Text>}
-            </View>
-          )}
-
-          {checkForParam(modalCode, 'rolling') && (
-            <View style={styles.checkboxContainer}>
-              <View style={styles.checkBoxView}>
-                <Controller
-                  control={control}
-                  name={`rolling`}
-                  render={({field: {onChange, value}}) => (
-                    <CheckBox
-                      disabled={false}
-                      value={value}
-                      onValueChange={e => {
-                        onChange(e);
-                      }}
-                    />
-                  )}
-                />
-
-                <Text style={styles.checkboxText}>Rolling</Text>
-              </View>
-            </View>
-          )}
-
-          {checkForParam(modalCode, 'taperIn') && (
-            <View style={styles.checkboxContainer}>
-              <View style={styles.checkBoxView}>
-                <Controller
-                  control={control}
-                  name={`taperIn`}
-                  render={({field: {onChange, value}}) => (
-                    <CheckBox
-                      disabled={false}
-                      value={value}
-                      onValueChange={e => {
-                        onChange(e);
-                      }}
-                    />
-                  )}
-                />
-                <Text style={styles.checkboxText}>Taper in</Text>
-              </View>
             </View>
           )}
         </View>
