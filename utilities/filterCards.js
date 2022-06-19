@@ -15,6 +15,28 @@ const TimeOfDay = {
   Night: 'Night',
 };
 
+const getLastMonday = () => {
+  let lastMonday = new Date();
+  lastMonday.setDate(lastMonday.getDate() - ((lastMonday.getDay() + 6) % 7));
+  lastMonday.setHours(0, 0, 0, 0);
+  return lastMonday;
+};
+
+const getFirstDayOfMonth = () => {
+  let firstDayOfMonth = new Date();
+  firstDayOfMonth.setDate(1);
+  firstDayOfMonth.setHours(0, 0, 0, 0);
+  return firstDayOfMonth;
+};
+
+const getFirstDayOfYear = () => {
+  let firstDayOfYear = new Date();
+  firstDayOfYear.setMonth(0);
+  firstDayOfYear.setDate(1);
+  firstDayOfYear.setHours(0, 0, 0, 0);
+  return firstDayOfYear;
+};
+
 const defaultReturn = false;
 
 const getTimeOfDay = timesOfDay => {
@@ -99,16 +121,16 @@ export default (deck, history, timesOfDay) => {
             : true);
         break;
       case 'XpW':
-        //if we count x or more cards in the past 7 days, return false, else true
+        //if we count x or more cards since Monday 00hrs return false
+        isReturned = countCardsAfterDate(history, card, getLastMonday());
+        break;
+      case 'RxW':
+        //if we count X cards or more in last y days return false
         isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * 7),
         );
-        break;
-      case 'RxW':
-        //need to figure out how this differs from XpW and if it is worth having two different cards
-        isReturned = defaultReturn;
         break;
       case 'EM':
         //if we are on the day of the month that is specified, return true, else return false
@@ -127,16 +149,16 @@ export default (deck, history, timesOfDay) => {
         }
         break;
       case 'XpM':
+        //if we count x or more cards since the start of the month return false, else return true
+        isReturned = countCardsAfterDate(history, card, getFirstDayOfMonth());
+        break;
+      case 'RxM':
         //if we count x or more cards in the past 30 days return false, else return true
         isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * 30),
         );
-        break;
-      case 'RxM':
-        //need to figure out how this differs from XpW and if it is worth having two different cards
-        isReturned = defaultReturn;
         break;
       case 'XiY':
         //if we count x or more cards in the past Y days return false, else return true
@@ -197,14 +219,14 @@ export default (deck, history, timesOfDay) => {
         break;
       case 'XpY':
         //if we count X times in the past year, return true, else return false
+        isReturned = countCardsAfterDate(history, card, getFirstDayOfYear);
+        break;
+      case 'RxY':
         isReturned = countCardsAfterDate(
           history,
           card,
           new Date(new Date() - 86400000 * 365),
         );
-        break;
-      case 'RxY':
-        isReturned = defaultReturn;
         break;
       case 'AsP':
         isReturned = true;

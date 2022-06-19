@@ -25,7 +25,7 @@ const cardAspect = 400 / 280;
 const cardWidth = 350;
 const cardHeight = cardWidth * cardAspect;
 
-const cardDefinitions = Card.getCardDefinitions();
+const cardDefinitions = Card.cardDefinitions;
 
 const checkForParam = (modalCode, paramName) => {
   return cardDefinitions[modalCode]

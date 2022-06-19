@@ -18,7 +18,7 @@ import CardClass from './CardClass';
 
 import {useStore} from '../services/zustandContext';
 
-const cardDefinitions = CardClass.getCardDefinitions();
+const cardDefinitions = CardClass.cardDefinitions;
 
 const cardAspect = 400 / 280;
 const cardWidth = Dimensions.get('window').width / 2 - 30;
