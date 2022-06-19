@@ -21,6 +21,8 @@ const piles = [
   'All Cards',
   'Current Hand',
   'Coming up',
+  // 'All coming up today',
+  // 'All coming up this week',
   'Backburner',
   'Inactive',
 ];

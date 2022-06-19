@@ -8,14 +8,6 @@ FontAwesome.loadFont();
 const Card = props => {
   return (
     <View style={styles.container}>
-      <FontAwesome
-        style={styles.icon}
-        name="close"
-        size={40}
-        onPress={() => {
-          props.delete();
-        }}
-      />
       <Text style={styles.cardText}>
         {props.name?.toString() || 'crd name here'}
       </Text>

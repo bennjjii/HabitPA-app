@@ -1,3 +1,5 @@
+import Card from '../../components/CardClass';
+
 const Day = {
   Monday: 'Monday',
   Tuesday: 'Tuesday',
@@ -51,6 +53,17 @@ module.exports = [
       taperIn: false,
     },
   },
+  new Card({
+    backburner: true,
+    code: 'EW',
+    name: 'Boxing2',
+    parameters: {
+      dayOfWeek: {
+        Monday: true,
+        Thursday: true,
+      },
+    },
+  }),
   {
     uuid: 2,
     current: true,

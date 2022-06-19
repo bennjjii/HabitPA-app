@@ -20,12 +20,12 @@ import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import {TimeOfDay, Day} from '../utilities/enums';
-import CardClass from './CardClass';
+import Card from './CardClass';
 const cardAspect = 400 / 280;
 const cardWidth = 350;
 const cardHeight = cardWidth * cardAspect;
 
-const cardDefinitions = CardClass.getCardDefinitions();
+const cardDefinitions = Card.getCardDefinitions();
 
 const checkForParam = (modalCode, paramName) => {
   return cardDefinitions[modalCode]
@@ -45,7 +45,7 @@ const checkForParam = (modalCode, paramName) => {
 const AddOrEditCardForm = props => {
   const {addCardToDeck, hideModalAddCard, modalCode, cardUnderInspection} =
     useStore();
-
+  console.log('Card under inspection', cardUnderInspection);
   const {
     register,
     handleSubmit,
@@ -55,9 +55,7 @@ const AddOrEditCardForm = props => {
     setValue,
     getValues,
   } = useForm({
-    defaultValues: cardUnderInspection
-      ? cardUnderInspection
-      : CardClass.getBlankCard(),
+    defaultValues: cardUnderInspection ? cardUnderInspection : new Card(),
   });
 
   const [date, setDate] = useState(
@@ -70,6 +68,7 @@ const AddOrEditCardForm = props => {
   //set up year date spinner
   console.log('cui', cardUnderInspection);
   const initialValues =
+    //needs resolving
     // cardUnderInspection
     // ? [
     //     {
@@ -107,7 +106,7 @@ const AddOrEditCardForm = props => {
 
     hideModalAddCard();
     addCardToDeck(
-      new CardClass({
+      new Card({
         code: modalCode,
         name: formData.name,
         desc: formData.desc,
@@ -476,7 +475,9 @@ const AddOrEditCardForm = props => {
             </View>
           )}
         </View>
-        <Button onPress={handleSubmit(onSubmit)}>ADD NEW CARD</Button>
+        <Button onPress={handleSubmit(onSubmit)}>
+          {cardUnderInspection ? 'SAVE' : 'ADD NEW CARD'}
+        </Button>
       </View>
     </Pressable>
   );
