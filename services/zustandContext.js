@@ -43,7 +43,18 @@ export const useStore = create(
             ],
           };
         }),
-      editCard: updatedCard => {},
+      editCard: updatedCard => {
+        let tempDeck = get().deck;
+        tempDeck[
+          tempDeck
+            .map((x, i) => [i, x])
+            .filter(x => x[1].uuid == updatedCard.uuid)[0][0]
+        ] = updatedCard;
+        //because we splice, and zustand only shallow evaluates the object for changes, this doesn't trigger an update
+        //bodgy workaround...
+        set(state => ({deck: []}));
+        set(state => ({deck: tempDeck}));
+      },
       deleteCardFromDeck: cardToDelete => {
         set(state => {
           return {
@@ -183,9 +194,12 @@ export const useStore = create(
           console.log('\n');
           console.log('-----------------------------');
           let mergedCard = _.flatMap(item);
-          Object.keys(mergedCard).forEach(item2 => {
-            console.log(mergedCard[item2]);
+          Object.keys(mergedCard).forEach((item2, index) => {
+            if (index !== 7) {
+              console.log(mergedCard[item2]);
+            }
           });
+          console.log(item.parameters);
           console.log('-----------------------------');
         });
       },

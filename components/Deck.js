@@ -47,6 +47,7 @@ import AddOrEditCardForm from './AddOrEditCardForm';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
+import {Button} from 'react-native-paper';
 
 // import {
 //   getConnection,
@@ -99,20 +100,26 @@ const Deck = () => {
   };
 
   useEffect(() => {
-    console.log('updating deck');
+    console.log('updating deck cos history changed');
     setFilteredDeck(getFilteredDeck());
   }, [history]);
 
   useEffect(() => {
-    console.log('updating deck');
+    console.log('updating deck cos deck changed');
     setFilteredDeck(getFilteredDeck());
   }, [deck]);
+
+  useEffect(() => {
+    console.log('Card under inspection', cardUnderInspection);
+    console.log('Logged deck', deck[2]);
+  }, [cardUnderInspection]);
 
   const manualUpdate = () => {
     console.log('manual update');
     setFilteredDeck(getFilteredDeck());
   };
 
+  // const deckSub = useStore.subscribe(manualUpdate);
   const gesture = Gesture.Pan()
     .onUpdate(event => {
       translationX.value = event.translationX;
@@ -199,6 +206,9 @@ const Deck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* <Button icon="camera" mode="elevated" onPress={() => manualUpdate()}>
+        Press me
+      </Button> */}
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (

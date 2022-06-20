@@ -42,7 +42,7 @@ import Home from './components/Home';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const contextListener = useStore.subscribe(console.log);
+  //const contextListener = useStore.subscribe(console.log);
   const {deck} = useStore();
   // const dbCallback = useCallback(async () => {
   //   try {

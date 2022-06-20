@@ -65,7 +65,6 @@ const Piles = () => {
     switch (pileType) {
       case 'All Cards':
         setCardsToRender(deck);
-
         break;
       case 'Current Hand':
         setCardsToRender(getFilteredDeck());
@@ -80,10 +79,7 @@ const Piles = () => {
         setCardsToRender(getInactiveDeck());
         break;
     }
-    console.log('InactiveDeck', getInactiveDeck());
-    console.log('InactiveDeck', getBackburnerDeck());
-    console.log('InactiveDeck', getComingUpDeck());
-  }, [pileType]);
+  }, [pileType, deck]);
 
   return (
     <SafeAreaView style={styles.container}>
