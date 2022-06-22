@@ -21,6 +21,7 @@ import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {Picker} from '@react-native-picker/picker';
+import MonthDayPicker from './MonthDayPicker';
 
 import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
@@ -40,6 +41,13 @@ const checkForParam = (modalCode, paramName) => {
 };
 
 const AddOrEditCardForm = props => {
+  // let tempDimArray = [];
+  // for (let i = 0; i < 31; i++) {
+  //   tempDimArray.push(false);
+  // }
+  // // console.log(tempDimArray.length);
+  // tempDimArray[7] = true;
+
   useEffect(() => {
     console.log('Errors: ', errors);
   }, [errors]);
@@ -280,6 +288,7 @@ const AddOrEditCardForm = props => {
           )}
 
           {/* day of week */}
+          {/* should just be M, T W T F S S checkboxes */}
           {checkForParam(modalCode, 'dayOfWeek') && (
             <View style={styles.checkboxContainer}>
               {daysOfWeek.map(day => {
@@ -320,7 +329,7 @@ const AddOrEditCardForm = props => {
           )}
 
           {/* day of month */}
-          {checkForParam(modalCode, 'dayOfMonth') && (
+          {/* {checkForParam(modalCode, 'dayOfMonth') && (
             <View style={styles.dayOfMonth}>
               <Controller
                 name="parameters.dayOfMonth"
@@ -340,7 +349,29 @@ const AddOrEditCardForm = props => {
                   />
                 )}
               />
-              {errors.parameters.dayOfMonth && <Text>Number required</Text>}
+              {errors.parameters?.dayOfMonth && <Text>Number required</Text>}
+              <MonthDayPicker
+                values={daysInMonthData}
+                onValueChange={setDaysInMonthData}
+              />
+            </View>
+          )} */}
+
+          {checkForParam(modalCode, 'dayOfMonth') && (
+            <View style={styles.dayOfMonth}>
+              <Controller
+                name="parameters.dayOfMonth"
+                control={control}
+                rules={{
+                  validate: v => v.some(element => element),
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <MonthDayPicker values={value} onValueChange={onChange} />
+                )}
+              />
+              {errors.parameters?.dayOfMonth && (
+                <Text>Please select one or more days</Text>
+              )}
             </View>
           )}
 

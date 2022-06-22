@@ -44,6 +44,7 @@ import NoCards from './NoCards';
 import BackOfCard from './BackOfCard';
 import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
+import CustomCheckbox from './CustomCheckBox';
 import {useQuery, gql} from '@apollo/client';
 
 import {useStore} from '../services/zustandContext';
@@ -209,6 +210,7 @@ const Deck = () => {
       {/* <Button icon="camera" mode="elevated" onPress={() => manualUpdate()}>
         Press me
       </Button> */}
+      <CustomCheckbox label={'m'} />
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (

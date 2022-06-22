@@ -42,10 +42,6 @@ const BackOfCard = props => {
           name="trash-o"
           size={40}
           onPress={() => {
-            // console.log(
-            //   'Card under inspection to be deleted',
-            //   cardUnderInspection,
-            // );
             deleteCardFromDeck(props.card);
             hideModalBackOfCard();
           }}
