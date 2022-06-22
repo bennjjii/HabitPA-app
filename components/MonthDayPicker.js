@@ -9,7 +9,7 @@ for (let i = 0; i < daysInMonth; i++) {
   daysInMonthArr.push(i + 1);
   initState.push(false);
 }
-initState[20] = true;
+
 // console.log('daysInMonthArr', daysInMonthArr);
 // console.log('initState', initState, initState.length);
 

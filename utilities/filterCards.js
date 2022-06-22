@@ -136,17 +136,11 @@ export default (deck, history, timesOfDay) => {
         //if we are on the day of the month that is specified, return true, else return false
         //because we have not implemented multiple dates yet, both
         //functionalities are implemented
-        if (Array.isArray(card.parameters.dayOfMonth)) {
-          isReturned = card.parameters.dayOfMonth.some(date => {
-            return date === new Date().getDate();
-          });
-        } else {
-          console.log('checking');
-          console.log(card.parameters.dayOfMonth);
-          console.log(new Date().getDate());
-          isReturned =
-            parseInt(card.parameters.dayOfMonth) === new Date().getDate();
-        }
+
+        isReturned = card.parameters.dayOfMonth.some((date, index) => {
+          return date && index === new Date().getDate() - 1;
+        });
+
         break;
       case 'XpM':
         //if we count x or more cards since the start of the month return false, else return true
