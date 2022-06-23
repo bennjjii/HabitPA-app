@@ -86,7 +86,13 @@ const Piles = () => {
       {/* <ScrollView style={styles.scrView}> */}
       <View style={styles.cardFlexContainer}>
         {piles.map(pile => {
-          return <Pile name={pile} setPileType={setPileType} />;
+          return (
+            <Pile
+              name={pile}
+              setPileType={setPileType}
+              key={'Pilekey' + pile}
+            />
+          );
         })}
       </View>
       {/* </ScrollView> */}

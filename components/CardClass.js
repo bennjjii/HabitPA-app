@@ -52,7 +52,7 @@ export default class Card {
         20: false,
         21: false,
         22: false,
-        23: true,
+        23: false,
         24: false,
         25: false,
         26: false,

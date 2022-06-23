@@ -46,47 +46,7 @@ for (let i = 0; i < 31; i++) {
   daysInMonthLabels.push(i + 1);
 }
 
-const daysInMonthInitData = {
-  1: false,
-  2: false,
-  3: false,
-  4: false,
-  5: false,
-  6: false,
-  7: false,
-  8: false,
-  9: false,
-  10: false,
-  11: false,
-  12: false,
-  13: false,
-  14: false,
-  15: false,
-  16: false,
-  17: false,
-  18: false,
-  19: false,
-  20: false,
-  21: false,
-  22: false,
-  23: true,
-  24: false,
-  25: false,
-  26: false,
-  27: false,
-  28: false,
-  29: false,
-  30: false,
-  31: false,
-};
-
 const AddOrEditCardForm = props => {
-  let [ballPickerTest, setBallPickerTest] = useState({...daysInMonthInitData});
-
-  useEffect(() => {
-    console.log('ball picker data', ballPickerTest);
-  }, [ballPickerTest]);
-
   useEffect(() => {
     console.log('Errors: ', errors);
   }, [errors]);
@@ -328,7 +288,7 @@ const AddOrEditCardForm = props => {
 
           {/* day of week */}
           {/* should just be M, T W T F S S checkboxes */}
-          {checkForParam(modalCode, 'dayOfWeek') && (
+          {/* {checkForParam(modalCode, 'dayOfWeek') && (
             <View style={styles.checkboxContainer}>
               {daysOfWeek.map(day => {
                 return (
@@ -365,37 +325,34 @@ const AddOrEditCardForm = props => {
                 <Text>Please select a day of the week</Text>
               )}
             </View>
+          )} */}
+
+          {checkForParam(modalCode, 'dayOfWeek') && (
+            <View style={styles.checkboxContainer}>
+              <Controller
+                name={`parameters.dayOfWeek`}
+                control={control}
+                rules={{
+                  validate: v => {
+                    return Object.keys(getValues('parameters.dayOfWeek')).some(
+                      day => {
+                        return getValues('parameters.dayOfWeek')[day];
+                      },
+                    );
+                  },
+                }}
+                render={({field: {onChange, value}}) => (
+                  <BallPicker values={value} onValueChange={onChange} />
+                )}
+              />
+
+              {errors.parameters?.dayOfWeek && (
+                <Text>Please select a day of the week</Text>
+              )}
+            </View>
           )}
 
           {/* day of month */}
-          {/* {checkForParam(modalCode, 'dayOfMonth') && (
-            <View style={styles.dayOfMonth}>
-              <Controller
-                name="parameters.dayOfMonth"
-                control={control}
-                rules={{
-                  required: true,
-                  // validate: v => String(v).length === 1,
-                  pattern: /^(3[01]|[12][0-9]|[1-9])$/g,
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    placeholder="day of month"
-                    style={styles.textInput}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                )}
-              />
-              {errors.parameters?.dayOfMonth && <Text>Number required</Text>}
-              <MonthDayPicker
-                values={daysInMonthData}
-                onValueChange={setDaysInMonthData}
-              />
-            </View>
-          )} */}
-
           {checkForParam(modalCode, 'dayOfMonth') && (
             <View style={styles.dayOfMonth}>
               <Controller
@@ -417,11 +374,6 @@ const AddOrEditCardForm = props => {
               )}
             </View>
           )}
-
-          {/* <BallPicker
-            values={ballPickerTest}
-            onValueChange={setBallPickerTest}
-          /> */}
 
           {/* day of year */}
           {checkForParam(modalCode, 'dayOfYear') && (
@@ -526,7 +478,7 @@ const AddOrEditCardForm = props => {
           )}
 
           {/* time of day */}
-          {checkForParam(modalCode, 'timeOfDay') && (
+          {/* {checkForParam(modalCode, 'timeOfDay') && (
             <View style={styles.checkboxContainer}>
               {timesOfDay.map(time => {
                 return (
@@ -559,6 +511,30 @@ const AddOrEditCardForm = props => {
                   </>
                 );
               })}
+              {errors.parameters?.timeOfDay && (
+                <Text>Please select a time of day</Text>
+              )}
+            </View>
+          )} */}
+          {checkForParam(modalCode, 'timeOfDay') && (
+            <View style={styles.checkboxContainer}>
+              <Controller
+                name={`parameters.timeOfDay`}
+                control={control}
+                rules={{
+                  validate: v => {
+                    return Object.keys(getValues('parameters.timeOfDay')).some(
+                      day => {
+                        return getValues('parameters.timeOfDay')[day];
+                      },
+                    );
+                  },
+                }}
+                render={({field: {onChange, value}}) => (
+                  <BallPicker values={value} onValueChange={onChange} />
+                )}
+              />
+
               {errors.parameters?.timeOfDay && (
                 <Text>Please select a time of day</Text>
               )}

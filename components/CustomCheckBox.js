@@ -33,10 +33,15 @@ const CustomCheckbox = ({label, value, onValueChange, index, readOnly}) => {
       <View
         style={[
           styles.view,
+          label.length > 2 ? {} : {width: 35},
           clicked ? styles.pressedBackground : styles.unpressedBackground,
         ]}>
-        <Text style={clicked ? styles.pressedText : styles.unpressedText}>
-          {label.toString().toUpperCase()}
+        <Text
+          style={[
+            label.length > 2 ? {paddingHorizontal: 20} : {},
+            clicked ? styles.pressedText : styles.unpressedText,
+          ]}>
+          {label.toString()}
         </Text>
       </View>
     </TouchableOpacity>
@@ -46,14 +51,16 @@ const CustomCheckbox = ({label, value, onValueChange, index, readOnly}) => {
 export default CustomCheckbox;
 
 const styles = StyleSheet.create({
-  unpressedText: {},
+  unpressedText: {
+    color: 'grey',
+  },
   pressedText: {
     color: 'white',
     fontWeight: '400',
   },
 
   view: {
-    width: 35,
+    // width: 35,
     height: 35,
     justifyContent: 'center',
     alignItems: 'center',
@@ -65,7 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
   },
   unpressedBackground: {
-    backgroundColor: 'white',
+    backgroundColor: 'whitesmoke',
     borderRadius: 17,
   },
 });
