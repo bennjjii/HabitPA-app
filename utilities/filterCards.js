@@ -133,13 +133,22 @@ export default (deck, history, timesOfDay) => {
         );
         break;
       case 'EM':
-        //if we are on the day of the month that is specified, return true, else return false
+        //if we are on the day of the month that is specified, return true, el`se return false
         //because we have not implemented multiple dates yet, both
         //functionalities are implemented
 
-        isReturned = card.parameters.dayOfMonth.some((date, index) => {
-          return date && index === new Date().getDate() - 1;
-        });
+        // isReturned = card.parameters.dayOfMonth.some((date, index) => {
+        //   return date && index === new Date().getDate() - 1;
+        // });
+
+        isReturned = Object.keys(card.parameters.dayOfMonth).some(
+          (key, index) => {
+            return (
+              card.parameters.dayOfMonth[key] &&
+              parseInt(key) == new Date().getDate()
+            );
+          },
+        );
 
         break;
       case 'XpM':

@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-const CustomCheckbox = ({label, value, onValueChange, index}) => {
+const CustomCheckbox = ({label, value, onValueChange, index, readOnly}) => {
   const [clicked, setClicked] = useState(value || false);
 
   // useEffect(() => {
@@ -26,7 +26,9 @@ const CustomCheckbox = ({label, value, onValueChange, index}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        setClicked(!clicked);
+        if (!readOnly) {
+          setClicked(!clicked);
+        }
       }}>
       <View
         style={[

@@ -2,60 +2,32 @@ import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CustomCheckbox from './CustomCheckBox';
 
-const daysInMonth = 31;
-const daysInMonthArr = [];
-let initState = [];
-for (let i = 0; i < daysInMonth; i++) {
-  daysInMonthArr.push(i + 1);
-  initState.push(false);
-}
-
-// console.log('daysInMonthArr', daysInMonthArr);
-// console.log('initState', initState, initState.length);
-
-const BallPicker = ({values, onValueChange}) => {
-  // console.log('values', values);
-  const [intValues, setIntValues] = useState(initState);
+const BallPicker = ({values, onValueChange, readOnly}) => {
+  const [intValues, setIntValues] = useState(values);
 
   useEffect(() => {
-    if (values) {
-      setIntValues(values);
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   // set_values(values);
-  // }, [values]);
-
-  useEffect(() => {
-    // console.log('_values useEffect');
-    // console.log('_values', intValues);
     if (onValueChange) {
-      onValueChange([...intValues]);
+      onValueChange(intValues);
     }
   }, [intValues]);
 
   const setValueWithIndex = (value, index) => {
-    // console.log('Set value with index');
-    // console.log('SvWi intValues', intValues);
-    // console.log('SvWi', value, index);
-    let tempArray = intValues;
-    // console.log('ta1', tempArray);
-    tempArray[index] = value;
-    // console.log('ta2', tempArray);
-    setIntValues([...tempArray]);
+    let tempObj = intValues;
+    tempObj[index] = value;
+    setIntValues({...tempObj});
   };
 
   return (
     <View style={styles.container}>
-      {daysInMonthArr.map(day => {
+      {Object.keys(values).map((key, index) => {
+        // console.log(intValues, key, index);
         return (
           <CustomCheckbox
-            label={day}
-            key={'MonthPickerKey:' + (day - 1)}
-            value={intValues[day - 1]}
+            label={key.toString()}
+            key={'MonthPickerKey:' + key}
+            value={intValues[key]}
             onValueChange={setValueWithIndex}
-            index={day - 1}
+            index={key}
           />
         );
       })}

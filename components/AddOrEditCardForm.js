@@ -21,7 +21,7 @@ import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {Picker} from '@react-native-picker/picker';
-import BallPicker from './MonthDayPicker';
+import BallPicker from './BallPicker';
 
 import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
@@ -40,13 +40,52 @@ const checkForParam = (modalCode, paramName) => {
     : false;
 };
 
+//build an array of labels for BallPicker
+const daysInMonthLabels = [];
+for (let i = 0; i < 31; i++) {
+  daysInMonthLabels.push(i + 1);
+}
+
+const daysInMonthInitData = {
+  1: false,
+  2: false,
+  3: false,
+  4: false,
+  5: false,
+  6: false,
+  7: false,
+  8: false,
+  9: false,
+  10: false,
+  11: false,
+  12: false,
+  13: false,
+  14: false,
+  15: false,
+  16: false,
+  17: false,
+  18: false,
+  19: false,
+  20: false,
+  21: false,
+  22: false,
+  23: true,
+  24: false,
+  25: false,
+  26: false,
+  27: false,
+  28: false,
+  29: false,
+  30: false,
+  31: false,
+};
+
 const AddOrEditCardForm = props => {
-  // let tempDimArray = [];
-  // for (let i = 0; i < 31; i++) {
-  //   tempDimArray.push(false);
-  // }
-  // // console.log(tempDimArray.length);
-  // tempDimArray[7] = true;
+  let [ballPickerTest, setBallPickerTest] = useState({...daysInMonthInitData});
+
+  useEffect(() => {
+    console.log('ball picker data', ballPickerTest);
+  }, [ballPickerTest]);
 
   useEffect(() => {
     console.log('Errors: ', errors);
@@ -363,7 +402,11 @@ const AddOrEditCardForm = props => {
                 name="parameters.dayOfMonth"
                 control={control}
                 rules={{
-                  validate: v => v.some(element => element),
+                  validate: v => {
+                    return Object.keys(v).some(key => {
+                      return v[key];
+                    });
+                  },
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
                   <BallPicker values={value} onValueChange={onChange} />
@@ -374,6 +417,11 @@ const AddOrEditCardForm = props => {
               )}
             </View>
           )}
+
+          {/* <BallPicker
+            values={ballPickerTest}
+            onValueChange={setBallPickerTest}
+          /> */}
 
           {/* day of year */}
           {checkForParam(modalCode, 'dayOfYear') && (
