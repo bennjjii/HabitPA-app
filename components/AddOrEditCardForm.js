@@ -21,7 +21,7 @@ import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {Picker} from '@react-native-picker/picker';
-import MonthDayPicker from './MonthDayPicker';
+import BallPicker from './MonthDayPicker';
 
 import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
@@ -366,7 +366,7 @@ const AddOrEditCardForm = props => {
                   validate: v => v.some(element => element),
                 }}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <MonthDayPicker values={value} onValueChange={onChange} />
+                  <BallPicker values={value} onValueChange={onChange} />
                 )}
               />
               {errors.parameters?.dayOfMonth && (

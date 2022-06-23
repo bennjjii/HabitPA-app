@@ -13,7 +13,7 @@ for (let i = 0; i < daysInMonth; i++) {
 // console.log('daysInMonthArr', daysInMonthArr);
 // console.log('initState', initState, initState.length);
 
-const MonthDayPicker = ({values, onValueChange}) => {
+const BallPicker = ({values, onValueChange}) => {
   // console.log('values', values);
   const [intValues, setIntValues] = useState(initState);
 
@@ -63,7 +63,7 @@ const MonthDayPicker = ({values, onValueChange}) => {
   );
 };
 
-export default MonthDayPicker;
+export default BallPicker;
 
 const styles = StyleSheet.create({
   container: {
