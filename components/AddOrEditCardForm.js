@@ -8,16 +8,8 @@
 //and formData/defaultValues == flat list
 
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  Keyboard,
-  Text,
-  Pressable,
-  TextInput,
-} from 'react-native';
-import {Button} from 'react-native-paper';
-import CheckBox from '@react-native-community/checkbox';
+import {StyleSheet, View, Keyboard, Text, Pressable} from 'react-native';
+import {Button, TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {Picker} from '@react-native-picker/picker';
@@ -107,9 +99,6 @@ const AddOrEditCardForm = props => {
     {id: 'day', label: '', min: 1, max: 31},
     {id: 'month', label: '', min: 1, max: 12},
   ]);
-  //set up checkboxes
-  const timesOfDay = [...Object.keys(TimeOfDay)];
-  const daysOfWeek = [...Object.keys(Day)];
 
   const [numberOfTimes, setNumberOfTimes] = useState(
     cardUnderInspection
@@ -127,7 +116,7 @@ const AddOrEditCardForm = props => {
       let cardToSubmit = {
         ...cardUnderInspection,
         name: formData.name,
-        desc: formData.desc,
+        // desc: formData.desc,
         parameters: {
           timeOfDay: {
             ...formData.parameters.timeOfDay,
@@ -159,7 +148,7 @@ const AddOrEditCardForm = props => {
         new Card({
           code: modalCode,
           name: formData.name,
-          desc: formData.desc,
+          // desc: formData.desc,
           backburner: formData.backburner,
           current: formData.current,
           parameters: {
@@ -215,18 +204,22 @@ const AddOrEditCardForm = props => {
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
-                style={styles.textInput}
+                label={errors.name ? 'please enter a name' : 'habit name'}
+                error={errors.name}
+                dense={true}
+                mode="outlined"
+                style={styles.textInput2}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                placeholder="card title"
+                // placeholder="card title"
               />
             )}
           />
           {errors.name && <Text>Name required</Text>}
 
           {/* desc */}
-          <Controller
+          {/* <Controller
             name="desc"
             control={control}
             render={({field: {onChange, onBlur, value}}) => (
@@ -238,7 +231,7 @@ const AddOrEditCardForm = props => {
                 placeholder="description of habit or task"
               />
             )}
-          />
+          /> */}
 
           {/* number of times */}
           {checkForParam(modalCode, 'numberOfTimes') && (
@@ -583,6 +576,15 @@ const styles = StyleSheet.create({
     borderColor: colours.text,
     borderRadius: 5,
     padding: 5,
+  },
+  textInput2: {
+    // backgroundColor: colours.background,
+    width: 250,
+    // margin: 2,
+    // borderWidth: 1,
+    // borderColor: colours.text,
+    // borderRadius: 5,
+    // padding: 5,
   },
   numberOfTimesContainer: {
     width: 200,

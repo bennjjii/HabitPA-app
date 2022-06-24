@@ -11,7 +11,7 @@ export default class Card {
     this.backburner = newCard?.backburner || false;
     this.code = newCard?.code || undefined;
     this.name = newCard?.name || '';
-    this.desc = newCard?.desc || ''; // remove
+    // this.desc = newCard?.desc || ''; // remove
     //parameters
     this.parameters = {
       timeOfDay: {

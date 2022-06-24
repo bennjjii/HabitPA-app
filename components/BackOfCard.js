@@ -11,6 +11,7 @@ FontAwesome.loadFont();
 
 const BackOfCard = props => {
   const {
+    history,
     deleteCardFromDeck,
     cardUnderInspection,
     hideModalBackOfCard,
