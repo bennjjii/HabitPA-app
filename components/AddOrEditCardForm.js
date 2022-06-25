@@ -203,6 +203,7 @@ const AddOrEditCardForm = props => {
               required: true,
             }}
             render={({field: {onChange, onBlur, value}}) => (
+              //Change this to just an unoutlined text field with ios blue cursor
               <TextInput
                 label={errors.name ? 'please enter a name' : 'habit name'}
                 error={errors.name}

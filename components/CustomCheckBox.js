@@ -1,7 +1,14 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-const CustomCheckbox = ({label, value, onValueChange, index, readOnly}) => {
+const CustomCheckbox = ({
+  label,
+  value,
+  onValueChange,
+  index,
+  readOnly,
+  completed,
+}) => {
   const [clicked, setClicked] = useState(value || false);
 
   // useEffect(() => {
@@ -35,11 +42,13 @@ const CustomCheckbox = ({label, value, onValueChange, index, readOnly}) => {
           styles.view,
           label.length > 2 ? {} : {width: 35},
           clicked ? styles.pressedBackground : styles.unpressedBackground,
+          completed ? styles.completedBackground : {},
         ]}>
         <Text
           style={[
             label.length > 2 ? {paddingHorizontal: 20} : {},
             clicked ? styles.pressedText : styles.unpressedText,
+            completed ? styles.pressedText : styles.unpressedText,
           ]}>
           {label.toString()}
         </Text>
@@ -73,6 +82,10 @@ const styles = StyleSheet.create({
   },
   unpressedBackground: {
     backgroundColor: 'whitesmoke',
+    borderRadius: 17,
+  },
+  completedBackground: {
+    backgroundColor: '#3DC55E',
     borderRadius: 17,
   },
 });

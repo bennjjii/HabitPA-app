@@ -2,6 +2,8 @@ import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React from 'react';
 import {useStore} from '../services/zustandContext';
 
+import ProgressBox from './ProgressBox';
+
 import colours from '../assets/colours/colours';
 
 const {width, height} = Dimensions.get('window');
@@ -11,7 +13,6 @@ FontAwesome.loadFont();
 
 const BackOfCard = props => {
   const {
-    history,
     deleteCardFromDeck,
     cardUnderInspection,
     hideModalBackOfCard,
@@ -49,8 +50,8 @@ const BackOfCard = props => {
         />
       </View>
       <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
-      <Text>X times per day etc...</Text>
-      <Text>Progress this week...</Text>
+
+      <ProgressBox card={props.card} />
     </View>
   );
 };
