@@ -115,6 +115,7 @@ export default class Card {
         timeOfDay: [undefined],
       },
       progressFunction: (card, history, parameters) => {
+        //soft start
         //what percentage of last 7 days has habit been observed
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
         return Math.min(
@@ -126,7 +127,6 @@ export default class Card {
                 new Date().setDate(new Date().getDate() - ageOfCardInDays),
               ).setHours(0, 0, 0, 0),
             ),
-            new Date(new Date().setHours(0, 0, 0, 0)),
           ) / ageOfCardInDays,
           1,
         );
@@ -141,6 +141,7 @@ export default class Card {
         numberOfTimes: undefined,
       },
       progressFunction: (card, history, parameters) => {
+        //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
         return Math.min(
           countCardsAfterDate(
@@ -151,7 +152,6 @@ export default class Card {
                 new Date().setDate(new Date().getDate() - ageOfCardInDays),
               ).setHours(0, 0, 0, 0),
             ),
-            new Date(new Date().setHours(0, 0, 0, 0)),
           ) /
             (parameters.numberOfTimes * ageOfCardInDays),
           1,
@@ -170,6 +170,7 @@ export default class Card {
         timeOfDay: [],
       },
       progressFunction: (card, history, parameters) => {
+        //soft start
         //for every time you contracted you would in the past month, how many did you do?
         let filteredHistory = history.filter(instance => {
           return (instance.uuid = card.uuid);
@@ -216,6 +217,7 @@ export default class Card {
         numberOfTimes: undefined,
       },
       progressFunction: (card, history, parameters) => {
+        //soft start
         //cond 1 - if card created after this Monday, pro rata times contracted vs times actual
         //cond 2 - if card created before this Monday, but after prev Monday, pro rata first week, pro rata current week, average
         //cond 3 - if card created before prev Monday, pro rata this week, average this week and full last week
@@ -307,21 +309,20 @@ export default class Card {
         numberOfTimes: undefined,
       },
       progressFunction: (card, history, parameters) => {
+        //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
-        let accActual = countCardsAfterDate(
+        const accActual = countCardsAfterDate(
           history,
           card,
           new Date(
-            new Date(new Date().setDate(new Date().getDate() - 14)).setHours(
-              0,
-              0,
-              0,
-              0,
-            ),
+            new Date(
+              new Date().setDate(new Date().getDate() - ageOfCardInDays),
+            ).setHours(0, 0, 0, 0),
           ),
-          new Date(new Date().setHours(0, 0, 0, 0)),
         );
-        return Math.min(accActual / (parameters.numberOfTimes * 2), 1);
+        const accContracted =
+          (ageOfCardInDays / 14) * (parameters.numberOfTimes * 2);
+        return Math.min(accActual / accContracted, 1);
       },
     },
     EM: {
@@ -333,12 +334,14 @@ export default class Card {
         dayOfMonth: [],
       },
       progressFunction: (card, history, parameters) => {
+        //soft start
+        const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
         let filteredHistory = history.filter(instance => {
           return (instance.uuid = card.uuid);
         });
         let accContracted = 0;
         let accActual = 0;
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < ageOfCardInDays; i++) {
           let date = new Date(new Date().setDate(new Date().getDate() - 1 - i));
           if (parameters.dayOfMonth[date.getDate()]) {
             accContracted++;
@@ -346,7 +349,7 @@ export default class Card {
           if (
             parameters.dayOfMonth[date.getDate()] &&
             filteredHistory.some(instance => {
-              instance.timestamp.getDate() === date.getDate();
+              return isSameDay(instance.timestamp, date);
             })
           ) {
             accActual++;
@@ -364,11 +367,17 @@ export default class Card {
         numberOfTimes: undefined,
       },
       progressFunction: (card, history, parameters) => {
-        //soft start*, if card newer than start of previous month, don't count prev month
-        let firstOfThisMonth = new Date(
+        //soft start, if card newer than start of previous month, don't count prev month
+        //three conditions
+        //cond 1 - card newer than start of this month - pro rata days so far
+        //cond 2 - card created during previous month - pro rata days this month, pro rata days last month, average
+        //cond 3 - card created before previous month - pro rata days this month, count all days last month, average
+        const ageOfCardInDays = getAgeOfCardInDays(card.created);
+        const firstOfThisMonth = new Date(
           new Date(new Date().setDate(1)).setHours(0, 0, 0, 0),
         );
-        let firstOfMonthMinus1 = new Date(
+        const daysSinceFirstOfMonth = getAgeOfCardInDays(firstOfThisMonth);
+        const firstOfMonthMinus1 = new Date(
           new Date(new Date().setMonth(new Date().getMonth() - 1, 1)).setHours(
             0,
             0,
@@ -376,31 +385,61 @@ export default class Card {
             0,
           ),
         );
-        let accActualThisMonthSoFar = countCardsAfterDate(
-          history,
-          card,
-          firstOfThisMonth,
-          new Date(new Date().setHours(0, 0, 0, 0)),
-        );
-        let accActualPreviousMonth = countCardsAfterDate(
-          history,
-          card,
-          firstOfMonthMinus1,
-          firstOfThisMonth,
-        );
-        let accContractedThisMonthSoFar =
-          parameters.numberOfTimes *
-          (new Date().getDate() /
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth() + 1,
-              0,
-            ).getDate());
-        return Math.min(
-          (accActualThisMonthSoFar + accActualPreviousMonth) /
-            (accContractedThisMonthSoFar + parameters.numberOfTimes),
-          1,
-        );
+        if (ageOfCardInDays <= daysSinceFirstOfMonth) {
+          const accActualThisMonth = countCardsAfterDate(
+            history,
+            card,
+            card.created,
+          );
+          const accContractedThisMonth =
+            parameters.numberOfTimes * (ageOfCardInDays / 30);
+          return Math.min(accActualThisMonth / accContractedThisMonth, 1);
+        } else if (ageOfCardInDays <= daysSinceFirstOfMonth + 30) {
+          const accActualThisMonth = countCardsAfterDate(
+            history,
+            card,
+            firstOfThisMonth,
+          );
+          const accContractedThisMonth =
+            parameters.numberOfTimes * (daysSinceFirstOfMonth / 30);
+          const accActualLastMonth = countCardsAfterDate(
+            history,
+            card,
+            card.created,
+            firstOfThisMonth,
+          );
+          const accContractedLastMonth =
+            parameters.numberOfTimes *
+            ((ageOfCardInDays - daysSinceFirstOfMonth) / 30);
+
+          return Math.min(
+            (accActualThisMonth / accContractedThisMonth +
+              accActualLastMonth / accContractedLastMonth) /
+              2,
+            1,
+          );
+        } else {
+          const accActualThisMonth = countCardsAfterDate(
+            history,
+            card,
+            firstOfThisMonth,
+          );
+          const accContractedThisMonth =
+            parameters.numberOfTimes * (daysSinceFirstOfMonth / 30);
+          const accActualLastMonth = countCardsAfterDate(
+            history,
+            card,
+            firstOfMonthMinus1,
+            firstOfThisMonth,
+          );
+          const accContractedLastMonth = parameters.numberOfTimes;
+          return Math.min(
+            (accActualThisMonth / accContractedThisMonth +
+              accActualLastMonth / accContractedLastMonth) /
+              2,
+            1,
+          );
+        }
       },
     },
     RxM: {
@@ -412,21 +451,21 @@ export default class Card {
         numberOfTimes: undefined,
       },
       progressFunction: (card, history, parameters) => {
-        //soft start* if card newer than 30 days calculate fraction
+        //soft start if card newer than 30 days calculate fraction
+        const ageOfCardInDays = getAgeOfCardInDays(card.created, 30);
         let accActual = countCardsAfterDate(
           history,
           card,
           new Date(
-            new Date(new Date().setDate(new Date().getDate() - 30)).setHours(
-              0,
-              0,
-              0,
-              0,
-            ),
+            new Date(
+              new Date().setDate(new Date().getDate() - ageOfCardInDays),
+            ).setHours(0, 0, 0, 0),
           ),
-          new Date(new Date().setHours(0, 0, 0, 0)),
         );
-        return Math.min(accActual / parameters.numberOfTimes, 1);
+        return Math.min(
+          accActual / (parameters.numberOfTimes * (ageOfCardInDays / 30)),
+          1,
+        );
       },
     },
     XiY: {
@@ -439,36 +478,20 @@ export default class Card {
         periodInDays: undefined,
       },
       progressFunction: (card, history, parameters) => {
-        //soft start, if card has been created recently not fair to calculate against whole period
+        //soft start*, if card has been created recently not fair to calculate against whole period
         //should be either since the creation of the card, or rolling function of some kind
-        if (
-          card.created.getTime() >
-          new Date(new Date().setDate(0 - parameters.periodInDays)).getTime()
-        ) {
-          //soft start
-          //scales numberOfTimes by period so far you were able to keep the habit
-          let accContracted =
-            parameters.numberOfTimes *
-            ((new Date().getTime() - card.created.getTime()) /
-              (new Date().getTime() -
-                new Date(new Date().setDate(0 - periodInDays)).getTime()));
-          let accActual = countCardsAfterDate(history, card, card.created);
-          return Math.min(accActual / accContracted, 1);
-        } else {
-          let accActual = countCardsAfterDate(
-            history,
-            card,
-            new Date(
-              new Date(
-                new Date().setDate(
-                  new Date().getDate() - parameters.periodInDays,
-                ),
-              ).setHours(0, 0, 0, 0),
-            ),
-            new Date(new Date().setHours(0, 0, 0, 0)),
-          );
-          return Math.min(accActual / parameters.numberOfTimes, 1);
-        }
+
+        const ageOfCardInDays = getAgeOfCardInDays(
+          card.created,
+          parameters.periodInDays,
+        );
+        const dateStartOfPeriod = new Date(
+          new Date().setDate(new Date().getDate() - ageOfCardInDays),
+        );
+        const accActual = countCardsAfterDate(history, card, dateStartOfPeriod);
+        const accContracted =
+          parameters.numberOfTimes * (ageOfCardInDays / periodInDays);
+        return Math.min(accActual / accContracted, 1);
       },
     },
     XiT: {
@@ -534,20 +557,56 @@ export default class Card {
         },
       },
       progressFunction: (card, history, parameters) => {
-        let filteredHistory = history.filter(instance => {
+        const filteredHistory = history.filter(instance => {
           return (instance.uuid = card.uuid);
         });
-        let completedThisYear = filteredHistory.some(instance => {
-          return (
-            instance.timestamp.getMonth() + 1 === parameters.dayOfYear.month &&
-            instance.timestamp.getDate() === parameters.dayOfYear.day &&
-            instance.timestamp.getFullYear() === new Date().getFullYear()
-          );
-        });
-        if (completedThisYear) {
-          return 1;
+        const ageOfCardInDays = getAgeOfCardInDays(card.created);
+        const firstOfThisYear = new Date(new Date().setMonth(0, 1));
+        const firstOfPrevYear = new Date(
+          new Date(
+            new Date().setFullYear(new Date().getFullYear() - 1),
+          ).setMonth(0, 1),
+        );
+        const daysSinceFirstOfThisYear = getAgeOfCardInDays(firstOfThisYear);
+        const daysSinceFirstOfPrevYear = getAgeOfCardInDays(firstOfPrevYear);
+        if (ageOfCardInDays <= daysSinceFirstOfThisYear) {
+          const completedThisYear = filteredHistory.some(instance => {
+            return (
+              instance.timestamp.getMonth() + 1 ===
+                parameters.dayOfYear.month &&
+              instance.timestamp.getDate() === parameters.dayOfYear.day &&
+              instance.timestamp.getFullYear() === new Date().getFullYear()
+            );
+          });
+          if (completedThisYear) {
+            return 1;
+          } else {
+            return 0;
+          }
         } else {
-          return 0;
+          const completedThisYear = filteredHistory.some(instance => {
+            return (
+              instance.timestamp.getMonth() + 1 ===
+                parameters.dayOfYear.month &&
+              instance.timestamp.getDate() === parameters.dayOfYear.day &&
+              instance.timestamp.getFullYear() === new Date().getFullYear()
+            );
+          });
+          const completedPrevYear = filteredHistory.some(instance => {
+            return (
+              instance.timestamp.getMonth() + 1 ===
+                parameters.dayOfYear.month &&
+              instance.timestamp.getDate() === parameters.dayOfYear.day &&
+              instance.timestamp.getFullYear() === new Date().getFullYear() - 1
+            );
+          });
+          if (completedThisYear && completedPrevYear) {
+            return 1;
+          } else if (completedThisYear || completedPrevYear) {
+            return 0.5;
+          } else {
+            return 0;
+          }
         }
       },
     },
