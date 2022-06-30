@@ -103,10 +103,11 @@ export const useStore = create(
         Evening: [18, 22],
         Night: [22, 23],
       },
-      //this is to transfer state between modals
+      //
+      //
       //modals
-      modalVisibleAddCard: false,
       modalCode: undefined,
+      modalVisibleAddCard: false,
       toggleModalVisibleAddCard: () => {
         set(state => ({modalVisibleAddCard: !state.modalVisibleAddCard}));
       },

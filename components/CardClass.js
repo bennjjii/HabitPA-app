@@ -1,27 +1,11 @@
 import uuid from 'react-native-uuid';
 import countCardsAfterDate from '../utilities/countCardsAfterDate';
+import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
+import CustomCheckbox from './CustomCheckBox';
+import ProgressBarGraph from './ProgressBarGraph';
+import React from 'react';
 
-const DAY_IN_MILLISECONDS = 86400000;
 const YEAR_IN_MILLISECONDS = 31557600000;
-
-const getAgeOfCardInDays = (timeStampCreated, optionalClampAgeInDays) => {
-  if (optionalClampAgeInDays) {
-    return Math.min(
-      Math.round(
-        (new Date(new Date().setHours(0, 0, 0, 0)).getTime() -
-          new Date(new Date(timeStampCreated).setHours(0, 0, 0, 0)).getTime()) /
-          DAY_IN_MILLISECONDS,
-      ),
-      optionalClampAgeInDays,
-    );
-  } else {
-    return Math.round(
-      (new Date(new Date().setHours(0, 0, 0, 0)).getTime() -
-        new Date(new Date(timeStampCreated).setHours(0, 0, 0, 0)).getTime()) /
-        DAY_IN_MILLISECONDS,
-    );
-  }
-};
 
 const isSameDay = (d1, d2) => {
   return (
@@ -114,7 +98,7 @@ export default class Card {
       parameters: {
         timeOfDay: [undefined],
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start
         //what percentage of last 7 days has habit been observed
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
@@ -131,6 +115,40 @@ export default class Card {
           1,
         );
       },
+      progressRenderFunction: (props, history) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 4);
+        let tempArray = [];
+        for (let i = ageOfCardInDays; i >= 0; i--) {
+          const middleOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+              12,
+              0,
+              0,
+              0,
+            ),
+          );
+          const startOfDay = new Date(
+            new Date().setDate(new Date().getDate() - i),
+          );
+          const endOfDay = new Date(
+            new Date(
+              new Date(startOfDay).setDate(new Date(startOfDay).getDate() + 1),
+            ).setHours(0, 0, 0, 0),
+          );
+          startOfDay.setHours(0, 0, 0, 0);
+          const cardCompletedToday =
+            countCardsAfterDate(history, props.card, startOfDay, endOfDay) > 0;
+          tempArray.push({
+            day: middleOfDay.toString()[0],
+            completed: cardCompletedToday,
+          });
+        }
+        const componentToRender = tempArray.map(item => (
+          <CustomCheckbox label={item.day} completed={item.completed} />
+        ));
+
+        return componentToRender;
+      },
     },
     XpD: {
       enabled: true,
@@ -140,7 +158,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
         return Math.min(
@@ -157,6 +175,49 @@ export default class Card {
           1,
         );
       },
+      progressRenderFunction: (props, history) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 7);
+        tempArray = [];
+        for (let i = ageOfCardInDays; i >= 0; i--) {
+          const startOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ),
+          );
+          const middleOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+              12,
+              0,
+              0,
+              0,
+            ),
+          );
+          const endOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i + 1)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ),
+          );
+          const numCompletedThisDay = countCardsAfterDate(
+            history,
+            props.card,
+            startOfDay,
+            endOfDay,
+          );
+          tempArray.push({
+            label: middleOfDay.toString()[0],
+            height: props.card.parameters.numberOfTimes,
+            completed: numCompletedThisDay,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     EW: {
       enabled: true,
@@ -169,7 +230,7 @@ export default class Card {
         //default this to all selected vv
         timeOfDay: [],
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start
         //for every time you contracted you would in the past month, how many did you do?
         let filteredHistory = history.filter(instance => {
@@ -205,6 +266,58 @@ export default class Card {
         }
         return Math.min(accActual / accContracted, 1);
       },
+      progressRenderFunction: (props, history) => {
+        console.log('progressrenderfucntio');
+        tempArray = [];
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
+        for (let i = ageOfCardInDays; i >= 0; i--) {
+          const middleOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+              12,
+              0,
+              0,
+              0,
+            ),
+          );
+          const dayUncorrected = middleOfDay.getDay();
+          const dayCorrected = dayUncorrected === 0 ? 6 : dayUncorrected - 1;
+          const daysOfWeekArray = Object.keys(props.card.parameters.dayOfWeek);
+          const isDayCounted =
+            props.card.parameters.dayOfWeek[daysOfWeekArray[dayCorrected]];
+          if (
+            //it is one of the specified days
+            isDayCounted
+          ) {
+            const startOfDay = new Date(
+              new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+                0,
+                0,
+                0,
+                0,
+              ),
+            );
+            const endOfDay = new Date(
+              new Date(
+                new Date().setDate(new Date().getDate() - i + 1),
+              ).setHours(0, 0, 0, 0),
+            );
+            const numCompletedThisDay = countCardsAfterDate(
+              history,
+              props.card,
+              startOfDay,
+              endOfDay,
+            );
+            tempArray.push(
+              <CustomCheckbox
+                label={middleOfDay.getDate().toString()}
+                readOnly={true}
+                completed={numCompletedThisDay > 0}
+              />,
+            );
+          }
+        }
+        return tempArray;
+      },
     },
     //X times in a set week, and x times in the last 7 days are different
     XpW: {
@@ -216,7 +329,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start
         //cond 1 - if card created after this Monday, pro rata times contracted vs times actual
         //cond 2 - if card created before this Monday, but after prev Monday, pro rata first week, pro rata current week, average
@@ -298,6 +411,51 @@ export default class Card {
             1,
           );
         }
+      },
+      progressRenderFunction: (props, history) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created);
+        const cardWeeksOldIndex = Math.trunc(ageOfCardInDays / 7);
+        let tempArray = [];
+        for (let i = cardWeeksOldIndex; i >= 0; i--) {
+          const lastMondayMinus1 = new Date(
+            new Date(
+              new Date().setDate(
+                new Date().getDate() - ((new Date().getDay() + 6) % 7) - 7 * i,
+              ),
+            ).setHours(0, 0, 0, 0),
+          );
+          const lastMonday = new Date(
+            new Date(
+              new Date().setDate(
+                new Date().getDate() -
+                  ((new Date().getDay() + 6) % 7) -
+                  7 * (i - 1),
+              ),
+            ).setHours(0, 0, 0, 0),
+          );
+          let numberOfCardsInWeek;
+          if ((i = 0)) {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              lastMondayMinus1,
+            );
+          } else {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              lastMondayMinus1,
+              lastMonday,
+            );
+          }
+          tempArray.push({
+            label: `W-${i}`,
+            height: props.card.parameters.numberOfTimes,
+            completed: numberOfCardsInWeek,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
       },
     },
     RxW: {
