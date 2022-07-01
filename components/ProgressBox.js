@@ -40,18 +40,39 @@ const ProgressBox = props => {
         );
         break;
       case 'RxW':
+        setDataToRender(
+          Card.cardDefinitions.RxW.progressRenderFunction(props, history),
+        );
         break;
       case 'EM':
+        setDataToRender(
+          Card.cardDefinitions.EM.progressRenderFunction(props, history),
+        );
         break;
       case 'XpM':
+        setDataToRender(
+          Card.cardDefinitions.XpM.progressRenderFunction(props, history),
+        );
         break;
       case 'RxM':
+        setDataToRender(
+          Card.cardDefinitions.RxM.progressRenderFunction(props, history),
+        );
         break;
       case 'XiY':
+        setDataToRender(
+          Card.cardDefinitions.XiY.progressRenderFunction(props, history),
+        );
         break;
       case 'XiT':
+        setDataToRender(
+          Card.cardDefinitions.XiT.progressRenderFunction(props, history),
+        );
         break;
       case 'SpT':
+        setDataToRender(
+          Card.cardDefinitions.XiT.progressRenderFunction(props, history),
+        );
         break;
       case 'DL':
         break;

@@ -27,7 +27,7 @@ const ProgressBarGraph = props => {
                 />
               )}
             </View>
-            <Text style={styles.text}>{item.label[0]}</Text>
+            <Text style={styles.text}>{item.label}</Text>
           </View>
         );
       })}

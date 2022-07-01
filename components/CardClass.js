@@ -15,6 +15,24 @@ const isSameDay = (d1, d2) => {
   );
 };
 
+const getCardMonthsOld = card => {
+  const currentDate = new Date().getDate();
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const dateCardCreated = card.created.getDate();
+  const monthCardCreated = card.created.getMonth();
+  const yearCardCreated = card.created.getFullYear();
+  const yearMultiplier = currentYear - yearCardCreated;
+  const numberOfTwelveMonths = 12 * yearMultiplier;
+  let monthsDifference;
+  if (currentDate >= dateCardCreated) {
+    monthsDifference = currentMonth - monthCardCreated;
+  } else {
+    monthsDifference = currentMonth - monthCardCreated - 1;
+  }
+  return Math.max(numberOfTwelveMonths + monthsDifference, 0);
+};
+
 export default class Card {
   constructor(newCard) {
     //uuid
@@ -144,7 +162,11 @@ export default class Card {
           });
         }
         const componentToRender = tempArray.map(item => (
-          <CustomCheckbox label={item.day} completed={item.completed} />
+          <CustomCheckbox
+            label={item.day}
+            readOnly={true}
+            completed={item.completed}
+          />
         ));
 
         return componentToRender;
@@ -267,7 +289,6 @@ export default class Card {
         return Math.min(accActual / accContracted, 1);
       },
       progressRenderFunction: (props, history) => {
-        console.log('progressrenderfucntio');
         tempArray = [];
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         for (let i = ageOfCardInDays; i >= 0; i--) {
@@ -413,7 +434,7 @@ export default class Card {
         }
       },
       progressRenderFunction: (props, history) => {
-        const ageOfCardInDays = getAgeOfCardInDays(props.card.created);
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         const cardWeeksOldIndex = Math.trunc(ageOfCardInDays / 7);
         let tempArray = [];
         for (let i = cardWeeksOldIndex; i >= 0; i--) {
@@ -449,7 +470,7 @@ export default class Card {
             );
           }
           tempArray.push({
-            label: `W-${i}`,
+            label: `W-${i.toString()}`,
             height: props.card.parameters.numberOfTimes,
             completed: numberOfCardsInWeek,
           });
@@ -482,6 +503,48 @@ export default class Card {
           (ageOfCardInDays / 14) * (parameters.numberOfTimes * 2);
         return Math.min(accActual / accContracted, 1);
       },
+      progressRenderFunction: (props, history) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
+        const cardWeeksOldIndex = Math.trunc(ageOfCardInDays / 7);
+        let tempArray = [];
+        for (let i = cardWeeksOldIndex; i >= 0; i--) {
+          const fourteenDaysAgo = new Date(
+            new Date(
+              new Date().setDate(new Date().getDate() - 7 * (i + 1)),
+            ).setHours(0, 0, 0, 0),
+          );
+          const sevenDaysAgo = new Date(
+            new Date(new Date().setDate(new Date().getDate() - 7 * i)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ),
+          );
+          let numberOfCardsInWeek;
+          if ((i = 0)) {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              fourteenDaysAgo,
+            );
+          } else {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              fourteenDaysAgo,
+              sevenDaysAgo,
+            );
+          }
+          tempArray.push({
+            label: `W-${i.toString()}`,
+            height: props.card.parameters.numberOfTimes,
+            completed: numberOfCardsInWeek,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     EM: {
       enabled: true,
@@ -491,7 +554,7 @@ export default class Card {
       parameters: {
         dayOfMonth: [],
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
         let filteredHistory = history.filter(instance => {
@@ -515,6 +578,57 @@ export default class Card {
         }
         return Math.min(accActual / accContracted, 1);
       },
+      progressRenderFunction: (props, history) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
+        tempArray = [];
+        for (let i = ageOfCardInDays; i >= 0; i--) {
+          const middleOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+              12,
+              0,
+              0,
+              0,
+            ),
+          );
+          const daysOfMonthArray = Object.keys(
+            props.card.parameters.dayOfMonth,
+          );
+          const isDayCounted =
+            props.card.parameters.dayOfMonth[middleOfDay.getDate()];
+          if (
+            //it is one of the specified days
+            isDayCounted
+          ) {
+            const startOfDay = new Date(
+              new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+                0,
+                0,
+                0,
+                0,
+              ),
+            );
+            const endOfDay = new Date(
+              new Date(
+                new Date().setDate(new Date().getDate() - i + 1),
+              ).setHours(0, 0, 0, 0),
+            );
+            const numCompletedThisDay = countCardsAfterDate(
+              history,
+              props.card,
+              startOfDay,
+              endOfDay,
+            );
+            tempArray.push(
+              <CustomCheckbox
+                label={middleOfDay.getDate().toString()}
+                readOnly={true}
+                completed={numCompletedThisDay > 0}
+              />,
+            );
+          }
+        }
+        return tempArray;
+      },
     },
     XpM: {
       enabled: true,
@@ -524,7 +638,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start, if card newer than start of previous month, don't count prev month
         //three conditions
         //cond 1 - card newer than start of this month - pro rata days so far
@@ -599,6 +713,50 @@ export default class Card {
           );
         }
       },
+      progressRenderFunction: (props, history) => {
+        const cardMonthsOldIndex = getCardMonthsOld(props.card);
+
+        let tempArray = [];
+        for (let i = cardMonthsOldIndex; i >= 0; i--) {
+          const beginningOfMonthMinus1 = new Date(
+            new Date(
+              new Date(
+                new Date().setMonth(new Date().getMonth() - 1 * i),
+              ).setDate(1),
+            ).setHours(0, 0, 0, 0),
+          );
+          const beginningOfMonth = new Date(
+            new Date(
+              new Date(
+                new Date().setMonth(new Date().getMonth() - 1 * (i - 1)),
+              ).setDate(1),
+            ).setHours(0, 0, 0, 0),
+          );
+          let numberOfCardsInMonth;
+          if ((i = 0)) {
+            numberOfCardsInMonth = countCardsAfterDate(
+              history,
+              props.card,
+              beginningOfMonthMinus1,
+            );
+          } else {
+            numberOfCardsInMonth = countCardsAfterDate(
+              history,
+              props.card,
+              beginningOfMonthMinus1,
+              beginningOfMonth,
+            );
+          }
+          tempArray.push({
+            label: `M-${i.toString()}`,
+            height: props.card.parameters.numberOfTimes,
+            completed: numberOfCardsInMonth,
+          });
+        }
+
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     RxM: {
       enabled: true,
@@ -608,7 +766,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start if card newer than 30 days calculate fraction
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 30);
         let accActual = countCardsAfterDate(
@@ -625,6 +783,44 @@ export default class Card {
           1,
         );
       },
+      progressRenderFunction: (props, history) => {
+        const cardMonthsOldIndex = getCardMonthsOld(props.card);
+        let tempArray = [];
+        for (let i = cardMonthsOldIndex; i >= 0; i--) {
+          const monthAgoMinus1 = new Date(
+            new Date(
+              new Date().setDate(new Date().getDate() - 30 * (i + 1)),
+            ).setHours(0, 0, 0, 0),
+          );
+          const monthAgo = new Date(
+            new Date(
+              new Date().setDate(new Date().getDate() - 30 * i),
+            ).setHours(0, 0, 0, 0),
+          );
+          let numberOfCardsInWeek;
+          if ((i = 0)) {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              monthAgoMinus1,
+            );
+          } else {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              monthAgoMinus1,
+              monthAgo,
+            );
+          }
+          tempArray.push({
+            label: `M-${i.toString()}`,
+            height: props.card.parameters.numberOfTimes,
+            completed: numberOfCardsInWeek,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     XiY: {
       enabled: true,
@@ -635,7 +831,7 @@ export default class Card {
         numberOfTimes: undefined,
         periodInDays: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start*, if card has been created recently not fair to calculate against whole period
         //should be either since the creation of the card, or rolling function of some kind
 
@@ -651,6 +847,53 @@ export default class Card {
           parameters.numberOfTimes * (ageOfCardInDays / periodInDays);
         return Math.min(accActual / accContracted, 1);
       },
+      progressRenderFunction: (props, history) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created);
+        const cardMonthsOldIndex = getCardMonthsOld(props.card);
+        const cardPeriodsOldIndex = Math.trunc(
+          ageOfCardInDays / props.card.parameters.periodInDays,
+        );
+        let tempArray = [];
+        for (let i = cardPeriodsOldIndex; i >= 0; i--) {
+          const periodAgoMinus1 = new Date(
+            new Date(
+              new Date().setDate(
+                new Date().getDate() -
+                  props.card.parameters.periodInDays * (i + 1),
+              ),
+            ).setHours(0, 0, 0, 0),
+          );
+          const periodAgo = new Date(
+            new Date(
+              new Date().setDate(
+                new Date().getDate() - props.card.parameters.periodInDays * i,
+              ),
+            ).setHours(0, 0, 0, 0),
+          );
+          let numberOfCardsInWeek;
+          if ((i = 0)) {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              periodAgoMinus1,
+            );
+          } else {
+            numberOfCardsInWeek = countCardsAfterDate(
+              history,
+              props.card,
+              periodAgoMinus1,
+              periodAgo,
+            );
+          }
+          tempArray.push({
+            label: `P-${i.toString()}`,
+            height: props.card.parameters.numberOfTimes,
+            completed: numberOfCardsInWeek,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     XiT: {
       enabled: true,
@@ -663,9 +906,26 @@ export default class Card {
         //to use this need to record a creation time
         periodInDays: undefined,
       },
-      progressFunction: (card, history, parameters) => {
-        let accActual = countCardsAfterDate(history, card, card.created);
+      progressCoeffFunction: (card, history, parameters) => {
+        const accActual = countCardsAfterDate(history, card, card.created);
         return Math.min(accActual / parameters.numberOfTimes, 1);
+      },
+      progressRenderFunction: (props, history) => {
+        //sideways graph would be better here
+        const accActual = countCardsAfterDate(
+          history,
+          props.card,
+          props.card.created,
+        );
+        const tempArray = [
+          {
+            label: 'T',
+            height: props.card.parameters.numberOfTimes,
+            completed: accActual,
+          },
+        ];
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
       },
     },
     SpT: {
@@ -679,12 +939,35 @@ export default class Card {
         //seems like would be easy to miss to have at a specific time here
         timeOfDay: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
           return 1;
         } else {
           return 0;
         }
+      },
+      progressRenderFunction: (props, history) => {
+        const completed =
+          countCardsAfterDate(history, props.card, props.card.created) > 0;
+        let componentToRender;
+        if (completed) {
+          componentToRender = (
+            <CustomCheckbox
+              label={'not completed...'}
+              readOnly={true}
+              completed={false}
+            />
+          );
+        } else {
+          componentToRender = (
+            <CustomCheckbox
+              label={'Completed'}
+              readOnly={true}
+              completed={true}
+            />
+          );
+        }
+        return componentToRender;
       },
     },
     DL: {
@@ -695,12 +978,35 @@ export default class Card {
       parameters: {
         date: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
           return 1;
         } else {
           return 0;
         }
+      },
+      progressRenderFunction: (props, history) => {
+        const completed =
+          countCardsAfterDate(history, props.card, props.card.created) > 0;
+        let componentToRender;
+        if (completed) {
+          componentToRender = (
+            <CustomCheckbox
+              label={'not completed...'}
+              readOnly={true}
+              completed={false}
+            />
+          );
+        } else {
+          componentToRender = (
+            <CustomCheckbox
+              label={'Completed'}
+              readOnly={true}
+              completed={true}
+            />
+          );
+        }
+        return componentToRender;
       },
     },
     EY: {
@@ -714,7 +1020,7 @@ export default class Card {
           month: undefined,
         },
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         const filteredHistory = history.filter(instance => {
           return (instance.uuid = card.uuid);
         });
@@ -767,6 +1073,7 @@ export default class Card {
           }
         }
       },
+      progressRenderFunction: (props, history) => {},
     },
     XpY: {
       enabled: true,
@@ -848,6 +1155,7 @@ export default class Card {
           1,
         );
       },
+      progressRenderFunction: (props, history) => {},
     },
     RxY: {
       enabled: true,
@@ -875,6 +1183,7 @@ export default class Card {
           return Math.min(accActual / accContracted, 1);
         }
       },
+      progressRenderFunction: (props, history) => {},
     },
     AsP: {
       enabled: true,
@@ -888,6 +1197,29 @@ export default class Card {
         } else {
           return 0;
         }
+      },
+      progressRenderFunction: (props, history) => {
+        const completed =
+          countCardsAfterDate(history, props.card, props.card.created) > 0;
+        let componentToRender;
+        if (completed) {
+          componentToRender = (
+            <CustomCheckbox
+              label={'not completed...'}
+              readOnly={true}
+              completed={false}
+            />
+          );
+        } else {
+          componentToRender = (
+            <CustomCheckbox
+              label={'Completed'}
+              readOnly={true}
+              completed={true}
+            />
+          );
+        }
+        return componentToRender;
       },
     },
   };
