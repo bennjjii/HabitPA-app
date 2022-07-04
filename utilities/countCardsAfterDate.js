@@ -3,7 +3,14 @@ const countCardsAfterDate = (
   card,
   inTimestamp,
   optionalOutTimestamp,
+  enableLogging,
 ) => {
+  if (enableLogging) {
+    console.log('history', history);
+    console.log('card', card);
+    console.log('inTimeStamp', inTimestamp);
+    console.log('optionalOutTimestamp', optionalOutTimestamp);
+  }
   return history
     .filter(instance => {
       if (optionalOutTimestamp) {

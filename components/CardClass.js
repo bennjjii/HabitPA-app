@@ -4,6 +4,7 @@ import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
 import CustomCheckbox from './CustomCheckBox';
 import ProgressBarGraph from './ProgressBarGraph';
 import React from 'react';
+import {Checkbox} from 'react-native-paper';
 
 const YEAR_IN_MILLISECONDS = 31557600000;
 
@@ -15,7 +16,7 @@ const isSameDay = (d1, d2) => {
   );
 };
 
-const getCardMonthsOld = card => {
+const getAgeOfCardInMonths = card => {
   const currentDate = new Date().getDate();
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
@@ -31,6 +32,22 @@ const getCardMonthsOld = card => {
     monthsDifference = currentMonth - monthCardCreated - 1;
   }
   return Math.max(numberOfTwelveMonths + monthsDifference, 0);
+};
+
+const getAgeOfCardInYears = card => {
+  const currentDate = new Date().getDate();
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const dateCardCreated = card.created.getDate();
+  const monthCardCreated = card.created.getMonth();
+  const yearCardCreated = card.created.getFullYear();
+  let yearsDifference;
+  if (currentDate >= dateCardCreated && currentMonth >= monthCardCreated) {
+    yearsDifference = currentYear - yearCardCreated;
+  } else {
+    yearsDifference = currentYear - yearCardCreated - 1;
+  }
+  return Math.max(yearsDifference, 0);
 };
 
 export default class Card {
@@ -256,7 +273,7 @@ export default class Card {
         //soft start
         //for every time you contracted you would in the past month, how many did you do?
         let filteredHistory = history.filter(instance => {
-          return (instance.uuid = card.uuid);
+          return instance.uuid == card.uuid;
         });
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 30);
         //go through each day of past 30 and count each we said we would
@@ -455,7 +472,7 @@ export default class Card {
             ).setHours(0, 0, 0, 0),
           );
           let numberOfCardsInWeek;
-          if ((i = 0)) {
+          if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
               history,
               props.card,
@@ -522,7 +539,7 @@ export default class Card {
             ),
           );
           let numberOfCardsInWeek;
-          if ((i = 0)) {
+          if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
               history,
               props.card,
@@ -558,7 +575,7 @@ export default class Card {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
         let filteredHistory = history.filter(instance => {
-          return (instance.uuid = card.uuid);
+          return instance.uuid == card.uuid;
         });
         let accContracted = 0;
         let accActual = 0;
@@ -714,7 +731,7 @@ export default class Card {
         }
       },
       progressRenderFunction: (props, history) => {
-        const cardMonthsOldIndex = getCardMonthsOld(props.card);
+        const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
 
         let tempArray = [];
         for (let i = cardMonthsOldIndex; i >= 0; i--) {
@@ -733,7 +750,7 @@ export default class Card {
             ).setHours(0, 0, 0, 0),
           );
           let numberOfCardsInMonth;
-          if ((i = 0)) {
+          if (i == 0) {
             numberOfCardsInMonth = countCardsAfterDate(
               history,
               props.card,
@@ -784,7 +801,7 @@ export default class Card {
         );
       },
       progressRenderFunction: (props, history) => {
-        const cardMonthsOldIndex = getCardMonthsOld(props.card);
+        const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
         let tempArray = [];
         for (let i = cardMonthsOldIndex; i >= 0; i--) {
           const monthAgoMinus1 = new Date(
@@ -798,7 +815,7 @@ export default class Card {
             ).setHours(0, 0, 0, 0),
           );
           let numberOfCardsInWeek;
-          if ((i = 0)) {
+          if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
               history,
               props.card,
@@ -849,7 +866,7 @@ export default class Card {
       },
       progressRenderFunction: (props, history) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created);
-        const cardMonthsOldIndex = getCardMonthsOld(props.card);
+        const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
         const cardPeriodsOldIndex = Math.trunc(
           ageOfCardInDays / props.card.parameters.periodInDays,
         );
@@ -871,7 +888,7 @@ export default class Card {
             ).setHours(0, 0, 0, 0),
           );
           let numberOfCardsInWeek;
-          if ((i = 0)) {
+          if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
               history,
               props.card,
@@ -1022,7 +1039,7 @@ export default class Card {
       },
       progressCoeffFunction: (card, history, parameters) => {
         const filteredHistory = history.filter(instance => {
-          return (instance.uuid = card.uuid);
+          return instance.uuid == card.uuid;
         });
         const ageOfCardInDays = getAgeOfCardInDays(card.created);
         const firstOfThisYear = new Date(new Date().setMonth(0, 1));
@@ -1073,7 +1090,36 @@ export default class Card {
           }
         }
       },
-      progressRenderFunction: (props, history) => {},
+      progressRenderFunction: (props, history) => {
+        //checkbox - if created this year just this year
+        //if created last year also last year
+        const filteredHistory = history.filter(instance => {
+          return instance.uuid == props.card.uuid;
+        });
+        const naiveYearsOld =
+          new Date().getFullYear() - props.card.created.getFullYear();
+        const tempArray = [];
+        for (let i = naiveYearsOld; i >= 0; i--) {
+          const year = new Date(
+            new Date().setFullYear(new Date().getFullYear() - i),
+          );
+          const completedThisYear = filteredHistory.some(instance => {
+            instance.timestamp.getMonth() + 1 ===
+              props.card.parameters.dayOfYear.month &&
+              instance.timestamp.getDate() ===
+                props.card.parameters.dayOfYear.day &&
+              instance.timestamp.getFullYear() === year.getFullYear();
+          });
+          tempArray.push(
+            <CustomCheckbox
+              label={year.getFullYear().toString()}
+              readOnly={true}
+              completed={completedThisYear}
+            />,
+          );
+          return tempArray;
+        }
+      },
     },
     XpY: {
       enabled: true,
@@ -1083,7 +1129,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //three possible cases
         //card created this year
         if (card.created.getFullYear() === new Date().getFullYear()) {
@@ -1155,7 +1201,53 @@ export default class Card {
           1,
         );
       },
-      progressRenderFunction: (props, history) => {},
+      progressRenderFunction: (props, history) => {
+        //bar graphs
+        //get age of card in years
+
+        const naiveYearsOld =
+          new Date().getFullYear() - props.card.created.getFullYear();
+        const tempArray = [];
+        for (let i = naiveYearsOld; i >= 0; i--) {
+          const startOfYearMinus1 = new Date(
+            new Date(
+              new Date(
+                new Date().setFullYear(new Date().getFullYear() - i),
+              ).setMonth(0, 1),
+            ).setHours(0, 0, 0, 0),
+          );
+          const startOfYear = new Date(
+            new Date(
+              new Date(
+                new Date().setFullYear(new Date().getFullYear() - (i - 1)),
+              ).setMonth(0, 1),
+            ).setHours(0, 0, 0, 0),
+          );
+          let numCardsThisYear;
+          if (i == 0) {
+            numCardsThisYear = countCardsAfterDate(
+              history,
+              props.card,
+              startOfYearMinus1,
+            );
+          } else {
+            numCardsThisYear = countCardsAfterDate(
+              history,
+              props.card,
+              startOfYearMinus1,
+              startOfYear,
+            );
+          }
+
+          tempArray.push({
+            label: startOfYearMinus1.getFullYear(),
+            height: props.card.parameters.numberOfTimes,
+            completed: numCardsThisYear,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     RxY: {
       enabled: true,
@@ -1183,7 +1275,50 @@ export default class Card {
           return Math.min(accActual / accContracted, 1);
         }
       },
-      progressRenderFunction: (props, history) => {},
+      progressRenderFunction: (props, history) => {
+        //bar graph for each period
+        const ageOfCardInYears = getAgeOfCardInYears(props.card);
+        const tempArray = [];
+        for (let i = ageOfCardInYears; i >= 0; i--) {
+          const startOfYearMinus1 = new Date(
+            new Date(
+              new Date().setTime(
+                new Date().getTime() - (i + 1) * YEAR_IN_MILLISECONDS,
+              ),
+            ).setHours(0, 0, 0, 0),
+          );
+          const startOfYear = new Date(
+            new Date(
+              new Date().setTime(
+                new Date().getTime() - i * YEAR_IN_MILLISECONDS,
+              ),
+            ).setHours(0, 0, 0, 0),
+          );
+          let numCardsThisYear;
+          if (i == 0) {
+            numCardsThisYear = countCardsAfterDate(
+              history,
+              props.card,
+              startOfYearMinus1,
+            );
+          } else {
+            numCardsThisYear = countCardsAfterDate(
+              history,
+              props.card,
+              startOfYearMinus1,
+              startOfYear,
+            );
+          }
+
+          tempArray.push({
+            label: `Y-${i}`,
+            height: props.card.parameters.numberOfTimes,
+            completed: numCardsThisYear,
+          });
+        }
+        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        return componentToRender;
+      },
     },
     AsP: {
       enabled: true,

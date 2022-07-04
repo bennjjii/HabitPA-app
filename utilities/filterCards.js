@@ -229,7 +229,7 @@ export default (deck, history, timesOfDay) => {
         //if we count X times in the past year, return true, else return false
         isReturned =
           card.parameters.numberOfTimes >
-          countCardsAfterDate(history, card, getFirstDayOfYear);
+          countCardsAfterDate(history, card, getFirstDayOfYear());
         break;
       case 'RxY':
         isReturned =

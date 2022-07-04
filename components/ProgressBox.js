@@ -15,7 +15,7 @@ const ProgressBox = props => {
   let ageOfCardInDays;
   useEffect(() => {
     _history = history.filter(instance => {
-      return (instance.uuid = props.card.uuid);
+      return instance.uuid == props.card.uuid;
     });
 
     switch (props.card.code) {
@@ -71,18 +71,33 @@ const ProgressBox = props => {
         break;
       case 'SpT':
         setDataToRender(
-          Card.cardDefinitions.XiT.progressRenderFunction(props, history),
+          Card.cardDefinitions.SpT.progressRenderFunction(props, history),
         );
         break;
       case 'DL':
+        setDataToRender(
+          Card.cardDefinitions.DL.progressRenderFunction(props, history),
+        );
         break;
       case 'EY':
+        setDataToRender(
+          Card.cardDefinitions.EY.progressRenderFunction(props, history),
+        );
         break;
       case 'XpY':
+        setDataToRender(
+          Card.cardDefinitions.XpY.progressRenderFunction(props, history),
+        );
         break;
       case 'RxY':
+        setDataToRender(
+          Card.cardDefinitions.RxY.progressRenderFunction(props, history),
+        );
         break;
       case 'AsP':
+        setDataToRender(
+          Card.cardDefinitions.AsP.progressRenderFunction(props, history),
+        );
         break;
     }
   }, []);
