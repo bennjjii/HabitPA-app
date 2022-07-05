@@ -75,7 +75,7 @@ const Deck = () => {
     showModalBackOfCard,
     hideModalBackOfCard,
     modalVisibleInAction,
-    showModalInAction,
+    switchToInAction,
     modalVisibleAddCard,
     hideModalAddCard,
   } = useStore();
@@ -91,7 +91,7 @@ const Deck = () => {
     console.log('card sent to history', filteredDeck[args[0]]);
     console.log('card index', args[0]);
     setCardInAction(filteredDeck[args[0]]);
-    showModalInAction();
+    switchToInAction(filteredDeck[args[0]]);
   };
 
   const deleteCard = () => {
@@ -210,7 +210,6 @@ const Deck = () => {
       {/* <Button icon="camera" mode="elevated" onPress={() => manualUpdate()}>
         Press me
       </Button> */}
-      <CustomCheckbox label={'m'} />
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
@@ -242,7 +241,7 @@ const Deck = () => {
         <BackOfCard card={filteredDeck[index]} />
       </Modal>
       <Modal isVisible={modalVisibleInAction}>
-        <InAction card={cardInAction} />
+        <InAction />
       </Modal>
       <Modal
         isVisible={modalVisibleAddCard}

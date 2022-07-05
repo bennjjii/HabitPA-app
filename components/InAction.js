@@ -6,15 +6,15 @@ import colours from '../assets/colours/colours';
 import {useStore} from '../services/zustandContext';
 
 const GoAndDoTheActivity = props => {
-  const {pushCardToHistory, hideModalInAction} = useStore();
+  const {pushCardToHistory, hideModalInAction, cardInAction} = useStore();
   return (
     <View style={styles.container}>
       <Text>Let's Go!</Text>
-      <Text style={styles.cardNameText}>{props.card?.name}</Text>
+      <Text style={styles.cardNameText}>{cardInAction?.name}</Text>
       <View styles={styles.buttonsView}>
         <Button
           onPress={() => {
-            pushCardToHistory(props.card);
+            pushCardToHistory(cardInAction);
             hideModalInAction();
           }}>
           Complete

@@ -103,13 +103,11 @@ export const useStore = create(
         Evening: [18, 22],
         Night: [22, 23],
       },
-      //this is to transfer state between modals
-      //modals
-      modalVisibleAddCard: false,
+      //-------------------------------------------------------------------------------
+      // Modals
+      //-------------------------------------------------------------------------------
       modalCode: undefined,
-      toggleModalVisibleAddCard: () => {
-        set(state => ({modalVisibleAddCard: !state.modalVisibleAddCard}));
-      },
+      modalVisibleAddCard: false,
       showModalAddCard: code => {
         set(() => ({
           modalVisibleAddCard: true,
@@ -154,22 +152,26 @@ export const useStore = create(
         }));
       },
       modalVisibleInAction: false,
-      showModalInAction: () => {
+      cardInAction: undefined,
+      switchToInAction: card => {
         set(() => ({
-          modalVisibleInAction: true,
+          modalVisiblePiles: false,
+          modalVisibleBackOfCard: false,
+          cardInAction: card,
         }));
+        setTimeout(() => {
+          set(() => ({
+            modalVisibleInAction: true,
+          }));
+        }, 350);
       },
       hideModalInAction: () => {
         set(() => ({
           modalVisibleInAction: false,
+          cardInAction: undefined,
         }));
       },
       modalVisiblePiles: false,
-      toggleModalVisiblePiles: () => {
-        set(state => ({
-          modalVisiblePiles: !state.modalVisiblePiles,
-        }));
-      },
       showModalPiles: () => {
         set(() => ({
           modalVisiblePiles: true,
@@ -180,7 +182,9 @@ export const useStore = create(
           modalVisiblePiles: false,
         }));
       },
-      // Pretty print logging functions
+      //-------------------------------------------------------------------------------
+      // Logging
+      //-------------------------------------------------------------------------------
       logHistory: () => {
         console.log('History:');
         get().history.forEach(item => console.log(item));

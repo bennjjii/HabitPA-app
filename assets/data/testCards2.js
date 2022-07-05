@@ -14,7 +14,7 @@ module.exports = [
     },
   }),
   new Card({
-    code: 'Xpw',
+    code: 'XpW',
     name: 'Gym',
     parameters: {
       numberOfTimes: 4,

@@ -16,6 +16,7 @@ import colours from '../assets/colours/colours';
 import {useStore} from '../services/zustandContext';
 import BackOfCard from './BackOfCard';
 import AddOrEditCardForm from './AddOrEditCardForm';
+import InAction from './InAction';
 
 const piles = [
   'All Cards',
@@ -55,6 +56,7 @@ const Piles = () => {
     getInactiveDeck,
     modalVisiblePiles,
     modalVisibleAddCard,
+    modalVisibleInAction,
     hideModalPiles,
     hideModalAddCard,
   } = useStore();
@@ -125,6 +127,9 @@ const Piles = () => {
           behavior={Platform.OS === 'android' ? undefined : 'position'}>
           <AddOrEditCardForm />
         </KeyboardAvoidingView>
+      </Modal>
+      <Modal isVisible={modalVisibleInAction}>
+        <InAction />
       </Modal>
     </SafeAreaView>
   );
