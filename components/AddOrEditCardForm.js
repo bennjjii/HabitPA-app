@@ -18,7 +18,6 @@ import BallPicker from './BallPicker';
 import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
-import {TimeOfDay, Day} from '../utilities/enums';
 import Card from './CardClass';
 const cardAspect = 400 / 280;
 const cardWidth = 350;
@@ -108,6 +107,14 @@ const AddOrEditCardForm = props => {
       : '1',
   );
 
+  const [periodInDays, setPeriodInDays] = useState(
+    cardUnderInspection
+      ? cardUnderInspection.parameters.periodInDays
+        ? cardUnderInspection.parameters.periodInDays.toString()
+        : undefined
+      : '1',
+  );
+
   //date, dayOfYear, are handled separately
 
   const onSubmit = formData => {
@@ -137,7 +144,9 @@ const AddOrEditCardForm = props => {
           numberOfTimes: checkForParam(modalCode, 'numberOfTimes')
             ? +numberOfTimes
             : undefined, //need to convert back to string
-          periodInDays: formData.parameters.periodInDays,
+          periodInDays: checkForParam(modalCode, 'periodInDays')
+            ? +periodInDays
+            : undefined,
         },
       };
       //edit the card
@@ -171,7 +180,9 @@ const AddOrEditCardForm = props => {
             numberOfTimes: checkForParam(modalCode, 'numberOfTimes')
               ? +numberOfTimes
               : undefined, //need to convert back to string
-            periodInDays: formData.parameters.periodInDays,
+            periodInDays: checkForParam(modalCode, 'periodInDays')
+              ? +periodInDays
+              : undefined,
           },
         }),
       );
@@ -218,108 +229,76 @@ const AddOrEditCardForm = props => {
             )}
           />
           {errors.name && <Text>Name required</Text>}
-
-          {/* desc */}
-          {/* <Controller
-            name="desc"
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.textInput}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="description of habit or task"
-              />
+          <View style={styles.pickerContainer}>
+            {/* number of times */}
+            {checkForParam(modalCode, 'numberOfTimes') && (
+              <View style={styles.numberOfTimesContainer}>
+                <Picker
+                  selectedValue={numberOfTimes}
+                  onValueChange={value => {
+                    setNumberOfTimes(value);
+                  }}>
+                  {(() => {
+                    let a = [];
+                    for (let i = 1; i <= 9; i++) {
+                      a.push(
+                        <Picker.Item
+                          label={i.toString()}
+                          value={i.toString()}
+                        />,
+                      );
+                    }
+                    return a;
+                  })()}
+                </Picker>
+              </View>
             )}
-          /> */}
 
-          {/* number of times */}
-          {checkForParam(modalCode, 'numberOfTimes') && (
-            <View style={styles.numberOfTimesContainer}>
-              <Picker
-                selectedValue={numberOfTimes}
-                onValueChange={value => {
-                  setNumberOfTimes(value);
-                }}>
-                {(() => {
-                  let a = [];
-                  for (let i = 1; i <= 9; i++) {
-                    a.push(
-                      <Picker.Item label={i.toString()} value={i.toString()} />,
-                    );
-                  }
-                  return a;
-                })()}
-              </Picker>
-            </View>
-          )}
-
-          {/* period in days */}
-          {checkForParam(modalCode, 'periodInDays') && (
-            <View style={styles.periodInDaysContainer}>
-              <Controller
-                name="parameters.periodInDays"
-                control={control}
-                rules={{
-                  required: true,
-                  // validate: v => String(v).length === 1,
-                  pattern: /^[0-9]$/g,
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    placeholder="period in days"
-                    style={styles.textInput}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                )}
-              />
-              {errors.parameters.periodInDays && <Text>Number required</Text>}
-            </View>
-          )}
-
-          {/* day of week */}
-          {/* should just be M, T W T F S S checkboxes */}
-          {/* {checkForParam(modalCode, 'dayOfWeek') && (
-            <View style={styles.checkboxContainer}>
-              {daysOfWeek.map(day => {
-                return (
-                  <>
-                    <View style={styles.checkBoxView}>
-                      <Controller
-                        name={`parameters.dayOfWeek.${day}`}
-                        control={control}
-                        rules={{
-                          validate: v => {
-                            return Object.keys(
-                              getValues('parameters.dayOfWeek'),
-                            ).some(day => {
-                              return getValues('parameters.dayOfWeek')[day];
-                            });
-                          },
-                        }}
-                        render={({field: {onChange, value}}) => (
-                          <CheckBox
-                            disabled={false}
-                            value={value}
-                            onValueChange={e => {
-                              onChange(e);
-                            }}
-                          />
-                        )}
-                      />
-                      <Text style={styles.checkboxText}>{day}</Text>
-                    </View>
-                  </>
-                );
-              })}
-              {errors.parameters?.dayOfWeek && (
-                <Text>Please select a day of the week</Text>
-              )}
-            </View>
-          )} */}
+            {/* period in days */}
+            {checkForParam(modalCode, 'periodInDays') && (
+              <View style={styles.periodInDaysContainer}>
+                <Picker
+                  selectedValue={periodInDays}
+                  onValueChange={value => {
+                    setPeriodInDays(value);
+                  }}>
+                  {(() => {
+                    let a = [];
+                    for (let i = 1; i <= 90; i++) {
+                      a.push(
+                        <Picker.Item
+                          label={i.toString()}
+                          value={i.toString()}
+                        />,
+                      );
+                    }
+                    return a;
+                  })()}
+                </Picker>
+                {/* <Controller
+                  name="parameters.periodInDays"
+                  control={control}
+                  rules={{
+                    required: true,
+                    // validate: v => String(v).length === 1,
+                    pattern: /^[0-9]$/g,
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <TextInput
+                      placeholder="period in days"
+                      style={styles.textInput}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                />
+                {errors.parameters?.periodInDays && (
+                  <Text>Number required</Text>
+                )} */}
+              </View>
+            )}
+          </View>
 
           {checkForParam(modalCode, 'dayOfWeek') && (
             <View style={styles.checkboxContainer}>
@@ -471,45 +450,6 @@ const AddOrEditCardForm = props => {
             </View>
           )}
 
-          {/* time of day */}
-          {/* {checkForParam(modalCode, 'timeOfDay') && (
-            <View style={styles.checkboxContainer}>
-              {timesOfDay.map(time => {
-                return (
-                  <>
-                    <View style={styles.checkBoxView}>
-                      <Controller
-                        name={`parameters.timeOfDay.${time}`}
-                        control={control}
-                        rules={{
-                          validate: v => {
-                            return Object.keys(
-                              getValues('parameters.timeOfDay'),
-                            ).some(day => {
-                              return getValues('parameters.timeOfDay')[day];
-                            });
-                          },
-                        }}
-                        render={({field: {onChange, value}}) => (
-                          <CheckBox
-                            disabled={false}
-                            value={value}
-                            onValueChange={e => {
-                              onChange(e);
-                            }}
-                          />
-                        )}
-                      />
-                      <Text style={styles.checkboxText}>{time}</Text>
-                    </View>
-                  </>
-                );
-              })}
-              {errors.parameters?.timeOfDay && (
-                <Text>Please select a time of day</Text>
-              )}
-            </View>
-          )} */}
           {checkForParam(modalCode, 'timeOfDay') && (
             <View style={styles.checkboxContainer}>
               <Controller
@@ -579,16 +519,13 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   textInput2: {
-    // backgroundColor: colours.background,
     width: 250,
-    // margin: 2,
-    // borderWidth: 1,
-    // borderColor: colours.text,
-    // borderRadius: 5,
-    // padding: 5,
   },
   numberOfTimesContainer: {
-    width: 200,
+    flex: 1,
+  },
+  periodInDaysContainer: {
+    flex: 1,
   },
   date: {
     width: 270,
@@ -623,5 +560,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginBottom: 10,
     color: colours.text,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    width: 240,
+    justifyContent: 'space-around',
+    flexBasis: 1,
+    flexGrow: 1,
   },
 });

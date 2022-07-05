@@ -39,8 +39,6 @@ const getFirstDayOfYear = () => {
   return firstDayOfYear;
 };
 
-const defaultReturn = false;
-
 const getTimeOfDay = timesOfDay => {
   const currentHour = new Date().getHours();
   //const currentHour = 3;

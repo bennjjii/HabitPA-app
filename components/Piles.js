@@ -105,7 +105,9 @@ const Piles = () => {
           setCardsToRender([]);
           hideModalPiles();
         }}>
-        <ScrollView>
+        <ScrollView
+          style={styles.styleBOCScrollview}
+          contentContainerStyle={styles.BOCScrollview}>
           {/* //replace this */}
           <Text>{'\n\n\n\n'}</Text>
           {cardsToRender.map(card => {
@@ -140,7 +142,6 @@ export default Piles;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     margin: 20,
   },
   modal: {
@@ -177,6 +178,13 @@ const styles = StyleSheet.create({
   },
   flatList: {},
   flatListContent: {
+    alignItems: 'center',
+  },
+  styleBOCScrollview: {
+    flex: 1,
+  },
+  BOCScrollview: {
+    justifyContent: 'center',
     alignItems: 'center',
   },
 });
