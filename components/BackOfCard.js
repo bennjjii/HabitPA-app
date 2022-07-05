@@ -17,6 +17,7 @@ const BackOfCard = props => {
     cardUnderInspection,
     hideModalBackOfCard,
     switchToEditCard,
+    switchToInAction,
   } = useStore();
 
   return (
@@ -27,7 +28,8 @@ const BackOfCard = props => {
           name="check"
           size={40}
           onPress={() => {
-            props.begin();
+            switchToInAction(props.card);
+            // props.begin();
           }}
         />
         <FontAwesome

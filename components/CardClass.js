@@ -504,7 +504,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
         const accActual = countCardsAfterDate(
@@ -1257,7 +1257,7 @@ export default class Card {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         let msNow = new Date().getTime();
         let msCreated = card.created.getTime();
         let softStartCoeff = (msNow - msCreated) / YEAR_IN_MILLISECONDS;
@@ -1326,7 +1326,7 @@ export default class Card {
       name: 'At some point',
       explanation: 'Something to be completed at some point.',
       parameters: {},
-      progressFunction: (card, history, parameters) => {
+      progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
           return 1;
         } else {
