@@ -1,6 +1,7 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import CustomCheckbox from './CustomCheckBox';
+const {width, height} = Dimensions.get('screen');
 
 const BallPicker = ({values, onValueChange, readOnly}) => {
   const [intValues, setIntValues] = useState(values);

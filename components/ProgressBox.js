@@ -106,8 +106,7 @@ const ProgressBox = props => {
     <View>
       <Text>{Card.cardDefinitions[props.card.code]?.name + '\n'}</Text>
       <Text>Progress this week...</Text>
-
-      {dataToRender}
+      <View style={styles.progressDataStyle}>{dataToRender}</View>
       <Text>Habit coefficient: {0.5}</Text>
     </View>
   );
@@ -115,4 +114,8 @@ const ProgressBox = props => {
 
 export default ProgressBox;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  progressDataStyle: {
+    flexDirection: 'row',
+  },
+});

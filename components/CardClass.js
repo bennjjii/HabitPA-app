@@ -151,7 +151,7 @@ export default class Card {
         );
       },
       progressRenderFunction: (props, history) => {
-        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 4);
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 7);
         let tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {
           const middleOfDay = new Date(
@@ -176,6 +176,7 @@ export default class Card {
           tempArray.push({
             day: middleOfDay.toString()[0],
             completed: cardCompletedToday,
+            today: i == 0 ? true : false,
           });
         }
         const componentToRender = tempArray.map(item => (
@@ -183,6 +184,7 @@ export default class Card {
             label={item.day}
             readOnly={true}
             completed={item.completed}
+            today={item.today}
           />
         ));
 
@@ -350,6 +352,7 @@ export default class Card {
                 label={middleOfDay.getDate().toString()}
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
+                today={i == 0 ? true : false}
               />,
             );
           }
@@ -640,6 +643,7 @@ export default class Card {
                 label={middleOfDay.getDate().toString()}
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
+                today={i == 0 ? true : false}
               />,
             );
           }
@@ -1115,6 +1119,7 @@ export default class Card {
               label={year.getFullYear().toString()}
               readOnly={true}
               completed={completedThisYear}
+              today={i == 0 ? true : false}
             />,
           );
           return tempArray;

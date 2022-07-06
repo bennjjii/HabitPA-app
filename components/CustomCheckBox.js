@@ -8,12 +8,9 @@ const CustomCheckbox = ({
   index,
   readOnly,
   completed,
+  today,
 }) => {
   const [clicked, setClicked] = useState(value || false);
-
-  // useEffect(() => {
-  //   setClicked(!!value);
-  // }, []);
 
   useEffect(() => {
     setClicked(value);
@@ -43,6 +40,7 @@ const CustomCheckbox = ({
           label.length > 2 ? {} : {width: 35},
           clicked ? styles.pressedBackground : styles.unpressedBackground,
           completed ? styles.completedBackground : {},
+          today && !completed ? styles.todayStyle : {},
         ]}>
         <Text
           style={[
@@ -66,7 +64,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '400',
   },
-
   view: {
     // width: 35,
     height: 35,
@@ -86,5 +83,9 @@ const styles = StyleSheet.create({
   completedBackground: {
     backgroundColor: '#3DC55E',
     borderRadius: 17,
+  },
+  todayStyle: {
+    borderColor: '#595AD3',
+    borderWidth: 2,
   },
 });

@@ -210,6 +210,7 @@ const Deck = () => {
       {/* <Button icon="camera" mode="elevated" onPress={() => manualUpdate()}>
         Press me
       </Button> */}
+      <CustomCheckbox label="15" value={false} today={true} />
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
