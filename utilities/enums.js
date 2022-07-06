@@ -12,5 +12,5 @@ export const TimeOfDay = {
   Morning: 'Morning',
   Afternoon: 'Afternoon',
   Evening: 'Evening',
-  Night: 'Night',
+  Bedtime: 'Bedtime',
 };

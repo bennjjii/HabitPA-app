@@ -101,7 +101,7 @@ export const useStore = create(
         Morning: [7, 12],
         Afternoon: [13, 17],
         Evening: [18, 22],
-        Night: [22, 23],
+        Bedtime: [22, 23],
       },
       //-------------------------------------------------------------------------------
       // Modals

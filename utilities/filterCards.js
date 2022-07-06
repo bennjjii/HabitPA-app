@@ -14,7 +14,7 @@ const TimeOfDay = {
   Morning: 'Morning',
   Afternoon: 'Afternoon',
   Evening: 'Evening',
-  Night: 'Night',
+  Bedtime: 'Bedtime',
 };
 
 const getLastMonday = () => {
@@ -52,9 +52,9 @@ const getTimeOfDay = timesOfDay => {
     case currentHour < timesOfDay.Evening[1] &&
       currentHour >= timesOfDay.Evening[0]:
       return TimeOfDay.Evening;
-    case currentHour < timesOfDay.Night[1] &&
-      currentHour >= timesOfDay.Night[0]:
-      return TimeOfDay.Night;
+    case currentHour < timesOfDay.Bedtime[1] &&
+      currentHour >= timesOfDay.Bedtime[0]:
+      return TimeOfDay.Bedtime;
     default:
       return undefined;
   }

@@ -68,7 +68,7 @@ export default class Card {
         Morning: newCard?.parameters.timeOfDay?.Morning || false,
         Afternoon: newCard?.parameters.timeOfDay?.Afternoon || false,
         Evening: newCard?.parameters.timeOfDay?.Evening || false,
-        Night: newCard?.parameters.timeOfDay?.Night || false,
+        Bedtime: newCard?.parameters.timeOfDay?.Bedtime || false,
       },
       dayOfWeek: {
         Monday: newCard?.parameters.dayOfWeek?.Monday || false,

@@ -62,7 +62,7 @@ module.exports = [
     parameters: {
       timeOfDay: {
         Morning: true,
-        Night: true,
+        Bedtime: true,
       },
     },
   }),
@@ -102,7 +102,7 @@ module.exports = [
     name: 'Write diary',
     parameters: {
       timeOfDay: {
-        Night: true,
+        Bedtime: true,
       },
     },
   }),
@@ -111,7 +111,7 @@ module.exports = [
     name: 'Plan tomorrow',
     parameters: {
       timeOfDay: {
-        Night: true,
+        Bedtime: true,
       },
     },
   }),
