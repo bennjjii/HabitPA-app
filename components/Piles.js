@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import Modal from 'react-native-modal';
-//import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import colours from '../assets/colours/colours';
 import {useStore} from '../services/zustandContext';
@@ -28,6 +27,7 @@ const piles = [
   'Inactive',
 ];
 
+const {width, height} = Dimensions.get('screen');
 const cardAspect = 400 / 280;
 const cardWidth = Dimensions.get('window').width / 2 - 50;
 const cardHeight = cardWidth * cardAspect;
@@ -109,7 +109,7 @@ const Piles = () => {
           style={styles.styleBOCScrollview}
           contentContainerStyle={styles.BOCScrollview}>
           {/* //replace this */}
-          <Text>{'\n\n\n\n'}</Text>
+          <Text>{''}</Text>
           {cardsToRender.map(card => {
             return <BackOfCard card={card} />;
           })}
@@ -142,7 +142,7 @@ export default Piles;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 20,
+    // margin: 20,
   },
   modal: {
     flex: 1,
@@ -156,14 +156,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
     padding: 10,
   },
   templateCard: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: cardWidth,
-    height: cardHeight,
+    width: width * 0.42,
+    height: (width * 0.42) / 0.7,
     margin: 10,
     borderRadius: 10,
     backgroundColor: colours.foreground,
@@ -179,9 +179,6 @@ const styles = StyleSheet.create({
   flatList: {},
   flatListContent: {
     alignItems: 'center',
-  },
-  styleBOCScrollview: {
-    flex: 1,
   },
   BOCScrollview: {
     justifyContent: 'center',

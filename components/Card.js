@@ -1,8 +1,9 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React from 'react';
 import colours from '../assets/colours/colours';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+const {width, height} = Dimensions.get('screen');
 FontAwesome.loadFont();
 
 const Card = props => {
@@ -17,8 +18,8 @@ const Card = props => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 280,
-    height: 400,
+    width: width * 0.72,
+    height: (width * 0.72) / 0.7,
     backgroundColor: '#222222',
     backgroundColor: colours.foreground,
     justifyContent: 'center',

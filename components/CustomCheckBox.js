@@ -47,8 +47,7 @@ const CustomCheckbox = ({
         <Text
           style={[
             label.length > 2 ? {paddingHorizontal: 20} : {},
-            clicked ? styles.pressedText : styles.unpressedText,
-            completed ? styles.pressedText : styles.unpressedText,
+            completed || clicked ? styles.pressedText : styles.unpressedText,
           ]}>
           {label.toString()}
         </Text>

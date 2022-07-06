@@ -8,7 +8,14 @@
 //and formData/defaultValues == flat list
 
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Keyboard, Text, Pressable} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Keyboard,
+  Text,
+  Pressable,
+  Dimensions,
+} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
@@ -19,10 +26,7 @@ import {useForm, Controller} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import Card from './CardClass';
-const cardAspect = 400 / 280;
-const cardWidth = 350;
-const cardHeight = cardWidth * cardAspect;
-
+const {width, height} = Dimensions.get('screen');
 const cardDefinitions = Card.cardDefinitions;
 const checkForParam = (modalCode, paramName) => {
   return cardDefinitions[modalCode]
@@ -40,6 +44,7 @@ for (let i = 0; i < 31; i++) {
 const AddOrEditCardForm = props => {
   useEffect(() => {
     console.log('Errors: ', errors);
+    console.log('screen', Dimensions.get('screen'));
   }, [errors]);
 
   const {
@@ -487,8 +492,8 @@ export default AddOrEditCardForm;
 
 const styles = StyleSheet.create({
   container: {
-    width: cardWidth,
-    height: cardHeight,
+    width: width * 0.9,
+    height: (width * 0.9) / 0.7,
     backgroundColor: '#222222',
     backgroundColor: colours.foreground,
     justifyContent: 'space-between',

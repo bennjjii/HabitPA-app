@@ -6,7 +6,7 @@ import ProgressBox from './ProgressBox';
 
 import colours from '../assets/colours/colours';
 
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
@@ -29,7 +29,6 @@ const BackOfCard = props => {
           size={40}
           onPress={() => {
             switchToInAction(props.card);
-            // props.begin();
           }}
         />
         <FontAwesome
@@ -37,7 +36,6 @@ const BackOfCard = props => {
           name="edit"
           size={40}
           onPress={() => {
-            console.log('POOPOOO');
             switchToEditCard(props.card);
           }}
         />
@@ -62,8 +60,8 @@ export default BackOfCard;
 
 const styles = StyleSheet.create({
   container: {
-    width: width * 0.8,
-    height: (40 / 28) * (width * 0.8),
+    width: width * 0.9,
+    height: (width * 0.9) / 0.7,
     backgroundColor: '#222222',
     backgroundColor: colours.foreground,
     justifyContent: 'flex-start',
@@ -92,8 +90,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: width * 0.6,
-    top: width * 0.97,
+    width: width * 0.7,
+    top: width * 1.1,
   },
   icon: {
     color: 'grey',

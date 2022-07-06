@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,9 +20,7 @@ import {useStore} from '../services/zustandContext';
 
 const cardDefinitions = CardClass.cardDefinitions;
 
-const cardAspect = 400 / 280;
-const cardWidth = Dimensions.get('window').width / 2 - 30;
-const cardHeight = cardWidth * cardAspect;
+const {width, height} = Dimensions.get('screen');
 
 const TemplateCard = props => {
   const {showModalAddCard} = useStore();
@@ -100,8 +98,8 @@ const styles = StyleSheet.create({
   templateCard: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: cardWidth,
-    height: cardHeight,
+    width: width * 0.42,
+    height: (width * 0.42) / 0.7,
     margin: 10,
     borderRadius: 10,
     backgroundColor: colours.foreground,
