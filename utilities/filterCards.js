@@ -77,17 +77,38 @@ export default (deck, history, timesOfDay) => {
     switch (card.code) {
       case 'ED':
         //except if u have already done this morning...
-        isReturned =
-          card.parameters.timeOfDay[currentTimeOfDay] &&
-          history
-            .filter(
-              instance =>
-                instance.timestamp.getTime() >
-                new Date(
-                  new Date().setHours(timesOfDay[currentTimeOfDay][0]),
-                ).getTime(),
-            )
-            .filter(instance => card.uuid === instance.uuid).length === 0;
+        const timesOfDayBeingUsed = Object.keys(card.parameters.timeOfDay).some(
+          timeOfDay => {
+            return card.parameters.timeOfDay[timeOfDay];
+          },
+        );
+        if (timesOfDayBeingUsed) {
+          isReturned =
+            card.parameters.timeOfDay[currentTimeOfDay] &&
+            history
+              .filter(
+                instance =>
+                  instance.timestamp.getTime() >
+                  new Date(
+                    new Date().setHours(
+                      timesOfDay[currentTimeOfDay][0],
+                      0,
+                      0,
+                      0,
+                    ),
+                  ).getTime(),
+              )
+              .filter(instance => card.uuid === instance.uuid).length === 0;
+        } else {
+          isReturned =
+            history
+              .filter(
+                instance =>
+                  instance.timestamp.getTime() >
+                  new Date(new Date().setHours(0, 0, 0, 0)).getTime(),
+              )
+              .filter(instance => card.uuid === instance.uuid).length === 0;
+        }
         break;
       case 'XpD':
         //if we count x cards from history today or more, return false, else return true

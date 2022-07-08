@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Platform} from 'react-native';
 import React from 'react';
 import Deck from './Deck';
 import FreeTimeScreen from './FreeTimeScreen';
@@ -18,6 +18,13 @@ const Home = () => {
     <Tab.Navigator
       screenOptions={{
         showLabel: false,
+        tabBarStyle: Platform.OS === 'android' ? {height: 100} : {},
+        tabBarLabelStyle:
+          Platform.OS === 'android'
+            ? {
+                marginBottom: 15,
+              }
+            : {},
       }}>
       <Tab.Screen
         name="Deck"

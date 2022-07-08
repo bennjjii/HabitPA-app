@@ -136,21 +136,60 @@ export default class Card {
       progressCoeffFunction: (card, history, parameters) => {
         //soft start
         //what percentage of last 7 days has habit been observed
+        let contractedCardsPerDay = Object.keys(
+          card.parameters.timeOfDay,
+        ).filter(timeOfDay => {
+          return card.parameters.timeOfDay[timeOfDay];
+        }).length;
+        if (contractedCardsPerDay == 0) {
+          contractedCardsPerDay = 1;
+        }
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
-        return Math.min(
-          countCardsAfterDate(
+        let accActual = 0;
+        for (let i = ageOfCardInDays; i >= 0; i--) {
+          const startOfDay = new Date(
+            new Date(new Date().setDate(new Date().getDate() - i)).setHours(
+              0,
+              0,
+              0,
+              0,
+            ),
+          );
+          const endOfDay = new Date(
+            new Date(
+              new Date().setDate(new Date().getDate() - (i + 1)),
+            ).setHours(0, 0, 0, 0),
+          );
+          const numCardsInThisDay = countCardsAfterDate(
             history,
             card,
-            new Date(
-              new Date(
-                new Date().setDate(new Date().getDate() - ageOfCardInDays),
-              ).setHours(0, 0, 0, 0),
-            ),
-          ) / ageOfCardInDays,
-          1,
-        );
+            startOfDay,
+            endOfDay,
+          );
+          const ratioForToday = Math.min(
+            numCardsInThisDay / contractedCardsPerDay,
+            1,
+          );
+          accActual += ratioForToday;
+        }
+        return Math.min(accActual / ageOfCardInDays, 1);
       },
+      contractRenderFunction: props => {},
       progressRenderFunction: (props, history) => {
+        //just count if user has done card twice in day etc
+        const timesOfDayBeingUsed = Object.keys(
+          props.card.parameters.timeOfDay,
+        ).some(timeOfDay => {
+          return props.card.parameters.timeOfDay[timeOfDay];
+        });
+        let contractedCardsPerDay = Object.keys(
+          props.card.parameters.timeOfDay,
+        ).filter(timeOfDay => {
+          return props.card.parameters.timeOfDay[timeOfDay];
+        }).length;
+        if (contractedCardsPerDay == 0) {
+          contractedCardsPerDay = 1;
+        }
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 7);
         let tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {

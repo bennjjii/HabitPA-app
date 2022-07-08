@@ -233,7 +233,6 @@ const AddOrEditCardForm = props => {
               />
             )}
           />
-          {errors.name && <Text>Name required</Text>}
           <View style={styles.pickerContainer}>
             {/* number of times */}
             {checkForParam(modalCode, 'numberOfTimes') && (
@@ -280,27 +279,6 @@ const AddOrEditCardForm = props => {
                     return a;
                   })()}
                 </Picker>
-                {/* <Controller
-                  name="parameters.periodInDays"
-                  control={control}
-                  rules={{
-                    required: true,
-                    // validate: v => String(v).length === 1,
-                    pattern: /^[0-9]$/g,
-                  }}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      placeholder="period in days"
-                      style={styles.textInput}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                />
-                {errors.parameters?.periodInDays && (
-                  <Text>Number required</Text>
-                )} */}
               </View>
             )}
           </View>
@@ -460,23 +438,23 @@ const AddOrEditCardForm = props => {
               <Controller
                 name={`parameters.timeOfDay`}
                 control={control}
-                rules={{
-                  validate: v => {
-                    return Object.keys(getValues('parameters.timeOfDay')).some(
-                      day => {
-                        return getValues('parameters.timeOfDay')[day];
-                      },
-                    );
-                  },
-                }}
+                // rules={{
+                //   validate: v => {
+                //     return Object.keys(getValues('parameters.timeOfDay')).some(
+                //       day => {
+                //         return getValues('parameters.timeOfDay')[day];
+                //       },
+                //     );
+                //   },
+                // }}
                 render={({field: {onChange, value}}) => (
                   <BallPicker values={value} onValueChange={onChange} />
                 )}
               />
 
-              {errors.parameters?.timeOfDay && (
+              {/* {errors.parameters?.timeOfDay && (
                 <Text>Please select a time of day</Text>
-              )}
+              )} */}
             </View>
           )}
         </View>
