@@ -78,25 +78,35 @@ const AddOrEditCardForm = props => {
       : undefined,
   );
   //set up year date spinner
+  // const initialValues = cardUnderInspection
+  //   ? [
+  //       {
+  //         id: 'day',
+  //         value: cardUnderInspection.parameters.dayOfYear.day
+  //           ? cardUnderInspection.parameters.dayOfYear.day
+  //           : 1,
+  //       },
+  //       {
+  //         id: 'month',
+  //         value: cardUnderInspection.parameters.dayOfYear.month
+  //           ? cardUnderInspection.parameters.dayOfYear.month
+  //           : 1,
+  //       },
+  //     ]
+  //   : [
+  //       {id: 'day', value: 1},
+  //       {id: 'month', value: 1},
+  //   ];
   const initialValues = cardUnderInspection
-    ? [
-        {
-          id: 'day',
-          value: cardUnderInspection.parameters.dayOfYear.day
-            ? cardUnderInspection.parameters.dayOfYear.day
-            : 1,
-        },
-        {
-          id: 'month',
-          value: cardUnderInspection.parameters.dayOfYear.month
-            ? cardUnderInspection.parameters.dayOfYear.month
-            : 1,
-        },
-      ]
-    : [
-        {id: 'day', value: 1},
-        {id: 'month', value: 1},
-      ];
+    ? {
+        day: cardUnderInspection.parameters.dayOfYear.day
+          ? cardUnderInspection.parameters.dayOfYear.day
+          : 1,
+        month: cardUnderInspection.parameters.dayOfYear.month
+          ? cardUnderInspection.parameters.dayOfYear.month
+          : 1,
+      }
+    : {day: 1, month: 4};
   const [spinnerDate, setSpinnerDate] = useState(initialValues);
   //configuring spinners
   const [spinners, setSpinners] = useState([
@@ -139,10 +149,10 @@ const AddOrEditCardForm = props => {
           dayOfMonth: formData.parameters.dayOfMonth, //make a custom picker for this
           dayOfYear: {
             day: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate[0].value
+              ? spinnerDate.day
               : undefined,
             month: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate[1].value
+              ? spinnerDate.month
               : undefined,
           },
           date: date,
@@ -158,6 +168,10 @@ const AddOrEditCardForm = props => {
       console.log('Card to submit', cardToSubmit);
       editCard(cardToSubmit);
     } else {
+      console.log('formDataNew', formData);
+      console.log(spinnerDate[0]);
+      console.log(spinnerDate[1]);
+      console.log(checkForParam(modalCode, 'dayOfYear'));
       addCardToDeck(
         new Card({
           code: modalCode,
@@ -175,10 +189,10 @@ const AddOrEditCardForm = props => {
             dayOfMonth: formData.parameters.dayOfMonth, //make a custom picker for this
             dayOfYear: {
               day: checkForParam(modalCode, 'dayOfYear')
-                ? spinnerDate[0].value
+                ? spinnerDate.day
                 : undefined,
               month: checkForParam(modalCode, 'dayOfYear')
-                ? spinnerDate[1].value
+                ? spinnerDate.month
                 : undefined,
             },
             date: date,
@@ -338,7 +352,7 @@ const AddOrEditCardForm = props => {
                 pickers={spinners}
                 values={spinnerDate}
                 onChange={values => {
-                  console.log(values['month']);
+                  console.log(values);
                   setSpinnerDate(values);
                   switch (values['month']) {
                     case 1:

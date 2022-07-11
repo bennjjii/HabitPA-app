@@ -141,7 +141,7 @@ export const useStore = create(
           set(() => ({
             modalVisibleAddCard: true,
           }));
-        }, 350);
+        }, 400);
       },
       hideModalBackOfCard: () => {
         set(() => ({

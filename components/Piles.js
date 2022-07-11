@@ -111,7 +111,7 @@ const Piles = () => {
           {/* //replace this */}
           <Text>{''}</Text>
           {cardsToRender.map(card => {
-            return <BackOfCard card={card} />;
+            return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
           })}
         </ScrollView>
       </Modal>

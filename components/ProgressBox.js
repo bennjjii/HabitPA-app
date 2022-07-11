@@ -10,6 +10,7 @@ import ProgressBarGraph from './ProgressBarGraph';
 const ProgressBox = props => {
   const {history} = useStore();
 
+  const [contractText, setContractText] = useState('');
   const [dataToRender, setDataToRender] = useState(null);
   let _history = [];
   let ageOfCardInDays;
@@ -20,66 +21,80 @@ const ProgressBox = props => {
 
     switch (props.card.code) {
       case 'ED':
+        //this can all be done without the switch statement, keep it in for now tho as works
+        setContractText(Card.cardDefinitions.ED.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.ED.progressRenderFunction(props, history),
         );
         break;
       case 'XpD':
+        setContractText(Card.cardDefinitions.XpD.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpD.progressRenderFunction(props, history),
         );
         break;
       case 'EW':
+        setContractText(Card.cardDefinitions.EW.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.EW.progressRenderFunction(props, history),
         );
         break;
       case 'XpW':
+        setContractText(Card.cardDefinitions.XpW.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpW.progressRenderFunction(props, history),
         );
         break;
       case 'RxW':
+        setContractText(Card.cardDefinitions.RxW.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.RxW.progressRenderFunction(props, history),
         );
         break;
       case 'EM':
+        setContractText(Card.cardDefinitions.EM.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.EM.progressRenderFunction(props, history),
         );
         break;
       case 'XpM':
+        setContractText(Card.cardDefinitions.XpM.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpM.progressRenderFunction(props, history),
         );
         break;
       case 'RxM':
+        setContractText(Card.cardDefinitions.RxM.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.RxM.progressRenderFunction(props, history),
         );
         break;
       case 'XiY':
+        setContractText(Card.cardDefinitions.XiY.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XiY.progressRenderFunction(props, history),
         );
         break;
       case 'XiT':
+        setContractText(Card.cardDefinitions.XiT.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XiT.progressRenderFunction(props, history),
         );
         break;
       case 'SpT':
+        setContractText(Card.cardDefinitions.SpT.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.SpT.progressRenderFunction(props, history),
         );
         break;
       case 'DL':
+        setContractText(Card.cardDefinitions.DL.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.DL.progressRenderFunction(props, history),
         );
         break;
       case 'EY':
+        setContractText(Card.cardDefinitions.EY.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.EY.progressRenderFunction(props, history),
         );
@@ -104,7 +119,7 @@ const ProgressBox = props => {
 
   return (
     <View>
-      <Text>{Card.cardDefinitions[props.card.code]?.name + '\n'}</Text>
+      <Text>{contractText + '\n'}</Text>
       <Text>Progress this week...</Text>
       <View style={styles.progressDataStyle}>{dataToRender}</View>
       <Text>Habit coefficient: {0.5}</Text>

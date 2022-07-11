@@ -174,14 +174,32 @@ export default class Card {
         }
         return Math.min(accActual / ageOfCardInDays, 1);
       },
-      contractRenderFunction: props => {},
-      progressRenderFunction: (props, history) => {
-        //just count if user has done card twice in day etc
+      contractRenderFunction: props => {
         const timesOfDayBeingUsed = Object.keys(
           props.card.parameters.timeOfDay,
         ).some(timeOfDay => {
           return props.card.parameters.timeOfDay[timeOfDay];
         });
+        const whichTimesOfDayBeingUsed = Object.keys(
+          props.card.parameters.timeOfDay,
+        ).filter(timeOfDay => props.card.parameters.timeOfDay[timeOfDay]);
+        if (timesOfDayBeingUsed) {
+          switch (whichTimesOfDayBeingUsed.length) {
+            case 1:
+              return `Practise this habit every ${whichTimesOfDayBeingUsed[0].toLowerCase()}`;
+            case 2:
+              return `Practise this habit each ${whichTimesOfDayBeingUsed[0].toLowerCase()} and ${whichTimesOfDayBeingUsed[1].toLowerCase()}`;
+            case 3:
+              return `Practise this habit each ${whichTimesOfDayBeingUsed[0].toLowerCase()}, ${whichTimesOfDayBeingUsed[1].toLowerCase()} and ${whichTimesOfDayBeingUsed[2].toLowerCase()}`;
+            case 4:
+              return `Practise this habit each ${whichTimesOfDayBeingUsed[0].toLowerCase()}, ${whichTimesOfDayBeingUsed[1].toLowerCase()}, ${whichTimesOfDayBeingUsed[2].toLowerCase()} and ${whichTimesOfDayBeingUsed[2].toLowerCase()}`;
+          }
+        } else {
+          return 'Practise this habit every day';
+        }
+      },
+      progressRenderFunction: (props, history) => {
+        //just count if user has done card twice in day etc
         let contractedCardsPerDay = Object.keys(
           props.card.parameters.timeOfDay,
         ).filter(timeOfDay => {
@@ -211,7 +229,8 @@ export default class Card {
           );
           startOfDay.setHours(0, 0, 0, 0);
           const cardCompletedToday =
-            countCardsAfterDate(history, props.card, startOfDay, endOfDay) > 0;
+            countCardsAfterDate(history, props.card, startOfDay, endOfDay) >=
+            contractedCardsPerDay;
           tempArray.push({
             day: middleOfDay.toString()[0],
             completed: cardCompletedToday,
@@ -254,6 +273,13 @@ export default class Card {
             (parameters.numberOfTimes * ageOfCardInDays),
           1,
         );
+      },
+      contractRenderFunction: props => {
+        if (props.card.parameters.numberOfTimes == 1) {
+          return 'Practise this habit once a day';
+        } else {
+          return `Practise this habit ${props.card.parameters.numberOfTimes} times a day`;
+        }
       },
       progressRenderFunction: (props, history) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 7);
@@ -345,6 +371,25 @@ export default class Card {
           }
         }
         return Math.min(accActual / accContracted, 1);
+      },
+      contractRenderFunction: props => {
+        let whichDaysOfWeekBeingUsed = Object.keys(
+          props.card.parameters.dayOfWeek,
+        ).filter(dayOfWeek => props.card.parameters.dayOfWeek[dayOfWeek]);
+        whichDaysOfWeekBeingUsed.reverse();
+        let accString = 'Practise this habit on ';
+        if (whichDaysOfWeekBeingUsed.length == 1) {
+          return `Practise this habit on ${whichDaysOfWeekBeingUsed[0]}s`;
+        } else {
+          for (let i = whichDaysOfWeekBeingUsed.length - 1; i >= 0; i--) {
+            if (i == 0) {
+              accString += `and ${whichDaysOfWeekBeingUsed[i]}s`;
+            } else {
+              accString += `${whichDaysOfWeekBeingUsed[i]}s, `;
+            }
+          }
+        }
+        return accString;
       },
       progressRenderFunction: (props, history) => {
         tempArray = [];
@@ -492,6 +537,9 @@ export default class Card {
           );
         }
       },
+      contractRenderFunction: props => {
+        return `Practise this habit ${props.card.parameters.numberOfTimes} times in each week`;
+      },
       progressRenderFunction: (props, history) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         const cardWeeksOldIndex = Math.trunc(ageOfCardInDays / 7);
@@ -561,6 +609,9 @@ export default class Card {
         const accContracted =
           (ageOfCardInDays / 14) * (parameters.numberOfTimes * 2);
         return Math.min(accActual / accContracted, 1);
+      },
+      contractRenderFunction: props => {
+        return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 7 days`;
       },
       progressRenderFunction: (props, history) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
@@ -636,6 +687,50 @@ export default class Card {
           }
         }
         return Math.min(accActual / accContracted, 1);
+      },
+      contractRenderFunction: props => {
+        let whichDaysOfMonthBeingUsed = Object.keys(
+          props.card.parameters.dayOfMonth,
+        ).filter(dayOfMonth => props.card.parameters.dayOfMonth[dayOfMonth]);
+        whichDaysOfMonthBeingUsed.reverse();
+
+        let accString = 'Practise this habit on the ';
+        if (whichDaysOfMonthBeingUsed.length == 1) {
+          return `Practise this habit on the ${whichDaysOfMonthBeingUsed[0]}${
+            whichDaysOfMonthBeingUsed[0].toString().slice(-1) == '1'
+              ? 'st'
+              : whichDaysOfMonthBeingUsed[0].toString().slice(-1) == '2'
+              ? 'nd'
+              : whichDaysOfMonthBeingUsed[0].toString().slice(-1) == '3'
+              ? 'rd'
+              : 'th'
+          }`;
+        } else {
+          for (let i = whichDaysOfMonthBeingUsed.length - 1; i >= 0; i--) {
+            if (i == 0) {
+              accString += `and ${whichDaysOfMonthBeingUsed[i]}${
+                whichDaysOfMonthBeingUsed[i].toString().slice(-1) == '1'
+                  ? 'st'
+                  : whichDaysOfMonthBeingUsed[i].toString().slice(-1) == '2'
+                  ? 'nd'
+                  : whichDaysOfMonthBeingUsed[i].toString().slice(-1) == '3'
+                  ? 'rd'
+                  : 'th'
+              }`;
+            } else {
+              accString += `${whichDaysOfMonthBeingUsed[i]}${
+                whichDaysOfMonthBeingUsed[i].toString().slice(-1) == '1'
+                  ? 'st'
+                  : whichDaysOfMonthBeingUsed[i].toString().slice(-1) == '2'
+                  ? 'nd'
+                  : whichDaysOfMonthBeingUsed[i].toString().slice(-1) == '3'
+                  ? 'rd'
+                  : 'th'
+              }, `;
+            }
+          }
+        }
+        return accString;
       },
       progressRenderFunction: (props, history) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
@@ -773,6 +868,9 @@ export default class Card {
           );
         }
       },
+      contractRenderFunction: props => {
+        return `Practise this habit ${props.card.parameters.numberOfTimes} times in each month`;
+      },
       progressRenderFunction: (props, history) => {
         const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
 
@@ -843,6 +941,9 @@ export default class Card {
           1,
         );
       },
+      contractRenderFunction: props => {
+        return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 30 days`;
+      },
       progressRenderFunction: (props, history) => {
         const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
         let tempArray = [];
@@ -907,6 +1008,9 @@ export default class Card {
           parameters.numberOfTimes * (ageOfCardInDays / periodInDays);
         return Math.min(accActual / accContracted, 1);
       },
+      contractRenderFunction: props => {
+        return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in ${props.card.parameters.periodInDays} days`;
+      },
       progressRenderFunction: (props, history) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created);
         const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
@@ -970,6 +1074,9 @@ export default class Card {
         const accActual = countCardsAfterDate(history, card, card.created);
         return Math.min(accActual / parameters.numberOfTimes, 1);
       },
+      contractRenderFunction: props => {
+        return `Practise this habit ${props.card.parameters.numberOfTimes} times in total`;
+      },
       progressRenderFunction: (props, history) => {
         //sideways graph would be better here
         const accActual = countCardsAfterDate(
@@ -1005,6 +1112,12 @@ export default class Card {
         } else {
           return 0;
         }
+      },
+      contractRenderFunction: props => {
+        return `Practise this habit on ${props.card.parameters.date.toLocaleString(
+          'en-GB',
+          {dateStyle: 'full'},
+        )}`;
       },
       progressRenderFunction: (props, history) => {
         const completed =
@@ -1044,6 +1157,12 @@ export default class Card {
         } else {
           return 0;
         }
+      },
+      contractRenderFunction: props => {
+        return `Complete this task or habit by ${props.card.parameters.date.toLocaleString(
+          'en-GB',
+          {dateStyle: 'full'},
+        )}`;
       },
       progressRenderFunction: (props, history) => {
         const completed =
@@ -1132,6 +1251,21 @@ export default class Card {
             return 0;
           }
         }
+      },
+      contractRenderFunction: props => {
+        return `Practise this habit on the ${
+          props.card.parameters.dayOfYear.day
+        }${
+          props.card.parameters.dayOfYear.day.toString().slice(-1) == '1'
+            ? 'st'
+            : props.card.parameters.dayOfYear.day.toString().slice(-1) == '2'
+            ? 'nd'
+            : props.card.parameters.dayOfYear.day.toString().slice(-1) == '3'
+            ? 'rd'
+            : 'th'
+        } of ${new Date(
+          new Date().setMonth(props.card.parameters.dayOfYear.month - 1),
+        ).toLocaleString('en-GB', {month: 'long'})}`;
       },
       progressRenderFunction: (props, history) => {
         //checkbox - if created this year just this year
