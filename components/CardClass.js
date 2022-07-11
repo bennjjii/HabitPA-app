@@ -1379,6 +1379,9 @@ export default class Card {
           1,
         );
       },
+      contractRenderFunction: props => {
+        return `Practise this habit ${props.card.parameters.numberOfTimes} times in a calendar year`;
+      },
       progressRenderFunction: (props, history) => {
         //bar graphs
         //get age of card in years
@@ -1453,6 +1456,9 @@ export default class Card {
           return Math.min(accActual / accContracted, 1);
         }
       },
+      contractRenderFunction: props => {
+        return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 365 days`;
+      },
       progressRenderFunction: (props, history) => {
         //bar graph for each period
         const ageOfCardInYears = getAgeOfCardInYears(props.card);
@@ -1510,6 +1516,9 @@ export default class Card {
         } else {
           return 0;
         }
+      },
+      contractRenderFunction: props => {
+        return `Do this at some point`;
       },
       progressRenderFunction: (props, history) => {
         const completed =

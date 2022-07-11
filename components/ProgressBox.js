@@ -100,16 +100,19 @@ const ProgressBox = props => {
         );
         break;
       case 'XpY':
+        setContractText(Card.cardDefinitions.XpY.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpY.progressRenderFunction(props, history),
         );
         break;
       case 'RxY':
+        setContractText(Card.cardDefinitions.RxY.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.RxY.progressRenderFunction(props, history),
         );
         break;
       case 'AsP':
+        setContractText(Card.cardDefinitions.AsP.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.AsP.progressRenderFunction(props, history),
         );
