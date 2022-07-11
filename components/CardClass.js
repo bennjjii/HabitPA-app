@@ -133,6 +133,8 @@ export default class Card {
       parameters: {
         timeOfDay: [undefined],
       },
+      //we pass parameters, when it is already passed as part of card
+      //not a problem, but redundant
       progressCoeffFunction: (card, history, parameters) => {
         //soft start
         //what percentage of last 7 days has habit been observed
@@ -370,7 +372,9 @@ export default class Card {
             accContracted++;
           }
         }
-        return Math.min(accActual / accContracted, 1);
+        console.log('accActual', accActual);
+        console.log('accContracted', accContracted);
+        return Math.min(accActual / accContracted || 0, 1);
       },
       contractRenderFunction: props => {
         let whichDaysOfWeekBeingUsed = Object.keys(
@@ -608,7 +612,7 @@ export default class Card {
         );
         const accContracted =
           (ageOfCardInDays / 14) * (parameters.numberOfTimes * 2);
-        return Math.min(accActual / accContracted, 1);
+        return Math.min(accActual / accContracted || 0, 1);
       },
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 7 days`;
@@ -686,7 +690,7 @@ export default class Card {
             accActual++;
           }
         }
-        return Math.min(accActual / accContracted, 1);
+        return Math.min(accActual / accContracted || 0, 1);
       },
       contractRenderFunction: props => {
         let whichDaysOfMonthBeingUsed = Object.keys(
@@ -1005,8 +1009,9 @@ export default class Card {
         );
         const accActual = countCardsAfterDate(history, card, dateStartOfPeriod);
         const accContracted =
-          parameters.numberOfTimes * (ageOfCardInDays / periodInDays);
-        return Math.min(accActual / accContracted, 1);
+          parameters.numberOfTimes *
+          (ageOfCardInDays / parameters.periodInDays);
+        return Math.min(accActual / accContracted || 0, 1);
       },
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in ${props.card.parameters.periodInDays} days`;
@@ -1123,7 +1128,7 @@ export default class Card {
         const completed =
           countCardsAfterDate(history, props.card, props.card.created) > 0;
         let componentToRender;
-        if (completed) {
+        if (!completed) {
           componentToRender = (
             <CustomCheckbox
               label={'not completed...'}
@@ -1168,7 +1173,7 @@ export default class Card {
         const completed =
           countCardsAfterDate(history, props.card, props.card.created) > 0;
         let componentToRender;
-        if (completed) {
+        if (!completed) {
           componentToRender = (
             <CustomCheckbox
               label={'not completed...'}
@@ -1524,7 +1529,7 @@ export default class Card {
         const completed =
           countCardsAfterDate(history, props.card, props.card.created) > 0;
         let componentToRender;
-        if (completed) {
+        if (!completed) {
           componentToRender = (
             <CustomCheckbox
               label={'not completed...'}

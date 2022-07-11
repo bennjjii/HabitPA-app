@@ -106,7 +106,7 @@ const AddOrEditCardForm = props => {
           ? cardUnderInspection.parameters.dayOfYear.month
           : 1,
       }
-    : {day: 1, month: 4};
+    : {day: 1, month: 1};
   const [spinnerDate, setSpinnerDate] = useState(initialValues);
   //configuring spinners
   const [spinners, setSpinners] = useState([

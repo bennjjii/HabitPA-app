@@ -12,6 +12,7 @@ const ProgressBox = props => {
 
   const [contractText, setContractText] = useState('');
   const [dataToRender, setDataToRender] = useState(null);
+  const [habitCoefficient, setHabitCoefficient] = useState(undefined);
   let _history = [];
   let ageOfCardInDays;
   useEffect(() => {
@@ -26,11 +27,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.ED.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.ED.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'XpD':
         setContractText(Card.cardDefinitions.XpD.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpD.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.XpD.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'EW':
@@ -38,11 +53,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.EW.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.EW.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'XpW':
         setContractText(Card.cardDefinitions.XpW.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpW.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.XpW.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'RxW':
@@ -50,11 +79,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.RxW.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.RxW.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'EM':
         setContractText(Card.cardDefinitions.EM.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.EM.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.EM.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'XpM':
@@ -62,11 +105,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.XpM.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.XpM.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'RxM':
         setContractText(Card.cardDefinitions.RxM.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.RxM.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.RxM.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'XiY':
@@ -74,11 +131,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.XiY.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.XiY.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'XiT':
         setContractText(Card.cardDefinitions.XiT.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XiT.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.XiT.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'SpT':
@@ -86,11 +157,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.SpT.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.SpT.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'DL':
         setContractText(Card.cardDefinitions.DL.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.DL.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.DL.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'EY':
@@ -98,11 +183,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.EY.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.EY.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'XpY':
         setContractText(Card.cardDefinitions.XpY.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.XpY.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.XpY.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
       case 'RxY':
@@ -110,11 +209,25 @@ const ProgressBox = props => {
         setDataToRender(
           Card.cardDefinitions.RxY.progressRenderFunction(props, history),
         );
+        setHabitCoefficient(
+          Card.cardDefinitions.RxY.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
+        );
         break;
       case 'AsP':
         setContractText(Card.cardDefinitions.AsP.contractRenderFunction(props));
         setDataToRender(
           Card.cardDefinitions.AsP.progressRenderFunction(props, history),
+        );
+        setHabitCoefficient(
+          Card.cardDefinitions.AsP.progressCoeffFunction(
+            props.card,
+            history,
+            props.card.parameters,
+          ),
         );
         break;
     }
@@ -125,7 +238,7 @@ const ProgressBox = props => {
       <Text>{contractText + '\n'}</Text>
       <Text>Progress this week...</Text>
       <View style={styles.progressDataStyle}>{dataToRender}</View>
-      <Text>Habit coefficient: {0.5}</Text>
+      <Text>Habit coefficient: {habitCoefficient}</Text>
     </View>
   );
 };

@@ -163,7 +163,7 @@ export const useStore = create(
           set(() => ({
             modalVisibleInAction: true,
           }));
-        }, 350);
+        }, 400);
       },
       hideModalInAction: () => {
         set(() => ({
