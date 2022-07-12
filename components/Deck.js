@@ -61,6 +61,8 @@ const {width, height} = Dimensions.get('window');
 //const toRadians = angle => angle * (Math.PI / 180);
 // const rotatedWidth =
 //   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
+const xOffset = (width * 0.72) / 2;
+const yOffset = (width * 0.72) / 1.4;
 
 const Deck = () => {
   //console.log('Maindeck loading');
@@ -82,8 +84,8 @@ const Deck = () => {
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
   const [index, setIndex] = useState(0);
-  const translationX = useSharedValue(0);
-  const translationY = useSharedValue(0);
+  const translationX = useSharedValue(0 - xOffset);
+  const translationY = useSharedValue(0 - yOffset);
   const currentCard = useSharedValue(0);
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
@@ -123,14 +125,14 @@ const Deck = () => {
   // const deckSub = useStore.subscribe(manualUpdate);
   const gesture = Gesture.Pan()
     .onUpdate(event => {
-      translationX.value = event.translationX;
-      translationY.value = event.translationY;
+      translationX.value = event.translationX - xOffset;
+      translationY.value = event.translationY - yOffset;
     })
     .onEnd(event => {
       switch (true) {
         case event.velocityX < -2500:
           translationX.value = withSpring(
-            -500,
+            -1000,
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
@@ -140,18 +142,20 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
-                translationX.value = 0;
-                translationY.value = 0;
+                // runOnJS(resetCardPosn);
+                translationX.value = -xOffset;
+                translationY.value = -yOffset;
               } else {
-                translationX.value = 0;
-                translationY.value = 0;
+                // runOnJS(resetCardPosn);
+                translationX.value = -xOffset;
+                translationY.value = -yOffset;
               }
             },
           );
           break;
         case event.velocityX > 2500:
           translationX.value = withSpring(
-            500,
+            1000,
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
@@ -160,29 +164,38 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
-                translationX.value = 0;
-                translationY.value = 0;
+                // runOnJS(resetCardPosn)();
+                translationX.value = -xOffset;
+                translationY.value = -yOffset;
               } else {
-                translationX.value = 0;
-                translationY.value = 0;
+                // runOnJS(resetCardPosn)();
+                translationX.value = -xOffset;
+                translationY.value = -yOffset;
               }
             },
           );
           break;
         default:
-          translationX.value = withSpring(0);
-          translationY.value = withSpring(0);
+          translationX.value = withSpring(0 - xOffset);
+          translationY.value = withSpring(0 - yOffset);
       }
     })
     .onFinalize(event => {});
 
   const rotateZ = () => {
     'worklet';
-    return translationX.value / (width / 30) + 'deg';
+    return (translationX.value + xOffset) / (width / 30) + 'deg';
   };
 
   const updateIndex = args => {
     setIndex(args);
+  };
+
+  const resetCardPosn = () => {
+    // setTimeout(() => {
+    translationX.value = -xOffset;
+    translationY.value = -yOffset;
+    // }, 1000);
   };
 
   useDerivedValue(() => {
@@ -211,6 +224,7 @@ const Deck = () => {
         Press me
       </Button> */}
       <CustomCheckbox label="15" value={false} today={true} />
+      <Card name={'test'} />
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (

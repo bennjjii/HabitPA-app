@@ -18,6 +18,7 @@ const Card = props => {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'absolute',
     width: width * 0.72,
     height: (width * 0.72) / 0.7,
     backgroundColor: '#222222',
