@@ -18,7 +18,7 @@ const Card = props => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    // position: 'absolute',
     width: width * 0.72,
     height: (width * 0.72) / 0.7,
     backgroundColor: '#222222',
@@ -39,12 +39,6 @@ const styles = StyleSheet.create({
   cardText: {
     color: '#ffffff',
     color: colours.text,
-  },
-  icon: {
-    position: 'absolute',
-    left: 230,
-    top: 10,
-    color: 'grey',
   },
 });
 

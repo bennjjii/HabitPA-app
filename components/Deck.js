@@ -21,7 +21,13 @@ need persist option for a card to persist once drawn
 */
 
 import React, {useContext, useState, useEffect} from 'react';
-import {StyleSheet, Dimensions, SafeAreaView, Pressable} from 'react-native';
+import {
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+  Pressable,
+  View,
+} from 'react-native';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import Animated, {
   runOnJS,
@@ -61,8 +67,10 @@ const {width, height} = Dimensions.get('window');
 //const toRadians = angle => angle * (Math.PI / 180);
 // const rotatedWidth =
 //   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
-const xOffset = (width * 0.72) / 2;
+// const xOffset = (width * 0.72) / 2;
+const xOffset = 0;
 const yOffset = (width * 0.72) / 1.4;
+// const yOffset = 0;
 
 const Deck = () => {
   //console.log('Maindeck loading');
@@ -84,6 +92,7 @@ const Deck = () => {
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
   const [index, setIndex] = useState(0);
+  const [index2, setIndex2] = useState(0);
   const translationX = useSharedValue(0 - xOffset);
   const translationY = useSharedValue(0 - yOffset);
   const currentCard = useSharedValue(0);
@@ -227,7 +236,13 @@ const Deck = () => {
         Press me
       </Button> */}
       <CustomCheckbox label="15" value={false} today={true} />
-      <Card name={'test'} />
+      <View style={styles.backgroundCard}>
+        <Card
+          name={
+            filteredDeck[filteredDeck.length > index + 1 ? index + 1 : 0]?.name
+          }
+        />
+      </View>
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
@@ -315,9 +330,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  underneathCard: {
-    position: 'relative',
-    // width: 2,
-    top: 0,
+  backgroundCard: {
+    transform: [
+      {
+        translateX: xOffset,
+      },
+      {
+        translateY: yOffset,
+      },
+    ],
   },
 });
