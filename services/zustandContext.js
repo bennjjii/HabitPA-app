@@ -153,17 +153,23 @@ export const useStore = create(
       },
       modalVisibleInAction: false,
       cardInAction: undefined,
-      switchToInAction: card => {
+      switchToInAction: (card, ignoreTimeout) => {
         set(() => ({
           modalVisiblePiles: false,
           modalVisibleBackOfCard: false,
           cardInAction: card,
         }));
-        setTimeout(() => {
+        if (ignoreTimeout) {
           set(() => ({
             modalVisibleInAction: true,
           }));
-        }, 400);
+        } else {
+          setTimeout(() => {
+            set(() => ({
+              modalVisibleInAction: true,
+            }));
+          }, 400);
+        }
       },
       hideModalInAction: () => {
         set(() => ({

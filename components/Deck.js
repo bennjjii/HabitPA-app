@@ -92,25 +92,40 @@ const Deck = () => {
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
   const [index, setIndex] = useState(0);
-  const [index2, setIndex2] = useState(0);
+  const [index2, setIndex2] = useState(1);
   const translationX = useSharedValue(0 - xOffset);
   const translationY = useSharedValue(0 - yOffset);
   const currentCard = useSharedValue(0);
+  const tempCurrentCard = useSharedValue(0);
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
-  const updateHistory = async args => {
+  const startCardInAction = async args => {
     console.log('card sent to history', filteredDeck[args[0]]);
     console.log('card index', args[0]);
     setCardInAction(filteredDeck[args[0]]);
-    switchToInAction(filteredDeck[args[0]]);
+    switchToInAction(filteredDeck[args[0]], true);
   };
 
   const resetCardPosn = () => {
     setTimeout(() => {
       translationX.value = -xOffset;
       translationY.value = -yOffset;
-    }, 1000);
+    }, 50);
   };
+
+  const updateCardIndex = args => {
+    // if (currentCard.value + 1 < filteredDeck.length) {
+    //   currentCard.value = currentCard.value + 1;
+    // } else {
+    //   currentCard.value = 0;
+    // }
+    setIndex(args);
+    setTimeout(() => {
+      setIndex2(filteredDeck.length > args + 1 ? args + 1 : 0);
+    }, 100);
+  };
+
+  const devForHire = true;
 
   const deleteCard = () => {
     console.log('card deleted');
@@ -152,17 +167,19 @@ const Deck = () => {
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
-                runOnJS(updateHistory)([currentCard.value]);
+                tempCurrentCard.value = currentCard.value;
                 if (currentCard.value + 1 < filteredDeck.length) {
                   currentCard.value = currentCard.value + 1;
                 } else {
                   currentCard.value = 0;
                 }
-                runOnJS(resetCardPosn);
+                runOnJS(updateCardIndex)(currentCard.value);
+                runOnJS(resetCardPosn)();
+                runOnJS(startCardInAction)([tempCurrentCard.value]);
                 // translationX.value = -xOffset;
                 // translationY.value = -yOffset;
               } else {
-                runOnJS(resetCardPosn);
+                runOnJS(resetCardPosn)();
                 // translationX.value = -xOffset;
                 // translationY.value = -yOffset;
               }
@@ -180,6 +197,7 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
+                runOnJS(updateCardIndex)(currentCard.value);
                 // resetCardPosn();
                 runOnJS(resetCardPosn)();
                 // translationX.value = -xOffset;
@@ -205,13 +223,13 @@ const Deck = () => {
     return (translationX.value + xOffset) / (width / 30) + 'deg';
   };
 
-  const updateIndex = args => {
-    setIndex(args);
-  };
+  // const updateIndex = args => {
+  //   setIndex(args);
+  // };
 
-  useDerivedValue(() => {
-    runOnJS(updateIndex)(currentCard.value);
-  });
+  // useDerivedValue(() => {
+  //   runOnJS(updateIndex)(currentCard.value);
+  // });
 
   const rStyle = useAnimatedStyle(() => {
     return {
@@ -237,11 +255,7 @@ const Deck = () => {
       </Button> */}
       <CustomCheckbox label="15" value={false} today={true} />
       <View style={styles.backgroundCard}>
-        <Card
-          name={
-            filteredDeck[filteredDeck.length > index + 1 ? index + 1 : 0]?.name
-          }
-        />
+        <Card name={filteredDeck[index2]?.name} />
       </View>
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
