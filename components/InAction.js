@@ -23,6 +23,7 @@ const GoAndDoTheActivity = props => {
         <Button
           onPress={() => {
             hideModalInAction();
+            props.onCancel();
             console.log('action cancelled');
           }}
           theme={styles.cancelButton}>

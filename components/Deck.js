@@ -96,6 +96,13 @@ const Deck = () => {
     switchToInAction(filteredDeck[args[0]]);
   };
 
+  const resetCardPosn = () => {
+    setTimeout(() => {
+      translationX.value = -xOffset;
+      translationY.value = -yOffset;
+    }, 1000);
+  };
+
   const deleteCard = () => {
     console.log('card deleted');
     deleteCardFromDeck(filteredDeck[index]);
@@ -142,13 +149,13 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
-                // runOnJS(resetCardPosn);
-                translationX.value = -xOffset;
-                translationY.value = -yOffset;
+                runOnJS(resetCardPosn);
+                // translationX.value = -xOffset;
+                // translationY.value = -yOffset;
               } else {
-                // runOnJS(resetCardPosn);
-                translationX.value = -xOffset;
-                translationY.value = -yOffset;
+                runOnJS(resetCardPosn);
+                // translationX.value = -xOffset;
+                // translationY.value = -yOffset;
               }
             },
           );
@@ -164,13 +171,15 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
-                // runOnJS(resetCardPosn)();
-                translationX.value = -xOffset;
-                translationY.value = -yOffset;
+                // resetCardPosn();
+                runOnJS(resetCardPosn)();
+                // translationX.value = -xOffset;
+                // translationY.value = -yOffset;
               } else {
-                // runOnJS(resetCardPosn)();
-                translationX.value = -xOffset;
-                translationY.value = -yOffset;
+                // resetCardPosn();
+                runOnJS(resetCardPosn)();
+                // translationX.value = -xOffset;
+                // translationY.value = -yOffset;
               }
             },
           );
@@ -191,13 +200,6 @@ const Deck = () => {
     setIndex(args);
   };
 
-  const resetCardPosn = () => {
-    // setTimeout(() => {
-    translationX.value = -xOffset;
-    translationY.value = -yOffset;
-    // }, 1000);
-  };
-
   useDerivedValue(() => {
     runOnJS(updateIndex)(currentCard.value);
   });
@@ -215,6 +217,7 @@ const Deck = () => {
           rotateZ: rotateZ(),
         },
       ],
+      zIndex: 10,
     };
   });
 
@@ -247,7 +250,7 @@ const Deck = () => {
       <Modal
         isVisible={modalVisibleBackOfCard}
         onRequestClose={() => {
-          hideModalBackOfCardd();
+          hideModalBackOfCard();
         }}
         onBackdropPress={() => {
           hideModalBackOfCard();
@@ -256,7 +259,12 @@ const Deck = () => {
         <BackOfCard card={filteredDeck[index]} />
       </Modal>
       <Modal isVisible={modalVisibleInAction}>
-        <InAction />
+        <InAction
+          onCancel={() => {
+            translationX.value = -xOffset;
+            translationY.value = -yOffset;
+          }}
+        />
       </Modal>
       <Modal
         isVisible={modalVisibleAddCard}
@@ -306,5 +314,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  underneathCard: {
+    position: 'relative',
+    // width: 2,
+    top: 0,
   },
 });
