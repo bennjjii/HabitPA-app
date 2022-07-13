@@ -1081,6 +1081,13 @@
     "exec-sh" "^0.3.2"
     "minimist" "^1.2.0"
 
+"@davidgovea/react-native-wheel-datepicker@^1.0.2":
+  "integrity" "sha512-VKPwUfIozt3w7aLXHlZTJxPyfXMTkxHyiCxdC6VOUdNJJPRbgl6l32U83xRH0Jp1lOpC4Lr36XmGXyhdjl0u/w=="
+  "resolved" "https://registry.npmjs.org/@davidgovea/react-native-wheel-datepicker/-/react-native-wheel-datepicker-1.0.2.tgz"
+  "version" "1.0.2"
+  dependencies:
+    "moment" "^2.19.1"
+
 "@egjs/hammerjs@^2.0.17":
   "integrity" "sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A=="
   "resolved" "https://registry.npmjs.org/@egjs/hammerjs/-/hammerjs-2.0.17.tgz"
@@ -5833,6 +5840,11 @@
   "resolved" "https://registry.npmjs.org/mockdate/-/mockdate-3.0.5.tgz"
   "version" "3.0.5"
 
+"moment@^2.19.1":
+  "integrity" "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz"
+  "version" "2.29.4"
+
 "ms@^2.1.1", "ms@2.1.2":
   "integrity" "sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w=="
   "resolved" "https://registry.npmjs.org/ms/-/ms-2.1.2.tgz"
@@ -6515,7 +6527,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@*", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -6703,7 +6715,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.68 || 1000.0.0", "react-native@>= 0.62", "react-native@>=0.14.0", "react-native@>=0.42.0", "react-native@>=0.57", "react-native@>=0.65.0", "react-native@0.67.3":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.68 || 1000.0.0", "react-native@>= 0.62", "react-native@>=0.14.0", "react-native@>=0.42.0", "react-native@>=0.54.0", "react-native@>=0.57", "react-native@>=0.65.0", "react-native@0.67.3":
   "integrity" "sha512-epMVRMRH7dLCis97+YwiV4dmTVZO6qKmQgwcTNcxVt/kEMxAa+OYK7h81+99/n7XCeMFk/U2zYOBuQqc7c5Amg=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.3.tgz"
   "version" "0.67.3"
