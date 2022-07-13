@@ -257,6 +257,9 @@ const Deck = () => {
       <View style={styles.backgroundCard}>
         <Card name={filteredDeck[index2]?.name} />
       </View>
+      <View style={styles.backgroundCard2}>
+        <Card />
+      </View>
       <GestureDetector gesture={gesture}>
         <Animated.View style={rStyle}>
           {filteredDeck.length > 0 ? (
@@ -345,12 +348,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backgroundCard: {
+    zIndex: 5,
     transform: [
       {
         translateX: xOffset,
       },
       {
         translateY: yOffset,
+      },
+    ],
+  },
+  backgroundCard2: {
+    position: 'absolute',
+    zIndex: 1,
+    transform: [
+      {
+        translateX: xOffset,
+      },
+      {
+        translateY: yOffset - height / 4.6,
+      },
+      {
+        rotateZ: '2deg',
       },
     ],
   },
