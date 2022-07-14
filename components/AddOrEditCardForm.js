@@ -20,6 +20,8 @@ import {Button, TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {Picker} from '@react-native-picker/picker';
+// import {Picker as Picker2} from '@davidgovea/react-native-wheel-datepicker';
+import {Incubator} from 'react-native-ui-lib';
 import BallPicker from './BallPicker';
 
 import {useForm, Controller} from 'react-hook-form';
@@ -35,11 +37,21 @@ const checkForParam = (modalCode, paramName) => {
     : false;
 };
 
-//build an array of labels for BallPicker
-const daysInMonthLabels = [];
-for (let i = 0; i < 31; i++) {
-  daysInMonthLabels.push(i + 1);
-}
+const createLabelArray = count => {
+  const t = [];
+  for (let i = 1; i < count + 1; i++) {
+    t.push(i);
+  }
+  return t;
+};
+
+const wheelPickerGenerator = count => {
+  const t = [];
+  for (let i = 1; i < count + 1; i++) {
+    t.push({label: i, value: i});
+  }
+  return t;
+};
 
 const AddOrEditCardForm = props => {
   useEffect(() => {
@@ -78,25 +90,7 @@ const AddOrEditCardForm = props => {
       : undefined,
   );
   //set up year date spinner
-  // const initialValues = cardUnderInspection
-  //   ? [
-  //       {
-  //         id: 'day',
-  //         value: cardUnderInspection.parameters.dayOfYear.day
-  //           ? cardUnderInspection.parameters.dayOfYear.day
-  //           : 1,
-  //       },
-  //       {
-  //         id: 'month',
-  //         value: cardUnderInspection.parameters.dayOfYear.month
-  //           ? cardUnderInspection.parameters.dayOfYear.month
-  //           : 1,
-  //       },
-  //     ]
-  //   : [
-  //       {id: 'day', value: 1},
-  //       {id: 'month', value: 1},
-  //   ];
+
   const initialValues = cardUnderInspection
     ? {
         day: cardUnderInspection.parameters.dayOfYear.day
@@ -107,6 +101,7 @@ const AddOrEditCardForm = props => {
           : 1,
       }
     : {day: 1, month: 1};
+
   const [spinnerDate, setSpinnerDate] = useState(initialValues);
   //configuring spinners
   const [spinners, setSpinners] = useState([
@@ -114,10 +109,28 @@ const AddOrEditCardForm = props => {
     {id: 'month', label: '', min: 1, max: 12},
   ]);
 
+  const [dayOfYearDay, setDayOfYearDay] = useState(
+    cardUnderInspection?.parameters.dayOfYear.day
+      ? cardUnderInspection.parameters.dayOfYear.day
+      : 1,
+  );
+
+  const [dayOfYearMonth, setDayOfYearMonth] = useState(
+    cardUnderInspection?.parameters.dayOfYear.month
+      ? cardUnderInspection.parameters.dayOfYear.month
+      : 1,
+  );
+
+  const [dayOfYearDayConfig, setDayOfYearDayConfig] = useState(
+    wheelPickerGenerator(31),
+  );
+
+  //set up other spinners
+
   const [numberOfTimes, setNumberOfTimes] = useState(
     cardUnderInspection
       ? cardUnderInspection.parameters.numberOfTimes
-        ? cardUnderInspection.parameters.numberOfTimes.toString()
+        ? cardUnderInspection.parameters.numberOfTimes
         : undefined
       : '1',
   );
@@ -125,7 +138,7 @@ const AddOrEditCardForm = props => {
   const [periodInDays, setPeriodInDays] = useState(
     cardUnderInspection
       ? cardUnderInspection.parameters.periodInDays
-        ? cardUnderInspection.parameters.periodInDays.toString()
+        ? cardUnderInspection.parameters.periodInDays
         : undefined
       : '1',
   );
@@ -221,6 +234,7 @@ const AddOrEditCardForm = props => {
       }}>
       <View style={styles.container}>
         <View style={styles.form}>
+          {/* <Incubator.WheelPicker items={wheelPickerGenerator(20)} /> */}
           <Text style={styles.codeText}>{modalCode}</Text>
           <Text style={styles.explanationText}>
             {cardDefinitions[modalCode]?.explanation}
@@ -251,48 +265,26 @@ const AddOrEditCardForm = props => {
             {/* number of times */}
             {checkForParam(modalCode, 'numberOfTimes') && (
               <View style={styles.numberOfTimesContainer}>
-                <Picker
-                  selectedValue={numberOfTimes}
-                  onValueChange={value => {
+                <Incubator.WheelPicker
+                  items={wheelPickerGenerator(9)}
+                  initialValue={numberOfTimes}
+                  onChange={value => {
                     setNumberOfTimes(value);
-                  }}>
-                  {(() => {
-                    let a = [];
-                    for (let i = 1; i <= 9; i++) {
-                      a.push(
-                        <Picker.Item
-                          label={i.toString()}
-                          value={i.toString()}
-                        />,
-                      );
-                    }
-                    return a;
-                  })()}
-                </Picker>
+                  }}
+                />
               </View>
             )}
 
             {/* period in days */}
             {checkForParam(modalCode, 'periodInDays') && (
               <View style={styles.periodInDaysContainer}>
-                <Picker
-                  selectedValue={periodInDays}
-                  onValueChange={value => {
+                <Incubator.WheelPicker
+                  items={wheelPickerGenerator(90)}
+                  initialValue={periodInDays}
+                  onChange={value => {
                     setPeriodInDays(value);
-                  }}>
-                  {(() => {
-                    let a = [];
-                    for (let i = 1; i <= 90; i++) {
-                      a.push(
-                        <Picker.Item
-                          label={i.toString()}
-                          value={i.toString()}
-                        />,
-                      );
-                    }
-                    return a;
-                  })()}
-                </Picker>
+                  }}
+                />
               </View>
             )}
           </View>
@@ -348,6 +340,20 @@ const AddOrEditCardForm = props => {
           {/* day of year */}
           {checkForParam(modalCode, 'dayOfYear') && (
             <View style={styles.dayOfYear}>
+              <Incubator.WheelPicker
+                items={dayOfYearDayConfig}
+                initialValue={dayOfYearDay}
+                onChange={value => {
+                  setDayOfYearDay(value);
+                }}
+              />
+              <Incubator.WheelPicker
+                items={wheelPickerGenerator(12)}
+                initialValue={dayOfYearMonth}
+                onChange={value => {
+                  setDayOfYearMonth(value);
+                }}
+              />
               <NumberPlease
                 pickers={spinners}
                 values={spinnerDate}
