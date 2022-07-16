@@ -7,7 +7,7 @@
 //need to convert between cardUnderInspection (.parameters)
 //and formData/defaultValues == flat list
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -20,8 +20,8 @@ import {Button, TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import NumberPlease from './CustomPicker/NumberPlease';
 import {Picker} from '@react-native-picker/picker';
-// import {Picker as Picker2} from '@davidgovea/react-native-wheel-datepicker';
-import {Incubator} from 'react-native-ui-lib';
+import {Picker as Picker2} from '@davidgovea/react-native-wheel-datepicker';
+
 import BallPicker from './BallPicker';
 
 import {useForm, Controller} from 'react-hook-form';
@@ -37,7 +37,7 @@ const checkForParam = (modalCode, paramName) => {
     : false;
 };
 
-const createLabelArray = count => {
+const pickerGenerator = count => {
   const t = [];
   for (let i = 1; i < count + 1; i++) {
     t.push(i);
@@ -48,7 +48,7 @@ const createLabelArray = count => {
 const wheelPickerGenerator = count => {
   const t = [];
   for (let i = 1; i < count + 1; i++) {
-    t.push({label: i, value: i});
+    t.push({label: i.toString(), value: i.toString()});
   }
   return t;
 };
@@ -115,14 +115,23 @@ const AddOrEditCardForm = props => {
       : 1,
   );
 
+  // const [dayOfYearDayConfig, setDayOfYearDayConfig] = useState(
+  //   pickerGenerator(31),
+  // );
+
+  const [dayOfYearDayComponent, setDayOfYearDayComponent] = useState(
+    <Picker2
+      style={styles.dayOfYearWheelPicker}
+      selectedValue={dayOfYearDay}
+      pickerData={pickerGenerator(28)}
+      onValueChange={setDayOfYearDay}
+    />,
+  );
+
   const [dayOfYearMonth, setDayOfYearMonth] = useState(
     cardUnderInspection?.parameters.dayOfYear.month
       ? cardUnderInspection.parameters.dayOfYear.month
       : 1,
-  );
-
-  const [dayOfYearDayConfig, setDayOfYearDayConfig] = useState(
-    wheelPickerGenerator(31),
   );
 
   //set up other spinners
@@ -132,16 +141,26 @@ const AddOrEditCardForm = props => {
       ? cardUnderInspection.parameters.numberOfTimes
         ? cardUnderInspection.parameters.numberOfTimes
         : undefined
-      : '1',
+      : 1,
   );
+
+  const numberOfTimesCB = useCallback(value => {
+    console.log(value);
+    setNumberOfTimes(value);
+  }, []);
 
   const [periodInDays, setPeriodInDays] = useState(
     cardUnderInspection
       ? cardUnderInspection.parameters.periodInDays
         ? cardUnderInspection.parameters.periodInDays
         : undefined
-      : '1',
+      : 1,
   );
+
+  const periodInDaysCB = useCallback(value => {
+    console.log(value);
+    setPeriodInDays(value);
+  }, []);
 
   //date, dayOfYear, are handled separately
 
@@ -162,10 +181,10 @@ const AddOrEditCardForm = props => {
           dayOfMonth: formData.parameters.dayOfMonth, //make a custom picker for this
           dayOfYear: {
             day: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate.day
+              ? dayOfYearDay
               : undefined,
             month: checkForParam(modalCode, 'dayOfYear')
-              ? spinnerDate.month
+              ? dayOfYearMonth
               : undefined,
           },
           date: date,
@@ -202,10 +221,10 @@ const AddOrEditCardForm = props => {
             dayOfMonth: formData.parameters.dayOfMonth, //make a custom picker for this
             dayOfYear: {
               day: checkForParam(modalCode, 'dayOfYear')
-                ? spinnerDate.day
+                ? dayOfYearDay
                 : undefined,
               month: checkForParam(modalCode, 'dayOfYear')
-                ? spinnerDate.month
+                ? dayOfYearMonth
                 : undefined,
             },
             date: date,
@@ -235,6 +254,7 @@ const AddOrEditCardForm = props => {
       <View style={styles.container}>
         <View style={styles.form}>
           {/* <Incubator.WheelPicker items={wheelPickerGenerator(20)} /> */}
+
           <Text style={styles.codeText}>{modalCode}</Text>
           <Text style={styles.explanationText}>
             {cardDefinitions[modalCode]?.explanation}
@@ -265,12 +285,11 @@ const AddOrEditCardForm = props => {
             {/* number of times */}
             {checkForParam(modalCode, 'numberOfTimes') && (
               <View style={styles.numberOfTimesContainer}>
-                <Incubator.WheelPicker
-                  items={wheelPickerGenerator(9)}
-                  initialValue={numberOfTimes}
-                  onChange={value => {
-                    setNumberOfTimes(value);
-                  }}
+                <Picker2
+                  style={{backgroundColor: 'white'}}
+                  selectedValue={numberOfTimes}
+                  pickerData={pickerGenerator(9)}
+                  onValueChange={numberOfTimesCB}
                 />
               </View>
             )}
@@ -278,12 +297,11 @@ const AddOrEditCardForm = props => {
             {/* period in days */}
             {checkForParam(modalCode, 'periodInDays') && (
               <View style={styles.periodInDaysContainer}>
-                <Incubator.WheelPicker
-                  items={wheelPickerGenerator(90)}
-                  initialValue={periodInDays}
-                  onChange={value => {
-                    setPeriodInDays(value);
-                  }}
+                <Picker2
+                  style={{backgroundColor: 'white'}}
+                  selectedValue={periodInDays}
+                  pickerData={pickerGenerator(90)}
+                  onValueChange={periodInDaysCB}
                 />
               </View>
             )}
@@ -340,98 +358,143 @@ const AddOrEditCardForm = props => {
           {/* day of year */}
           {checkForParam(modalCode, 'dayOfYear') && (
             <View style={styles.dayOfYear}>
-              <Incubator.WheelPicker
-                items={dayOfYearDayConfig}
-                initialValue={dayOfYearDay}
-                onChange={value => {
-                  setDayOfYearDay(value);
-                }}
-              />
-              <Incubator.WheelPicker
-                items={wheelPickerGenerator(12)}
-                initialValue={dayOfYearMonth}
-                onChange={value => {
+              {dayOfYearDayComponent}
+              <Picker2
+                style={styles.monthOfYearWheelPicker}
+                selectedValue={dayOfYearMonth}
+                pickerData={pickerGenerator(12)}
+                onValueChange={value => {
                   setDayOfYearMonth(value);
-                }}
-              />
-              <NumberPlease
-                pickers={spinners}
-                values={spinnerDate}
-                onChange={values => {
-                  console.log(values);
-                  setSpinnerDate(values);
-                  switch (values['month']) {
+                  console.log(value);
+                  switch (value) {
                     case 1:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 2:
-                      setSpinners(state => [
-                        {...state[0], max: 28},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(28)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 3:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
                       break;
                     case 4:
-                      setSpinners(state => [
-                        {...state[0], max: 30},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 5:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 6:
-                      setSpinners(state => [
-                        {...state[0], max: 30},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 7:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 8:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 9:
-                      setSpinners(state => [
-                        {...state[0], max: 30},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 10:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
                       break;
                     case 11:
-                      setSpinners(state => [
-                        {...state[0], max: 30},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+
                       break;
                     case 12:
-                      setSpinners(state => [
-                        {...state[0], max: 31},
-                        {...state[1]},
-                      ]);
+                      setDayOfYearDayComponent(
+                        <Picker2
+                          style={styles.dayOfYearWheelPicker}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
                       break;
                   }
                 }}
@@ -530,6 +593,7 @@ const styles = StyleSheet.create({
   periodInDaysContainer: {
     flex: 1,
   },
+
   date: {
     width: 270,
   },
@@ -570,5 +634,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     flexBasis: 1,
     flexGrow: 1,
+  },
+  dayOfYear: {
+    flexDirection: 'row',
+  },
+  dayOfYearWheelPicker: {
+    backgroundColor: 'white',
+    width: 120,
+  },
+  monthOfYearWheelPicker: {
+    backgroundColor: 'white',
+    width: 120,
   },
 });
