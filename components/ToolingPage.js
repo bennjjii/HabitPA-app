@@ -36,7 +36,7 @@ const ToolingPage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrView}>
-        <Text>Full deck:{'\n'}</Text>
+        <Text style={{fontFamily: 'PublicPixel'}}>Full deck:{'\n'}</Text>
         {deck.map(card => {
           return <Text key={card.uuid}>{card.name}</Text>;
         })}

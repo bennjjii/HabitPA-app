@@ -1,18 +1,31 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import React from 'react';
 import colours from '../assets/colours/colours';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CardBackgroundImg from './../assets/Sprite-0001.png';
 const {width, height} = Dimensions.get('screen');
 FontAwesome.loadFont();
 
 const Card = props => {
+  console.log('current card width', width * 0.72);
+  console.log('current screen width', width);
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={CardBackgroundImg}
+      style={styles.container}
+      blurRadius={0}
+      resizeMethod={'resize'}>
       <Text style={styles.cardText}>
         {props.name?.toString() || 'crd name here'}
       </Text>
-    </View>
+    </ImageBackground>
   );
 };
 

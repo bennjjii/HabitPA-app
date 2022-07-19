@@ -27,6 +27,7 @@ import {
   SafeAreaView,
   Pressable,
   View,
+  Text,
 } from 'react-native';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import Animated, {
@@ -250,10 +251,6 @@ const Deck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Button icon="camera" mode="elevated" onPress={() => manualUpdate()}>
-        Press me
-      </Button> */}
-      <CustomCheckbox label="15" value={false} today={true} />
       <View style={styles.backgroundCard}>
         <Card name={filteredDeck[index2]?.name} />
       </View>
