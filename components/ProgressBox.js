@@ -234,18 +234,21 @@ const ProgressBox = props => {
   }, []);
 
   return (
-    <View>
-      <Text>{contractText + '\n'}</Text>
+    <>
+      <Text style={styles.contractText}>{contractText + '\n'}</Text>
       <Text>Progress this week...</Text>
       <View style={styles.progressDataStyle}>{dataToRender}</View>
       <Text>Habit coefficient: {habitCoefficient}</Text>
-    </View>
+    </>
   );
 };
 
 export default ProgressBox;
 
 const styles = StyleSheet.create({
+  contractText: {
+    // fontFamily: 'PixeloidSans',
+  },
   progressDataStyle: {
     flexDirection: 'row',
   },

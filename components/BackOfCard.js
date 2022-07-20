@@ -28,7 +28,10 @@ const BackOfCard = props => {
   } = useStore();
 
   return (
-    <ImageBackground style={styles.container}>
+    <ImageBackground source={CardBackgroundImg} style={styles.container}>
+      <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
+
+      <ProgressBox card={props.card} />
       <View style={styles.iconContainer}>
         <FontAwesome
           style={styles.icon}
@@ -56,9 +59,6 @@ const BackOfCard = props => {
           }}
         />
       </View>
-      <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
-
-      <ProgressBox card={props.card} />
     </ImageBackground>
   );
 };
@@ -69,10 +69,8 @@ const styles = StyleSheet.create({
   container: {
     width: width * 0.9,
     height: (width * 0.9) / 0.7,
-    backgroundColor: '#222222',
-    backgroundColor: colours.foreground,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -82,23 +80,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.34,
     shadowRadius: 6.27,
     elevation: 10,
-    paddingVertical: 30,
+    padding: 45,
     margin: 10,
   },
   cardText: {
     color: '#ffffff',
-    color: colours.text,
+
     fontSize: 30,
     marginBottom: 30,
+    fontFamily: 'PublicPixel',
   },
   //surely put these in a flex container??
   iconContainer: {
-    position: 'absolute',
-    flex: 1,
+    // position: 'absolute',
+
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: width * 0.7,
-    top: width * 1.1,
+    width: width * 0.65,
+    // top: width * 1.1,
   },
   icon: {
     color: 'grey',

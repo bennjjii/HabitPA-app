@@ -55,6 +55,7 @@
 		AC4E8841FCDB401B8A5A03F7 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		B0CA1ECDE25342DDB7D00BD8 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		B50CC1D72886D0FA008910CD /* PublicPixel.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = PublicPixel.ttf; path = ../assets/fonts/PublicPixel.ttf; sourceTree = "<group>"; };
+		B50CC1DB28880F37008910CD /* PixeloidSans.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = PixeloidSans.ttf; path = ../src/assets/fonts/PixeloidSans.ttf; sourceTree = "<group>"; };
 		BCDC3C5254A3D3F18F984402 /* Pods-app-appTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app-appTests.debug.xcconfig"; path = "Target Support Files/Pods-app-appTests/Pods-app-appTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CF1BEB343746471B804F9116 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		DF80679FDCA2455EA4D8BCF5 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -169,6 +170,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				B50CC1DB28880F37008910CD /* PixeloidSans.ttf */,
 				13B07FAE1A68108700A75B9A /* app */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* appTests */,
