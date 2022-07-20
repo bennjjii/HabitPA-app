@@ -17,11 +17,7 @@ const Card = props => {
   console.log('current card width', width * 0.72);
   console.log('current screen width', width);
   return (
-    <ImageBackground
-      source={CardBackgroundImg}
-      style={styles.container}
-      blurRadius={0}
-      resizeMethod={'resize'}>
+    <ImageBackground source={CardBackgroundImg} style={styles.container}>
       <Text style={styles.cardText}>
         {props.name?.toString() || 'crd name here'}
       </Text>
@@ -34,8 +30,8 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     width: width * 0.72,
     height: (width * 0.72) / 0.7,
-    backgroundColor: '#222222',
-    backgroundColor: colours.foreground,
+    // backgroundColor: '#222222',
+    // backgroundColor: colours.foreground,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
@@ -50,8 +46,10 @@ const styles = StyleSheet.create({
     // top: 0,
   },
   cardText: {
-    color: '#ffffff',
-    color: colours.text,
+    width: width * 0.5,
+    fontFamily: 'PublicPixel',
+    textAlign: 'center',
+    color: '#dbb760',
   },
 });
 

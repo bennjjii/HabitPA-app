@@ -15,12 +15,13 @@ import {
   Text,
   Pressable,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import NumberPlease from './CustomPicker/NumberPlease';
-import {Picker} from '@react-native-picker/picker';
-import {Picker as Picker2} from '@davidgovea/react-native-wheel-datepicker';
+
+import {Picker} from '@davidgovea/react-native-wheel-datepicker';
+import CardBackgroundImg from './../assets/Sprite-0001.png';
 
 import BallPicker from './BallPicker';
 
@@ -120,7 +121,7 @@ const AddOrEditCardForm = props => {
   // );
 
   const [dayOfYearDayComponent, setDayOfYearDayComponent] = useState(
-    <Picker2
+    <Picker
       style={styles.dayOfYearWheelPicker}
       selectedValue={dayOfYearDay}
       pickerData={pickerGenerator(28)}
@@ -251,10 +252,8 @@ const AddOrEditCardForm = props => {
       onPress={() => {
         Keyboard.dismiss();
       }}>
-      <View style={styles.container}>
+      <ImageBackground style={styles.container} source={CardBackgroundImg}>
         <View style={styles.form}>
-          {/* <Incubator.WheelPicker items={wheelPickerGenerator(20)} /> */}
-
           <Text style={styles.codeText}>{modalCode}</Text>
           <Text style={styles.explanationText}>
             {cardDefinitions[modalCode]?.explanation}
@@ -285,7 +284,7 @@ const AddOrEditCardForm = props => {
             {/* number of times */}
             {checkForParam(modalCode, 'numberOfTimes') && (
               <View style={styles.numberOfTimesContainer}>
-                <Picker2
+                <Picker
                   style={{backgroundColor: 'white'}}
                   selectedValue={numberOfTimes}
                   pickerData={pickerGenerator(9)}
@@ -297,7 +296,7 @@ const AddOrEditCardForm = props => {
             {/* period in days */}
             {checkForParam(modalCode, 'periodInDays') && (
               <View style={styles.periodInDaysContainer}>
-                <Picker2
+                <Picker
                   style={{backgroundColor: 'white'}}
                   selectedValue={periodInDays}
                   pickerData={pickerGenerator(90)}
@@ -359,7 +358,7 @@ const AddOrEditCardForm = props => {
           {checkForParam(modalCode, 'dayOfYear') && (
             <View style={styles.dayOfYear}>
               {dayOfYearDayComponent}
-              <Picker2
+              <Picker
                 style={styles.monthOfYearWheelPicker}
                 selectedValue={dayOfYearMonth}
                 pickerData={pickerGenerator(12)}
@@ -369,7 +368,7 @@ const AddOrEditCardForm = props => {
                   switch (value) {
                     case 1:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -380,7 +379,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 2:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(28)}
@@ -391,7 +390,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 3:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -401,7 +400,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 4:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
@@ -412,7 +411,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 5:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -423,7 +422,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 6:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
@@ -434,7 +433,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 7:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -445,7 +444,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 8:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -456,7 +455,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 9:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
@@ -467,7 +466,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 10:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -477,7 +476,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 11:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
@@ -488,7 +487,7 @@ const AddOrEditCardForm = props => {
                       break;
                     case 12:
                       setDayOfYearDayComponent(
-                        <Picker2
+                        <Picker
                           style={styles.dayOfYearWheelPicker}
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
@@ -544,7 +543,7 @@ const AddOrEditCardForm = props => {
         <Button onPress={handleSubmit(onSubmit)}>
           {cardUnderInspection ? 'SAVE' : 'ADD NEW CARD'}
         </Button>
-      </View>
+      </ImageBackground>
     </Pressable>
   );
 };
@@ -622,6 +621,7 @@ const styles = StyleSheet.create({
   explanationText: {
     paddingHorizontal: 30,
     marginBottom: 20,
+    fontFamily: 'PublicPixel',
   },
   codeText: {
     fontSize: 25,

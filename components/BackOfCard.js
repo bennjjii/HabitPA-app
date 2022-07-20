@@ -1,4 +1,10 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import React from 'react';
 import {useStore} from '../services/zustandContext';
 
@@ -8,6 +14,7 @@ import colours from '../assets/colours/colours';
 
 const {width, height} = Dimensions.get('screen');
 
+import CardBackgroundImg from './../assets/Sprite-0001.png';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
 
@@ -21,7 +28,7 @@ const BackOfCard = props => {
   } = useStore();
 
   return (
-    <View style={styles.container}>
+    <ImageBackground style={styles.container}>
       <View style={styles.iconContainer}>
         <FontAwesome
           style={styles.icon}
@@ -52,7 +59,7 @@ const BackOfCard = props => {
       <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
 
       <ProgressBox card={props.card} />
-    </View>
+    </ImageBackground>
   );
 };
 

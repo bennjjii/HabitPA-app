@@ -70,7 +70,20 @@ const App = () => {
       <GestureHandlerRootView style={{flex: 1}}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: true}}>
-            <Stack.Screen name="HabitMage" component={Home} />
+            <Stack.Screen
+              name="HabitMage"
+              component={Home}
+              options={{
+                title: 'HabitMage',
+                headerStyle: {
+                  backgroundColor: '#8E563E',
+                },
+                headerTitleStyle: {
+                  fontFamily: 'PublicPixel',
+                  color: '#dbb760',
+                },
+              }}
+            />
             {state.email ? (
               <Stack.Screen name="Home" component={Home} />
             ) : (

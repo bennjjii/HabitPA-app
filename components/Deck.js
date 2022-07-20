@@ -28,6 +28,7 @@ import {
   Pressable,
   View,
   Text,
+  ImageBackground,
 } from 'react-native';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import Animated, {
@@ -53,6 +54,7 @@ import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CustomCheckbox from './CustomCheckBox';
 import {useQuery, gql} from '@apollo/client';
+import AppBackground from './../assets/ElvinWood.jpeg';
 
 import {useStore} from '../services/zustandContext';
 import {Button} from 'react-native-paper';
@@ -251,65 +253,70 @@ const Deck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.backgroundCard}>
-        <Card name={filteredDeck[index2]?.name} />
-      </View>
-      <View style={styles.backgroundCard2}>
-        <Card />
-      </View>
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={rStyle}>
-          {filteredDeck.length > 0 ? (
-            <Pressable
-              onPress={() => {
-                console.log('cui', filteredDeck[index]);
-                showModalBackOfCard(filteredDeck[index]);
-              }}>
-              <Card
-                index={index}
-                name={filteredDeck[index]?.name}
-                delete={deleteCard}
-              />
-            </Pressable>
-          ) : (
-            <NoCards />
-          )}
-        </Animated.View>
-      </GestureDetector>
-      <Modal
-        isVisible={modalVisibleBackOfCard}
-        onRequestClose={() => {
-          hideModalBackOfCard();
-        }}
-        onBackdropPress={() => {
-          hideModalBackOfCard();
-        }}
-        style={styles.modalContainer}>
-        <BackOfCard card={filteredDeck[index]} />
-      </Modal>
-      <Modal isVisible={modalVisibleInAction}>
-        <InAction
-          onCancel={() => {
-            translationX.value = -xOffset;
-            translationY.value = -yOffset;
+      <ImageBackground
+        style={styles.imageBackground}
+        resizeMode={'cover'}
+        source={AppBackground}>
+        <View style={styles.backgroundCard}>
+          <Card name={filteredDeck[index2]?.name} />
+        </View>
+        <View style={styles.backgroundCard2}>
+          <Card />
+        </View>
+        <GestureDetector gesture={gesture}>
+          <Animated.View style={rStyle}>
+            {filteredDeck.length > 0 ? (
+              <Pressable
+                onPress={() => {
+                  console.log('cui', filteredDeck[index]);
+                  showModalBackOfCard(filteredDeck[index]);
+                }}>
+                <Card
+                  index={index}
+                  name={filteredDeck[index]?.name}
+                  delete={deleteCard}
+                />
+              </Pressable>
+            ) : (
+              <NoCards />
+            )}
+          </Animated.View>
+        </GestureDetector>
+        <Modal
+          isVisible={modalVisibleBackOfCard}
+          onRequestClose={() => {
+            hideModalBackOfCard();
           }}
-        />
-      </Modal>
-      <Modal
-        isVisible={modalVisibleAddCard}
-        style={styles.modal}
-        onRequestClose={() => {
-          hideModalAddCard();
-        }}
-        onBackdropPress={() => {
-          hideModalAddCard();
-        }}>
-        <KeyboardAvoidingView
-          enabled
-          behavior={Platform.OS === 'android' ? undefined : 'position'}>
-          <AddOrEditCardForm />
-        </KeyboardAvoidingView>
-      </Modal>
+          onBackdropPress={() => {
+            hideModalBackOfCard();
+          }}
+          style={styles.modalContainer}>
+          <BackOfCard card={filteredDeck[index]} />
+        </Modal>
+        <Modal isVisible={modalVisibleInAction}>
+          <InAction
+            onCancel={() => {
+              translationX.value = -xOffset;
+              translationY.value = -yOffset;
+            }}
+          />
+        </Modal>
+        <Modal
+          isVisible={modalVisibleAddCard}
+          style={styles.modal}
+          onRequestClose={() => {
+            hideModalAddCard();
+          }}
+          onBackdropPress={() => {
+            hideModalAddCard();
+          }}>
+          <KeyboardAvoidingView
+            enabled
+            behavior={Platform.OS === 'android' ? undefined : 'position'}>
+            <AddOrEditCardForm />
+          </KeyboardAvoidingView>
+        </Modal>
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -322,6 +329,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  imageBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    width: '100%',
   },
   modalContainer: {
     flex: 1,
