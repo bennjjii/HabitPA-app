@@ -8,10 +8,12 @@ import {
   Dimensions,
   ScrollView,
   KeyboardAvoidingView,
+  ImageBackground,
 } from 'react-native';
 import Modal from 'react-native-modal';
 
 import colours from '../assets/colours/colours';
+import AppBackground from './../assets/ElvinWood.jpeg';
 import {useStore} from '../services/zustandContext';
 import BackOfCard from './BackOfCard';
 import AddOrEditCardForm from './AddOrEditCardForm';
@@ -86,7 +88,10 @@ const Piles = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* <ScrollView style={styles.scrView}> */}
-      <View style={styles.cardFlexContainer}>
+      <ImageBackground
+        style={styles.cardFlexContainer}
+        resizeMode={'cover'}
+        source={AppBackground}>
         {piles.map(pile => {
           return (
             <Pile
@@ -96,7 +101,7 @@ const Piles = () => {
             />
           );
         })}
-      </View>
+      </ImageBackground>
       {/* </ScrollView> */}
       <Modal
         isVisible={modalVisiblePiles}

@@ -1,13 +1,14 @@
 import {StyleSheet, Text, View, Platform} from 'react-native';
 import React from 'react';
 import Deck from './Deck';
-import FreeTimeScreen from './FreeTimeScreen';
+
 import Piles from './Piles';
 import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AddCard from './AddCard';
+import colours from '../assets/colours/colours';
 
 Entypo.loadFont();
 
@@ -18,7 +19,11 @@ const Home = () => {
     <Tab.Navigator
       screenOptions={{
         showLabel: false,
-        tabBarStyle: Platform.OS === 'android' ? {height: 100} : {},
+        tabBarStyle: [
+          Platform.OS === 'android' ? {height: 100} : {},
+          {backgroundColor: colours.mainUiBrown},
+        ],
+
         tabBarLabelStyle:
           Platform.OS === 'android'
             ? {

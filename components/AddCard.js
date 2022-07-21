@@ -7,11 +7,13 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import Modal from 'react-native-modal';
 
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
+import AppBackground from './../assets/ElvinWood.jpeg';
 
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CardClass from './CardClass';
@@ -24,13 +26,26 @@ const {width, height} = Dimensions.get('screen');
 
 const TemplateCard = props => {
   const {showModalAddCard} = useStore();
+
   return (
     <Pressable
       onPress={() => {
         showModalAddCard(props.code);
       }}>
-      <View style={styles.templateCard}>
-        <Text style={styles.cardText}>{props.name}</Text>
+      <View
+        style={[
+          styles.templateCard,
+          {backgroundColor: props.backgroundColour},
+        ]}>
+        <Text
+          style={[
+            styles.cardText,
+            {
+              color: props.foregroundColour,
+            },
+          ]}>
+          {props.name}
+        </Text>
       </View>
     </Pressable>
   );
@@ -41,20 +56,30 @@ const AddCard = () => {
   //console.log(Object.keys(cardDefinitions));
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrView}>
-        <View style={styles.cardFlexContainer}>
-          {Object.keys(cardDefinitions).map((card, i) => {
-            //console.log(cardDefinitions[card].code + '\n');
-            return (
-              <TemplateCard
-                name={cardDefinitions[card].name}
-                key={cardDefinitions[card].code}
-                code={cardDefinitions[card].code}
-              />
-            );
-          })}
-        </View>
-      </ScrollView>
+      <ImageBackground
+        style={styles.imageBackground}
+        resizeMode={'cover'}
+        source={AppBackground}>
+        <ScrollView style={styles.scrView}>
+          <View style={styles.cardFlexContainer}>
+            {Object.keys(cardDefinitions).map((card, i) => {
+              //console.log(cardDefinitions[card].code + '\n');
+              console.log(cardDefinitions[card].backOfCardColour);
+              return (
+                <TemplateCard
+                  name={cardDefinitions[card].name}
+                  key={cardDefinitions[card].code}
+                  code={cardDefinitions[card].code}
+                  backgroundColour={cardDefinitions[card].backOfCardColour}
+                  foregroundColour={
+                    cardDefinitions[card].backOfCardColourFgColour
+                  }
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
+      </ImageBackground>
       <Modal
         isVisible={modalVisibleAddCard}
         style={styles.modal}
@@ -86,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrView: {
-    flex: 1,
+    // flex: 1,
   },
   cardFlexContainer: {
     flex: 1,
@@ -101,6 +126,7 @@ const styles = StyleSheet.create({
     width: width * 0.42,
     height: (width * 0.42) / 0.7,
     margin: 10,
+    padding: 10,
     borderRadius: 10,
     backgroundColor: colours.foreground,
     shadowColor: '#000',
@@ -113,6 +139,6 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   cardText: {
-    color: colours.text,
+    fontFamily: 'PublicPixel',
   },
 });

@@ -554,8 +554,6 @@ const styles = StyleSheet.create({
   container: {
     width: width * 0.9,
     height: (width * 0.9) / 0.7,
-    backgroundColor: '#222222',
-    backgroundColor: colours.foreground,
     justifyContent: 'space-between',
     paddingVertical: 50,
     alignItems: 'center',

@@ -12,6 +12,8 @@ import ProgressBox from './ProgressBox';
 
 import colours from '../assets/colours/colours';
 
+import Card from './CardClass';
+
 const {width, height} = Dimensions.get('screen');
 
 import CardBackgroundImg from './../assets/Sprite-0001.png';
@@ -28,7 +30,15 @@ const BackOfCard = props => {
   } = useStore();
 
   return (
-    <ImageBackground source={CardBackgroundImg} style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: props.card
+            ? Card.cardDefinitions[props.card.code].backOfCardColour
+            : 'white',
+        },
+      ]}>
       <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
 
       <ProgressBox card={props.card} />
@@ -59,7 +69,7 @@ const BackOfCard = props => {
           }}
         />
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 

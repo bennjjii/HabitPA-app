@@ -4,7 +4,7 @@ import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
 import CustomCheckbox from './CustomCheckBox';
 import ProgressBarGraph from './ProgressBarGraph';
 import React from 'react';
-import {Checkbox} from 'react-native-paper';
+import colours from '../assets/colours/colours';
 
 const YEAR_IN_MILLISECONDS = 31557600000;
 
@@ -128,6 +128,8 @@ export default class Card {
     ED: {
       enabled: true,
       code: 'ED',
+      backOfCardColour: colours.backOfCardPalette[0],
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'Every day',
       explanation: 'Practise a habit every day. You may choose the time of day',
       parameters: {
@@ -254,6 +256,9 @@ export default class Card {
     XpD: {
       enabled: true,
       code: 'XpD',
+      backOfCardColour: colours.backOfCardPalette[1],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times a day',
       explanation: 'Practise a habit a number of times, every day',
       parameters: {
@@ -330,6 +335,9 @@ export default class Card {
     EW: {
       enabled: true,
       code: 'EW',
+      backOfCardColour: colours.backOfCardPalette[2],
+
+      backOfCardColourFgColour: colours.pixelTextFg2,
       name: 'Every week on...',
       explanation:
         'Practise a habit every week on specific days. You may choose a time of day.',
@@ -453,6 +461,8 @@ export default class Card {
       //default calendar week. randomise if less than 7
       enabled: true,
       code: 'XpW',
+      backOfCardColour: colours.backOfCardPalette[3],
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times in a week',
       explanation: 'Practise a habit X times in a calendar week.',
       parameters: {
@@ -593,6 +603,9 @@ export default class Card {
     RxW: {
       enabled: true,
       code: 'RxW',
+      backOfCardColour: colours.backOfCardPalette[4],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'Roughly x times in a week',
       explanation: 'Practise a habit roughly X times in 7 days.',
       parameters: {
@@ -663,6 +676,9 @@ export default class Card {
     EM: {
       enabled: true,
       code: 'EM',
+      backOfCardColour: colours.backOfCardPalette[5],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'Every month on...',
       explanation: 'Practise a habit on specific days of the month.',
       parameters: {
@@ -792,6 +808,9 @@ export default class Card {
     XpM: {
       enabled: true,
       code: 'XpM',
+      backOfCardColour: colours.backOfCardPalette[6],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times in a month',
       explanation: 'Practise a habit X times in a calendar month.',
       parameters: {
@@ -923,6 +942,9 @@ export default class Card {
     RxM: {
       enabled: true,
       code: 'RxM',
+      backOfCardColour: colours.backOfCardPalette[7],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'Roughly x times in a month',
       explanation: 'Practise a habit roughly X times in 30 days.',
       parameters: {
@@ -990,6 +1012,9 @@ export default class Card {
     XiY: {
       enabled: true,
       code: 'XiY',
+      backOfCardColour: colours.backOfCardPalette[8],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times in every Y days',
       explanation: 'Practise a habit roughly X times in Y days',
       parameters: {
@@ -1067,6 +1092,9 @@ export default class Card {
     XiT: {
       enabled: true,
       code: 'XiT',
+      backOfCardColour: colours.backOfCardPalette[9],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times in total',
       explanation:
         'Practise of a habit X times in total. You may specify a period.',
@@ -1103,6 +1131,9 @@ export default class Card {
     SpT: {
       enabled: true,
       code: 'SpT',
+      backOfCardColour: colours.backOfCardPalette[10],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'At a specific time',
       explanation:
         'Schedule the practise of a habit or task for a certain date.',
@@ -1151,6 +1182,9 @@ export default class Card {
     DL: {
       enabled: true,
       code: 'DL',
+      backOfCardColour: colours.backOfCardPalette[11],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'By a deadline',
       explanation: 'Schedule the completion of a habit or task by a deadline.',
       parameters: {
@@ -1196,6 +1230,9 @@ export default class Card {
     EY: {
       enabled: true,
       code: 'EY',
+      backOfCardColour: colours.backOfCardPalette[12],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'Every year on...',
       explanation: 'Schedule a habit on a certain day of the year.',
       parameters: {
@@ -1307,6 +1344,9 @@ export default class Card {
     XpY: {
       enabled: true,
       code: 'XpY',
+      backOfCardColour: colours.backOfCardPalette[13],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times a year',
       explanation: 'Practise a habit X times in a calendar year.',
       parameters: {
@@ -1438,6 +1478,9 @@ export default class Card {
     RxY: {
       enabled: true,
       code: 'RxY',
+      backOfCardColour: colours.backOfCardPalette[14],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'Roughly X times a year',
       explanation: 'Practise a habit roughly X times in 365 days.',
       parameters: {
@@ -1512,6 +1555,9 @@ export default class Card {
     AsP: {
       enabled: true,
       code: 'AsP',
+      backOfCardColour: colours.backOfCardPalette[15],
+
+      backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'At some point',
       explanation: 'Something to be completed at some point.',
       parameters: {},

@@ -39,6 +39,8 @@ import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
 
+import colours from './assets/colours/colours';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -76,11 +78,11 @@ const App = () => {
               options={{
                 title: 'HabitMage',
                 headerStyle: {
-                  backgroundColor: '#8E563E',
+                  backgroundColor: colours.mainUiBrown,
                 },
                 headerTitleStyle: {
                   fontFamily: 'PublicPixel',
-                  color: '#dbb760',
+                  color: colours.pixelTextFg1,
                 },
               }}
             />
