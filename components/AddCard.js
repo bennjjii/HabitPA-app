@@ -88,7 +88,9 @@ const AddCard = () => {
         }}
         onBackdropPress={() => {
           hideModalAddCard();
-        }}>
+        }}
+        presentationStyle={'formSheet'}
+        transparent={true}>
         <KeyboardAvoidingView
           enabled
           behavior={Platform.OS === 'android' ? undefined : 'position'}>

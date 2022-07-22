@@ -9,6 +9,8 @@ const CustomCheckbox = ({
   readOnly,
   completed,
   today,
+  textStyle,
+  altLabel,
 }) => {
   const [clicked, setClicked] = useState(value || false);
 
@@ -46,8 +48,9 @@ const CustomCheckbox = ({
           style={[
             label.length > 2 ? {paddingHorizontal: 20} : {},
             completed || clicked ? styles.pressedText : styles.unpressedText,
+            textStyle,
           ]}>
-          {label.toString()}
+          {altLabel ? altLabel.toString() : label.toString()}
         </Text>
       </View>
     </TouchableOpacity>
@@ -74,15 +77,12 @@ const styles = StyleSheet.create({
   },
   pressedBackground: {
     backgroundColor: '#157EFB',
-    borderRadius: 17,
   },
   unpressedBackground: {
     backgroundColor: 'whitesmoke',
-    borderRadius: 17,
   },
   completedBackground: {
     backgroundColor: '#3DC55E',
-    borderRadius: 17,
   },
   todayStyle: {
     borderColor: '#595AD3',

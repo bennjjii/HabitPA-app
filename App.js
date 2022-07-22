@@ -8,6 +8,7 @@
 import {LogBox} from 'react-native';
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
+  `Modal with 'formSheet' presentation style and 'transparent' value is not supported.`,
 ]);
 
 import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
@@ -76,7 +77,7 @@ const App = () => {
               name="HabitMage"
               component={Home}
               options={{
-                title: 'HabitMage',
+                title: 'HabitMage🧙',
                 headerStyle: {
                   backgroundColor: colours.mainUiBrown,
                 },
