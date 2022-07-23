@@ -1,6 +1,10 @@
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 
+//darkened colour if unselected
+//iOs blue if selected
+//iOs green if completed
+
 const CustomCheckbox = ({
   label,
   value,
