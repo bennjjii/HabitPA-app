@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import CustomCheckbox from './CustomCheckBox';
+import PixelCheckbox from './PixelCheckbox';
 const {width, height} = Dimensions.get('screen');
 
 const BallPicker = ({
@@ -9,6 +9,7 @@ const BallPicker = ({
   readOnly,
   textStyle,
   altLabels,
+  contextColour,
 }) => {
   const [intValues, setIntValues] = useState(values);
 
@@ -29,13 +30,14 @@ const BallPicker = ({
       {Object.keys(values).map((key, index) => {
         // console.log(intValues, key, index);
         return (
-          <CustomCheckbox
+          <PixelCheckbox
             label={altLabels ? altLabels[key].toString() : key.toString()}
             key={'MonthPickerKey:' + key}
             value={intValues[key]}
             onValueChange={setValueWithIndex}
             index={key}
             textStyle={textStyle}
+            contextColour={contextColour}
           />
         );
       })}

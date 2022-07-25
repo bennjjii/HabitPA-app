@@ -288,6 +288,7 @@ const AddOrEditCardForm = props => {
                 style={{
                   backgroundColor:
                     Card.cardDefinitions[modalCode]?.backOfCardColour,
+                  fontFamily: 'PublicPixel',
                 }}
                 selectedValue={numberOfTimes}
                 pickerData={pickerGenerator(9)}
@@ -332,6 +333,9 @@ const AddOrEditCardForm = props => {
                   onValueChange={onChange}
                   textStyle={{fontFamily: 'PublicPixel'}}
                   altLabels={shortNames}
+                  contextColour={
+                    Card.cardDefinitions[modalCode]?.backOfCardColour
+                  }
                 />
               )}
             />
@@ -356,7 +360,13 @@ const AddOrEditCardForm = props => {
                 },
               }}
               render={({field: {onChange, onBlur, value}}) => (
-                <BallPicker values={value} onValueChange={onChange} />
+                <BallPicker
+                  values={value}
+                  onValueChange={onChange}
+                  contextColour={
+                    Card.cardDefinitions[modalCode]?.backOfCardColour
+                  }
+                />
               )}
             />
             {errors.parameters?.dayOfMonth && (
@@ -545,6 +555,10 @@ const AddOrEditCardForm = props => {
                   values={value}
                   onValueChange={onChange}
                   textStyle={{fontFamily: 'PublicPixel'}}
+                  contextColour={
+                    Card.cardDefinitions[modalCode]?.backOfCardColour
+                  }
+                  // altLabels={shortNames}
                 />
               )}
             />
