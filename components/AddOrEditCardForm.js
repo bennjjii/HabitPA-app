@@ -288,7 +288,6 @@ const AddOrEditCardForm = props => {
                 style={{
                   backgroundColor:
                     Card.cardDefinitions[modalCode]?.backOfCardColour,
-                  fontFamily: 'PublicPixel',
                 }}
                 selectedValue={numberOfTimes}
                 pickerData={pickerGenerator(9)}

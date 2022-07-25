@@ -3,6 +3,7 @@ import React from 'react';
 import Deck from './Deck';
 
 import Piles from './Piles';
+import Piles2 from './Piles2';
 import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
@@ -49,7 +50,7 @@ const Home = () => {
       />
       <Tab.Screen
         name="Piles"
-        component={Piles}
+        component={Piles2}
         options={{
           headerShown: false,
           tabBarIcon: () => <Entypo name="gauge" size={32} />,
