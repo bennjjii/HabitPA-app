@@ -219,15 +219,18 @@ export default (deck, history, timesOfDay) => {
         //temp fix
 
         //if (card.parameters.date) {
-        isReturned = Object.keys(card.parameters.timeOfDay).some(time => {
-          return card.parameters.timeOfDay[time];
-        })
-          ? card.parameters.timeOfDay[currentTimeOfDay] &&
-            new Date().toLocaleDateString('en-GB') ===
-              card.parameters.date.toLocaleDateString('en-GB')
-          : new Date().toLocaleDateString('en-GB') ===
-            card.parameters.date.toLocaleDateString('en-GB');
-        // }
+        // isReturned = Object.keys(card.parameters.timeOfDay).some(time => {
+        //   return card.parameters.timeOfDay[time];
+        // })
+        //   ? card.parameters.timeOfDay[currentTimeOfDay] &&
+        //     new Date().toLocaleDateString('en-GB') ===
+        //       card.parameters.date.toLocaleDateString('en-GB')
+        //   : new Date().toLocaleDateString('en-GB') ===
+        //     card.parameters.date.toLocaleDateString('en-GB');
+        isReturned =
+          new Date().toLocaleDateString('en-GB') ===
+          card.parameters.date.toLocaleDateString('en-GB');
+
         //if we are at the specific date and time of day return true, else return false
         //return defaultReturn;
         break;

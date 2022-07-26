@@ -1141,7 +1141,7 @@ export default class Card {
       parameters: {
         date: undefined,
         //seems like would be easy to miss to have at a specific time here
-        timeOfDay: undefined,
+        // timeOfDay: undefined,
       },
       progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
