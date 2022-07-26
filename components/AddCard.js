@@ -56,10 +56,7 @@ const AddCard = () => {
   //console.log(Object.keys(cardDefinitions));
   return (
     <SafeAreaView style={styles.container}>
-      <ImageBackground
-        style={styles.imageBackground}
-        resizeMode={'cover'}
-        source={AppBackground}>
+      <ImageBackground resizeMode={'cover'} source={AppBackground}>
         <ScrollView style={styles.scrView}>
           <View style={styles.cardFlexContainer}>
             {Object.keys(cardDefinitions).map((card, i) => {
@@ -105,7 +102,7 @@ export default AddCard;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   modal: {
     flex: 1,
@@ -119,8 +116,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    padding: 10,
+    justifyContent: 'space-evenly',
+    // padding: 10,
   },
   templateCard: {
     justifyContent: 'center',

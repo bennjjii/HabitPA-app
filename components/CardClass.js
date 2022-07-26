@@ -1,7 +1,8 @@
 import uuid from 'react-native-uuid';
 import countCardsAfterDate from '../utilities/countCardsAfterDate';
 import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
-import CustomCheckbox from './CustomCheckBox';
+
+import PixelCheckbox from './PixelCheckbox';
 import ProgressBarGraph from './ProgressBarGraph';
 import React from 'react';
 import colours from '../assets/colours/colours';
@@ -242,7 +243,7 @@ export default class Card {
           });
         }
         const componentToRender = tempArray.map(item => (
-          <CustomCheckbox
+          <PixelCheckbox
             label={item.day}
             readOnly={true}
             completed={item.completed}
@@ -444,7 +445,7 @@ export default class Card {
               endOfDay,
             );
             tempArray.push(
-              <CustomCheckbox
+              <PixelCheckbox
                 label={middleOfDay.getDate().toString()}
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
@@ -793,7 +794,7 @@ export default class Card {
               endOfDay,
             );
             tempArray.push(
-              <CustomCheckbox
+              <PixelCheckbox
                 label={middleOfDay.getDate().toString()}
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
@@ -1161,7 +1162,7 @@ export default class Card {
         let componentToRender;
         if (!completed) {
           componentToRender = (
-            <CustomCheckbox
+            <PixelCheckbox
               label={'not completed...'}
               readOnly={true}
               completed={false}
@@ -1169,7 +1170,7 @@ export default class Card {
           );
         } else {
           componentToRender = (
-            <CustomCheckbox
+            <PixelCheckbox
               label={'Completed'}
               readOnly={true}
               completed={true}
@@ -1209,7 +1210,7 @@ export default class Card {
         let componentToRender;
         if (!completed) {
           componentToRender = (
-            <CustomCheckbox
+            <PixelCheckbox
               label={'not completed...'}
               readOnly={true}
               completed={false}
@@ -1217,7 +1218,7 @@ export default class Card {
           );
         } else {
           componentToRender = (
-            <CustomCheckbox
+            <PixelCheckbox
               label={'Completed'}
               readOnly={true}
               completed={true}
@@ -1330,7 +1331,7 @@ export default class Card {
               instance.timestamp.getFullYear() === year.getFullYear();
           });
           tempArray.push(
-            <CustomCheckbox
+            <PixelCheckbox
               label={year.getFullYear().toString()}
               readOnly={true}
               completed={completedThisYear}
@@ -1577,7 +1578,7 @@ export default class Card {
         let componentToRender;
         if (!completed) {
           componentToRender = (
-            <CustomCheckbox
+            <PixelCheckbox
               label={'not completed...'}
               readOnly={true}
               completed={false}
@@ -1585,7 +1586,7 @@ export default class Card {
           );
         } else {
           componentToRender = (
-            <CustomCheckbox
+            <PixelCheckbox
               label={'Completed'}
               readOnly={true}
               completed={true}

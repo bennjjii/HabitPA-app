@@ -294,12 +294,7 @@ const Deck = () => {
           <BackOfCard card={filteredDeck[index]} />
         </Modal>
         <Modal isVisible={modalVisibleInAction}>
-          <InAction
-            onCancel={() => {
-              translationX.value = -xOffset;
-              translationY.value = -yOffset;
-            }}
-          />
+          <InAction />
         </Modal>
         <Modal
           isVisible={modalVisibleAddCard}

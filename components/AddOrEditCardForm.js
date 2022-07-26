@@ -21,7 +21,7 @@ import {
 import {Button} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import {Picker} from '@davidgovea/react-native-wheel-datepicker';
+import {Picker, DatePicker} from '@davidgovea/react-native-wheel-datepicker';
 import CardBackgroundImg from './../assets/Sprite-0001.png';
 
 import BallPicker from './BallPicker';
@@ -100,7 +100,7 @@ const AddOrEditCardForm = props => {
   const [date, setDate] = useState(
     checkForParam(modalCode, 'date')
       ? cardUnderInspection
-        ? cardUnderInspection.parameters.date // needs .parameters
+        ? cardUnderInspection.parameters.date
         : new Date()
       : undefined,
   );
@@ -113,7 +113,12 @@ const AddOrEditCardForm = props => {
   );
   const [dayOfYearDayComponent, setDayOfYearDayComponent] = useState(
     <Picker
-      style={styles.dayOfYearWheelPicker}
+      style={[
+        styles.dayOfYearWheelPicker,
+        {
+          backgroundColor: Card.cardDefinitions[modalCode]?.backOfCardColour,
+        },
+      ]}
       selectedValue={dayOfYearDay}
       pickerData={pickerGenerator(28)}
       onValueChange={setDayOfYearDay}
@@ -285,14 +290,18 @@ const AddOrEditCardForm = props => {
           {checkForParam(modalCode, 'numberOfTimes') && (
             <View style={styles.numberOfTimesContainer}>
               <Picker
-                style={{
-                  backgroundColor:
-                    Card.cardDefinitions[modalCode]?.backOfCardColour,
-                }}
+                style={[
+                  styles.numberOfTimes,
+                  {
+                    backgroundColor:
+                      Card.cardDefinitions[modalCode]?.backOfCardColour,
+                  },
+                ]}
                 selectedValue={numberOfTimes}
                 pickerData={pickerGenerator(9)}
                 onValueChange={numberOfTimesCB}
               />
+              <Text style={styles.DoYLabel}>times</Text>
             </View>
           )}
 
@@ -300,14 +309,18 @@ const AddOrEditCardForm = props => {
           {checkForParam(modalCode, 'periodInDays') && (
             <View style={styles.periodInDaysContainer}>
               <Picker
-                style={{
-                  backgroundColor:
-                    Card.cardDefinitions[modalCode]?.backOfCardColour,
-                }}
+                style={[
+                  styles.periodInDays,
+                  {
+                    backgroundColor:
+                      Card.cardDefinitions[modalCode]?.backOfCardColour,
+                  },
+                ]}
                 selectedValue={periodInDays}
                 pickerData={pickerGenerator(90)}
                 onValueChange={periodInDaysCB}
               />
+              <Text style={styles.DoYLabel}>days</Text>
             </View>
           )}
         </View>
@@ -377,160 +390,268 @@ const AddOrEditCardForm = props => {
         {/* day of year */}
         {checkForParam(modalCode, 'dayOfYear') && (
           <View style={styles.dayOfYear}>
-            {dayOfYearDayComponent}
-            <Picker
-              style={styles.monthOfYearWheelPicker}
-              selectedValue={dayOfYearMonth}
-              pickerData={pickerGenerator(12)}
-              onValueChange={value => {
-                setDayOfYearMonth(value);
-                console.log(value);
-                switch (value) {
-                  case 1:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+            <View style={styles.DoYLabelContainer}>
+              {dayOfYearDayComponent}
+              <Text style={styles.DoYLabel}>day</Text>
+            </View>
+            <View style={styles.DoYLabelContainer}>
+              <Picker
+                style={[
+                  styles.monthOfYearWheelPicker,
+                  {
+                    backgroundColor:
+                      Card.cardDefinitions[modalCode]?.backOfCardColour,
+                  },
+                ]}
+                selectedValue={dayOfYearMonth}
+                pickerData={pickerGenerator(12)}
+                onValueChange={value => {
+                  setDayOfYearMonth(value);
+                  console.log(value);
+                  switch (value) {
+                    case 1:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 2:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(28)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 2:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(28)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 3:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
-                    break;
-                  case 4:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(30)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 3:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+                      break;
+                    case 4:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 5:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 5:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 6:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(30)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 6:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 7:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 7:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 8:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 8:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 9:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(30)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 9:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 10:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
-                    break;
-                  case 11:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(30)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
+                      break;
+                    case 10:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+                      break;
+                    case 11:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(30)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
 
-                    break;
-                  case 12:
-                    setDayOfYearDayComponent(
-                      <Picker
-                        style={styles.dayOfYearWheelPicker}
-                        selectedValue={dayOfYearDay}
-                        pickerData={pickerGenerator(31)}
-                        onValueChange={setDayOfYearDay}
-                      />,
-                    );
-                    break;
-                }
-              }}
-            />
+                      break;
+                    case 12:
+                      setDayOfYearDayComponent(
+                        <Picker
+                          style={[
+                            styles.dayOfYearWheelPicker,
+                            {
+                              backgroundColor:
+                                Card.cardDefinitions[modalCode]
+                                  ?.backOfCardColour,
+                            },
+                          ]}
+                          selectedValue={dayOfYearDay}
+                          pickerData={pickerGenerator(31)}
+                          onValueChange={setDayOfYearDay}
+                        />,
+                      );
+                      break;
+                  }
+                }}
+              />
+              <Text style={styles.DoYLabel}>month</Text>
+            </View>
           </View>
         )}
 
         {/* date */}
         {checkForParam(modalCode, 'date') && (
           <View style={styles.date}>
-            <DateTimePicker
+            {/* <DateTimePicker
               display="spinner"
               minimumDate={new Date()}
               onChange={(event, date) => {
                 setDate(date);
               }}
               value={date}
+            /> */}
+            <DatePicker
+              mode={'date'}
+              minimumDate={new Date()}
+              date={date}
+              onDateChange={date => {
+                setDate(date);
+              }}
+              style={{
+                backgroundColor:
+                  Card.cardDefinitions[modalCode]?.backOfCardColour,
+              }}
             />
           </View>
         )}
@@ -586,7 +707,9 @@ const styles = StyleSheet.create({
     width: width * 0.9,
     height: (width * 0.9) / 0.7,
     justifyContent: 'space-between',
-    padding: 30,
+    paddingHorizontal: 30,
+    paddingTop: 30,
+    paddingBottom: 30,
     alignItems: 'center',
     borderRadius: 20,
     shadowColor: '#000',
@@ -623,10 +746,21 @@ const styles = StyleSheet.create({
     borderRadius: 0,
   },
   numberOfTimesContainer: {
-    flex: 1,
+    // flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  numberOfTimes: {
+    width: 120,
+    height: 140,
   },
   periodInDaysContainer: {
-    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  periodInDays: {
+    width: 120,
+    height: 140,
   },
 
   date: {
@@ -671,15 +805,25 @@ const styles = StyleSheet.create({
   dayOfYear: {
     flexDirection: 'row',
   },
-  dayOfYearWheelPicker: {
-    backgroundColor: 'white',
-    width: 120,
-  },
-  monthOfYearWheelPicker: {
-    backgroundColor: 'white',
-    width: 120,
-  },
   submitButton: {
     fontFamily: 'PublicPixel',
+  },
+  dayOfYearWheelPicker: {
+    // backgroundColor: 'white',
+    width: 120,
+    height: 140,
+  },
+  monthOfYearWheelPicker: {
+    // backgroundColor: 'white',
+    width: 120,
+    height: 140,
+  },
+  DoYLabelContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  DoYLabel: {
+    fontFamily: 'PublicPixel',
+    marginTop: 20,
   },
 });

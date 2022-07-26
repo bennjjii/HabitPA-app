@@ -2,10 +2,6 @@ import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useStore} from '../services/zustandContext';
 import Card from './CardClass';
-import CustomCheckbox from './CustomCheckBox';
-import countCardsAfterDate from '../utilities/countCardsAfterDate';
-import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
-import ProgressBarGraph from './ProgressBarGraph';
 
 const ProgressBox = props => {
   const {history} = useStore();
@@ -13,8 +9,7 @@ const ProgressBox = props => {
   const [contractText, setContractText] = useState('');
   const [dataToRender, setDataToRender] = useState(null);
   const [habitCoefficient, setHabitCoefficient] = useState(undefined);
-  let _history = [];
-  let ageOfCardInDays;
+
   useEffect(() => {
     _history = history.filter(instance => {
       return instance.uuid == props.card.uuid;

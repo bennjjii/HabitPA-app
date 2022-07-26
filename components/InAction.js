@@ -5,7 +5,7 @@ const {width, height} = Dimensions.get('window');
 import colours from '../assets/colours/colours';
 import {useStore} from '../services/zustandContext';
 
-const GoAndDoTheActivity = props => {
+const InAction = props => {
   const {pushCardToHistory, hideModalInAction, cardInAction} = useStore();
   return (
     <View style={styles.container}>
@@ -22,8 +22,8 @@ const GoAndDoTheActivity = props => {
 
         <Button
           onPress={() => {
+            // props.onCancel();
             hideModalInAction();
-            props.onCancel();
             console.log('action cancelled');
           }}
           theme={styles.cancelButton}>
@@ -34,7 +34,7 @@ const GoAndDoTheActivity = props => {
   );
 };
 
-export default GoAndDoTheActivity;
+export default InAction;
 
 const styles = StyleSheet.create({
   container: {
