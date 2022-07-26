@@ -4,20 +4,30 @@ import {Button, Text} from 'react-native-paper';
 const {width, height} = Dimensions.get('window');
 import colours from '../assets/colours/colours';
 import {useStore} from '../services/zustandContext';
+import Card from './CardClass';
+import chroma from 'chroma-js';
 
 const InAction = props => {
   const {pushCardToHistory, hideModalInAction, cardInAction} = useStore();
   return (
-    <View style={styles.container}>
-      <Text>Let's Go!</Text>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor:
+            Card.cardDefinitions[cardInAction?.code]?.backOfCardColour,
+        },
+      ]}>
+      <Text style={styles.letsGoText}>Let's Go!</Text>
       <Text style={styles.cardNameText}>{cardInAction?.name}</Text>
       <View styles={styles.buttonsView}>
         <Button
           onPress={() => {
             pushCardToHistory(cardInAction);
             hideModalInAction();
-          }}>
-          Complete
+          }}
+          labelStyle={styles.completeButton}>
+          Complete!
         </Button>
 
         <Button
@@ -26,7 +36,19 @@ const InAction = props => {
             hideModalInAction();
             console.log('action cancelled');
           }}
-          theme={styles.cancelButton}>
+          style={{marginTop: 20}}
+          labelStyle={[
+            styles.cancelButton,
+            Card.cardDefinitions[cardInAction?.code]?.backOfCardColour
+              ? {
+                  color: chroma(
+                    Card.cardDefinitions[cardInAction?.code]?.backOfCardColour,
+                  )
+                    .darken(0.5)
+                    .hex(),
+                }
+              : {},
+          ]}>
           Cancel
         </Button>
       </View>
@@ -53,7 +75,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.34,
     shadowRadius: 6.27,
     elevation: 10,
-    paddingVertical: 50,
+    paddingVertical: 30,
+  },
+  letsGoText: {
+    color: 'white',
+    fontFamily: 'PublicPixel',
+    fontSize: 30,
   },
   cardText: {
     color: '#ffffff',
@@ -61,9 +88,14 @@ const styles = StyleSheet.create({
   },
   cardNameText: {
     fontSize: 30,
+    color: colours.pixelTextFg1,
+    fontFamily: 'PublicPixel',
+  },
+  completeButton: {
+    fontFamily: 'PublicPixel',
+    fontSize: 20,
   },
   cancelButton: {
-    color: 'red',
-    fontSize: 10,
+    fontFamily: 'PublicPixel',
   },
 });
