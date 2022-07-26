@@ -19,6 +19,7 @@ import AddOrEditCardForm from './AddOrEditCardForm';
 import CardClass from './CardClass';
 
 import {useStore} from '../services/zustandContext';
+import chroma from 'chroma-js';
 
 const cardDefinitions = CardClass.cardDefinitions;
 
@@ -69,7 +70,11 @@ const AddCard = () => {
                   code={cardDefinitions[card].code}
                   backgroundColour={cardDefinitions[card].backOfCardColour}
                   foregroundColour={
-                    cardDefinitions[card].backOfCardColourFgColour
+                    chroma(cardDefinitions[card].backOfCardColour).get(
+                      'lab.l',
+                    ) < 70
+                      ? colours.pixelTextFg1
+                      : colours.pixelTextFg2
                   }
                 />
               );
