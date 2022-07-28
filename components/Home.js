@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Platform} from 'react-native';
+import {StyleSheet, Text, View, Platform, Image} from 'react-native';
 import React from 'react';
 import Deck from './Deck';
 
@@ -10,6 +10,10 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AddCard from './AddCard';
 import colours from '../assets/colours/colours';
+
+import DeckIcon from '../assets/deckXL.png';
+import AddCardIcon from '../assets/addcardXL.png';
+import ProgressIcon from '../assets/progressXL.png';
 
 Entypo.loadFont();
 
@@ -37,7 +41,8 @@ const Home = () => {
         component={Deck}
         options={{
           headerShown: false,
-          tabBarIcon: () => <Entypo name="documents" size={32} />,
+          // tabBarIcon: () => <Entypo name="documents" size={32} />,
+          tabBarIcon: () => <Image source={DeckIcon} style={styles.icon} />,
         }}
       />
       <Tab.Screen
@@ -45,7 +50,8 @@ const Home = () => {
         component={AddCard}
         options={{
           headerShown: false,
-          tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
+          // tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
+          tabBarIcon: () => <Image source={AddCardIcon} style={styles.icon} />,
         }}
       />
       <Tab.Screen
@@ -53,7 +59,8 @@ const Home = () => {
         component={Piles2}
         options={{
           headerShown: false,
-          tabBarIcon: () => <Entypo name="gauge" size={32} />,
+          // tabBarIcon: () => <Entypo name="gauge" size={32} />,
+          tabBarIcon: () => <Image source={ProgressIcon} style={styles.icon} />,
         }}
       />
       <Tab.Screen
@@ -70,4 +77,10 @@ const Home = () => {
 
 export default Home;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  icon: {
+    width: 40,
+    height: 40,
+    resizeMode: 'stretch',
+  },
+});
