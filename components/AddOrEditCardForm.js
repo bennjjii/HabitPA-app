@@ -17,6 +17,7 @@ import {
   Dimensions,
   ImageBackground,
   TextInput as TextInput,
+  Platform,
 } from 'react-native';
 import {Button} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -83,6 +84,7 @@ const AddOrEditCardForm = props => {
   } = useStore();
 
   const [textColourStyle, setTextColourStyle] = useState({});
+  const [textColour, setTextColour] = useState('white');
 
   useEffect(() => {
     if (modalCode) {
@@ -94,6 +96,12 @@ const AddOrEditCardForm = props => {
             ? 'gainsboro'
             : 'dimgrey',
       });
+      setTextColour(
+        chroma(Card.cardDefinitions[modalCode]?.backOfCardColour).get('lab.l') <
+          70
+          ? 'gainsboro'
+          : 'dimgrey',
+      );
     }
   }, [modalCode]);
 
@@ -298,20 +306,7 @@ const AddOrEditCardForm = props => {
         {/* <View style={styles.form}> */}
         {/* <Text style={styles.codeText}>{modalCode}</Text> */}
         <View style={styles.topSection}>
-          <Text
-            style={[
-              styles.explanationText,
-              modalCode
-                ? {
-                    color:
-                      chroma(
-                        Card.cardDefinitions[modalCode]?.backOfCardColour,
-                      ).get('lab.l') < 70
-                        ? 'gainsboro'
-                        : 'dimgrey',
-                  }
-                : {},
-            ]}>
+          <Text style={[styles.explanationText, textColourStyle]}>
             {cardDefinitions[modalCode]?.explanation}
           </Text>
           {/* name */}
@@ -333,15 +328,10 @@ const AddOrEditCardForm = props => {
                         )
                           .darken(0.5)
                           .hex(),
-                        color:
-                          chroma(
-                            Card.cardDefinitions[modalCode]?.backOfCardColour,
-                          ).get('lab.l') < 70
-                            ? 'gainsboro'
-                            : 'dimgrey',
                       }
                     : {},
                   errors.name ? {color: 'red'} : {},
+                  textColourStyle,
                 ]}
                 placeholder={errors.name ? 'enter a name...' : 'habit name'}
                 onBlur={onBlur}
@@ -366,38 +356,10 @@ const AddOrEditCardForm = props => {
                 selectedValue={numberOfTimes}
                 pickerData={pickerGenerator(9)}
                 onValueChange={numberOfTimesCB}
-                itemStyle={{
-                  color:
-                    chroma(
-                      Card.cardDefinitions[modalCode]?.backOfCardColour,
-                    ).get('lab.l') < 70
-                      ? 'gainsboro'
-                      : 'dimgrey',
-                }}
-                textColor={
-                  chroma(Card.cardDefinitions[modalCode]?.backOfCardColour).get(
-                    'lab.l',
-                  ) < 70
-                    ? 'gainsboro'
-                    : 'dimgrey'
-                }
+                itemStyle={textColourStyle}
+                textColor={textColour}
               />
-              <Text
-                style={[
-                  styles.DoYLabel,
-                  modalCode
-                    ? {
-                        color:
-                          chroma(
-                            Card.cardDefinitions[modalCode]?.backOfCardColour,
-                          ).get('lab.l') < 70
-                            ? 'gainsboro'
-                            : 'dimgrey',
-                      }
-                    : {},
-                ]}>
-                times
-              </Text>
+              <Text style={[styles.DoYLabel, textColourStyle]}>times</Text>
             </View>
           )}
 
@@ -415,38 +377,10 @@ const AddOrEditCardForm = props => {
                 selectedValue={periodInDays}
                 pickerData={pickerGenerator(90)}
                 onValueChange={periodInDaysCB}
-                itemStyle={{
-                  color:
-                    chroma(
-                      Card.cardDefinitions[modalCode]?.backOfCardColour,
-                    ).get('lab.l') < 70
-                      ? 'gainsboro'
-                      : 'dimgrey',
-                }}
-                textColor={
-                  chroma(Card.cardDefinitions[modalCode]?.backOfCardColour).get(
-                    'lab.l',
-                  ) < 70
-                    ? 'gainsboro'
-                    : 'dimgrey'
-                }
+                itemStyle={textColourStyle}
+                textColor={textColour}
               />
-              <Text
-                style={[
-                  styles.DoYLabel,
-                  modalCode
-                    ? {
-                        color:
-                          chroma(
-                            Card.cardDefinitions[modalCode]?.backOfCardColour,
-                          ).get('lab.l') < 70
-                            ? 'gainsboro'
-                            : 'dimgrey',
-                      }
-                    : {},
-                ]}>
-                days
-              </Text>
+              <Text style={[styles.DoYLabel, textColourStyle]}>days</Text>
             </View>
           )}
         </View>
@@ -518,22 +452,7 @@ const AddOrEditCardForm = props => {
           <View style={styles.dayOfYear}>
             <View style={styles.DoYLabelContainer}>
               {dayOfYearDayComponent}
-              <Text
-                style={[
-                  styles.DoYLabel,
-                  modalCode
-                    ? {
-                        color:
-                          chroma(
-                            Card.cardDefinitions[modalCode]?.backOfCardColour,
-                          ).get('lab.l') < 70
-                            ? 'gainsboro'
-                            : 'dimgrey',
-                      }
-                    : {},
-                ]}>
-                day
-              </Text>
+              <Text style={[styles.DoYLabel, textColourStyle]}>day</Text>
             </View>
             <View style={styles.DoYLabelContainer}>
               <Picker
@@ -546,21 +465,8 @@ const AddOrEditCardForm = props => {
                 ]}
                 selectedValue={dayOfYearMonth}
                 pickerData={pickerGenerator(12)}
-                itemStyle={{
-                  color:
-                    chroma(
-                      Card.cardDefinitions[modalCode]?.backOfCardColour,
-                    ).get('lab.l') < 70
-                      ? 'gainsboro'
-                      : 'dimgrey',
-                }}
-                textColor={
-                  chroma(Card.cardDefinitions[modalCode]?.backOfCardColour).get(
-                    'lab.l',
-                  ) < 70
-                    ? 'gainsboro'
-                    : 'dimgrey'
-                }
+                itemStyle={textColourStyle}
+                textColor={textColour}
                 onValueChange={value => {
                   setDayOfYearMonth(value);
                   console.log(value);
@@ -579,22 +485,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -613,22 +505,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(28)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -647,22 +525,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
                       break;
@@ -680,22 +544,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -714,22 +564,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -748,22 +584,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -782,22 +604,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -816,22 +624,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -850,22 +644,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -884,22 +664,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
                       break;
@@ -917,22 +683,8 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(30)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
 
@@ -951,44 +703,15 @@ const AddOrEditCardForm = props => {
                           selectedValue={dayOfYearDay}
                           pickerData={pickerGenerator(31)}
                           onValueChange={setDayOfYearDay}
-                          itemStyle={{
-                            color:
-                              chroma(
-                                Card.cardDefinitions[modalCode]
-                                  ?.backOfCardColour,
-                              ).get('lab.l') < 70
-                                ? 'gainsboro'
-                                : 'dimgrey',
-                          }}
-                          textColor={
-                            chroma(
-                              Card.cardDefinitions[modalCode]?.backOfCardColour,
-                            ).get('lab.l') < 70
-                              ? 'gainsboro'
-                              : 'dimgrey'
-                          }
+                          itemStyle={textColourStyle}
+                          textColor={textColour}
                         />,
                       );
                       break;
                   }
                 }}
               />
-              <Text
-                style={[
-                  styles.DoYLabel,
-                  modalCode
-                    ? {
-                        color:
-                          chroma(
-                            Card.cardDefinitions[modalCode]?.backOfCardColour,
-                          ).get('lab.l') < 70
-                            ? 'gainsboro'
-                            : 'dimgrey',
-                      }
-                    : {},
-                ]}>
-                month
-              </Text>
+              <Text style={[styles.DoYLabel, textColourStyle]}>month</Text>
             </View>
           </View>
         )}
@@ -1005,18 +728,32 @@ const AddOrEditCardForm = props => {
               }}
               value={date}
             /> */}
-              <DatePicker
-                mode={'date'}
-                minimumDate={new Date()}
-                date={date}
-                onDateChange={date => {
-                  setDate(date);
-                }}
-                style={{
-                  backgroundColor:
-                    Card.cardDefinitions[modalCode]?.backOfCardColour,
-                }}
-              />
+              {Platform.OS !== 'ios' ? (
+                <DatePicker
+                  mode={'date'}
+                  minimumDate={new Date()}
+                  date={date}
+                  onDateChange={date => {
+                    setDate(date);
+                  }}
+                  style={{
+                    backgroundColor:
+                      Card.cardDefinitions[modalCode]?.backOfCardColour,
+                  }}
+                  itemStyle={textColourStyle}
+                  textColor={textColour}
+                />
+              ) : (
+                <DateTimePicker
+                  display="spinner"
+                  minimumDate={new Date()}
+                  onChange={(event, date) => {
+                    setDate(date);
+                  }}
+                  value={date}
+                  textColor={textColour}
+                />
+              )}
             </View>
             {dateError && (
               <Text
