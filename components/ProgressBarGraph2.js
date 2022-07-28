@@ -1,19 +1,20 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-const ProgressBarGraph = props => {
+const ProgressBarGraph2 = props => {
   return (
     <View style={styles.container}>
       {props.values.map(item => {
         return (
           <View style={styles.columnAndTextContainer}>
+            <Text style={styles.text}>{item.label}</Text>
             <View style={styles.columnContainer}>
               {item.height - item.completed > 0 && (
                 <View
                   style={{
                     backgroundColor: 'whitesmoke',
-                    width: 10,
-                    height: 10 * (item.height - item.completed),
+                    width: 10 * (item.height - item.completed),
+                    height: 10,
                   }}
                 />
               )}
@@ -21,13 +22,12 @@ const ProgressBarGraph = props => {
                 <View
                   style={{
                     backgroundColor: '#3DC55E',
-                    width: 10,
-                    height: 10 * Math.min(item.completed, item.height),
+                    width: 10 * Math.min(item.completed, item.height),
+                    height: 10,
                   }}
                 />
               )}
             </View>
-            <Text style={styles.text}>{item.label}</Text>
           </View>
         );
       })}
@@ -35,37 +35,38 @@ const ProgressBarGraph = props => {
   );
 };
 
-export default ProgressBarGraph;
+export default ProgressBarGraph2;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    margin: 10,
+    flexDirection: 'column',
+    // margin: 10,
     justifyContent: 'space-between',
     // borderBottomWidth: 1,
     // borderBottomColor: 'grey',
   },
   columnAndTextContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    marginVertical: 5,
   },
   columnContainer: {
     flexDirection: 'column',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 2,
-      height: 4,
-    },
-    shadowOpacity: 0.14,
-    shadowRadius: 3.27,
-    elevation: 2,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 2,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.14,
+    // shadowRadius: 3.27,
+    // elevation: 2,
   },
   text: {
-    marginTop: 10,
+    marginRight: 10,
     color: 'grey',
-    textShadowColor: '#ccc',
-    textShadowOffset: {width: 2, height: 2},
-    textShadowRadius: 2,
-    // fontFamily: 'PublicPixel',
+    // textShadowColor: '#ccc',
+    // textShadowOffset: {width: 2, height: 2},
+    // textShadowRadius: 2,
+    fontFamily: 'PublicPixel',
   },
   columnUnfilled: {},
   columnFilled: {},

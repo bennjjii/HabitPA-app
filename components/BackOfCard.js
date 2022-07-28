@@ -4,6 +4,7 @@ import {
   View,
   Dimensions,
   ImageBackground,
+  Image,
 } from 'react-native';
 import React from 'react';
 import {useStore} from '../services/zustandContext';
@@ -17,6 +18,12 @@ import Card from './CardClass';
 const {width, height} = Dimensions.get('screen');
 
 import CardBackgroundImg from './../assets/Sprite-0001.png';
+import TickGb from '../assets/tickgainsboro.png';
+import EditGb from '../assets/editgainsboro.png';
+import TrashGb from '../assets/trashgainsboro.png';
+import TickDg from '../assets/tickdimgrey.png';
+import EditDg from '../assets/editdimgrey.png';
+import TrashDg from '../assets/trashdimgrey.png';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
 
@@ -43,23 +50,25 @@ const BackOfCard = props => {
 
       <ProgressBox card={props.card} />
       <View style={styles.iconContainer}>
-        <FontAwesome
+        {/* <FontAwesome
           style={styles.icon}
           name="check"
           size={40}
           onPress={() => {
             switchToInAction(props.card);
           }}
-        />
-        <FontAwesome
+        /> */}
+        <Image source={TickGb} />
+        {/* <FontAwesome
           style={styles.icon}
           name="edit"
           size={40}
           onPress={() => {
             switchToEditCard(props.card);
           }}
-        />
-        <FontAwesome
+        /> */}
+        <Image source={EditGb} style={{marginRight: 10}} />
+        {/* <FontAwesome
           style={styles.icon}
           name="trash-o"
           size={40}
@@ -67,7 +76,8 @@ const BackOfCard = props => {
             deleteCardFromDeck(props.card);
             hideModalBackOfCard();
           }}
-        />
+        /> */}
+        <Image source={TrashGb} />
       </View>
     </View>
   );
@@ -111,5 +121,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: 'grey',
+    // width: 40,
   },
 });

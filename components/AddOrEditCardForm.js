@@ -82,6 +82,21 @@ const AddOrEditCardForm = props => {
     cardUnderInspection,
   } = useStore();
 
+  const [textColourStyle, setTextColourStyle] = useState({});
+
+  useEffect(() => {
+    if (modalCode) {
+      setTextColourStyle({
+        color:
+          chroma(Card.cardDefinitions[modalCode]?.backOfCardColour).get(
+            'lab.l',
+          ) < 70
+            ? 'gainsboro'
+            : 'dimgrey',
+      });
+    }
+  }, [modalCode]);
+
   //console.log('Card under inspection', cardUnderInspection);
   const {
     register,
