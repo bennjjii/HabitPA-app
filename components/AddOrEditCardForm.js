@@ -756,20 +756,7 @@ const AddOrEditCardForm = props => {
               )}
             </View>
             {dateError && (
-              <Text
-                style={[
-                  styles.dateErrorText,
-                  modalCode
-                    ? {
-                        color:
-                          chroma(
-                            Card.cardDefinitions[modalCode]?.backOfCardColour,
-                          ).get('lab.l') < 70
-                            ? 'gainsboro'
-                            : 'dimgrey',
-                      }
-                    : {},
-                ]}>
+              <Text style={[styles.dateErrorText, textColourStyle]}>
                 date must be in future
               </Text>
             )}

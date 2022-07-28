@@ -5,13 +5,15 @@ import {
   Dimensions,
   ImageBackground,
   Image,
+  TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {useStore} from '../services/zustandContext';
 
 import ProgressBox from './ProgressBox';
 
 import colours from '../assets/colours/colours';
+import chroma from 'chroma-js';
 
 import Card from './CardClass';
 
@@ -36,6 +38,22 @@ const BackOfCard = props => {
     switchToInAction,
   } = useStore();
 
+  const [cardTheme, setCardTheme] = useState(undefined);
+
+  useEffect(() => {
+    if (props.card.code) {
+      if (
+        chroma(Card.cardDefinitions[props.card.code].backOfCardColour).get(
+          'lab.l',
+        ) < 70
+      ) {
+        setCardTheme('dark');
+      } else {
+        setCardTheme('light');
+      }
+    }
+  }, [props.card]);
+
   return (
     <View
       style={[
@@ -58,7 +76,12 @@ const BackOfCard = props => {
             switchToInAction(props.card);
           }}
         /> */}
-        <Image source={TickGb} />
+        <TouchableOpacity
+          onPress={() => {
+            switchToInAction(props.card);
+          }}>
+          <Image source={cardTheme === 'dark' ? TickGb : TickDg} />
+        </TouchableOpacity>
         {/* <FontAwesome
           style={styles.icon}
           name="edit"
@@ -67,7 +90,15 @@ const BackOfCard = props => {
             switchToEditCard(props.card);
           }}
         /> */}
-        <Image source={EditGb} style={{marginRight: 10}} />
+        <TouchableOpacity
+          onPress={() => {
+            switchToEditCard(props.card);
+          }}>
+          <Image
+            source={cardTheme === 'dark' ? EditGb : EditDg}
+            style={{marginRight: 10}}
+          />
+        </TouchableOpacity>
         {/* <FontAwesome
           style={styles.icon}
           name="trash-o"
@@ -77,7 +108,13 @@ const BackOfCard = props => {
             hideModalBackOfCard();
           }}
         /> */}
-        <Image source={TrashGb} />
+        <TouchableOpacity
+          onPress={() => {
+            deleteCardFromDeck(props.card);
+            hideModalBackOfCard();
+          }}>
+          <Image source={cardTheme === 'dark' ? TrashGb : TrashDg} />
+        </TouchableOpacity>
       </View>
     </View>
   );
