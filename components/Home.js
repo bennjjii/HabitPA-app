@@ -14,6 +14,9 @@ import colours from '../assets/colours/colours';
 import DeckIcon from '../assets/deckXL.png';
 import AddCardIcon from '../assets/addcardXL.png';
 import ProgressIcon from '../assets/progressXL.png';
+import DeckIconDim from '../assets/deckDimmed.png';
+import AddCardIconDim from '../assets/addcardDimmed.png';
+import ProgressIconDim from '../assets/progressDimmed.png';
 
 Entypo.loadFont();
 
@@ -23,6 +26,7 @@ const Home = () => {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarShowLabel: false,
         showLabel: false,
         tabBarStyle: [
           Platform.OS === 'android' ? {height: 100} : {},
@@ -42,7 +46,12 @@ const Home = () => {
         options={{
           headerShown: false,
           // tabBarIcon: () => <Entypo name="documents" size={32} />,
-          tabBarIcon: () => <Image source={DeckIcon} style={styles.icon} />,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <Image source={DeckIcon} style={styles.icon} />
+            ) : (
+              <Image source={DeckIconDim} style={styles.icon} />
+            ),
         }}
       />
       <Tab.Screen
@@ -51,7 +60,12 @@ const Home = () => {
         options={{
           headerShown: false,
           // tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
-          tabBarIcon: () => <Image source={AddCardIcon} style={styles.icon} />,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <Image source={AddCardIcon} style={styles.icon} />
+            ) : (
+              <Image source={AddCardIconDim} style={styles.icon} />
+            ),
         }}
       />
       <Tab.Screen
@@ -60,7 +74,12 @@ const Home = () => {
         options={{
           headerShown: false,
           // tabBarIcon: () => <Entypo name="gauge" size={32} />,
-          tabBarIcon: () => <Image source={ProgressIcon} style={styles.icon} />,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <Image source={ProgressIcon} style={styles.icon} />
+            ) : (
+              <Image source={ProgressIconDim} style={styles.icon} />
+            ),
         }}
       />
       <Tab.Screen
@@ -79,8 +98,8 @@ export default Home;
 
 const styles = StyleSheet.create({
   icon: {
-    width: 40,
-    height: 40,
-    resizeMode: 'stretch',
+    // width: 40,
+    // height: 40,
+    // resizeMode: 'stretch',
   },
 });
