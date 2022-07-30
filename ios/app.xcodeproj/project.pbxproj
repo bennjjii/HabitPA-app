@@ -527,7 +527,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 93C07FCB2C1A3BF4C5883150 /* Pods-app.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
@@ -553,7 +553,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5DF95BA6DBC86BF75DBF9C12 /* Pods-app.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-1";
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = app/Info.plist;

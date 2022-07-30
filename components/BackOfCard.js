@@ -80,7 +80,10 @@ const BackOfCard = props => {
           onPress={() => {
             switchToInAction(props.card);
           }}>
-          <Image source={cardTheme === 'dark' ? TickGb : TickDg} />
+          <Image
+            source={cardTheme === 'dark' ? TickGb : TickDg}
+            style={styles.icon}
+          />
         </TouchableOpacity>
         {/* <FontAwesome
           style={styles.icon}
@@ -96,7 +99,7 @@ const BackOfCard = props => {
           }}>
           <Image
             source={cardTheme === 'dark' ? EditGb : EditDg}
-            style={{marginRight: 10}}
+            style={[styles.icon, {marginRight: 5}]}
           />
         </TouchableOpacity>
         {/* <FontAwesome
@@ -113,7 +116,10 @@ const BackOfCard = props => {
             deleteCardFromDeck(props.card);
             hideModalBackOfCard();
           }}>
-          <Image source={cardTheme === 'dark' ? TrashGb : TrashDg} />
+          <Image
+            source={cardTheme === 'dark' ? TrashGb : TrashDg}
+            style={[styles.icon]}
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -138,6 +144,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6.27,
     elevation: 10,
     padding: 45,
+    paddingBottom: 30,
     margin: 10,
   },
   cardText: {
@@ -153,11 +160,12 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     width: width * 0.65,
     // top: width * 1.1,
   },
   icon: {
-    color: 'grey',
-    // width: 40,
+    width: 35,
+    resizeMode: 'contain',
   },
 });
