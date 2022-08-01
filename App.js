@@ -20,6 +20,7 @@ const client = new ApolloClient({
 
 import React, {useContext, useEffect, useCallback} from 'react';
 import {StyleSheet} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -62,9 +63,9 @@ const App = () => {
   //     console.log(err);
   //   }
   // });
-  // useEffect(() => {
-  //   dbCallback();
-  // }, []);
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   const {state} = useContext(AuthContext);
 
