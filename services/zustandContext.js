@@ -236,6 +236,7 @@ export const useStore = create(
       logCardUnderInspection: () => {
         console.log(get().cardUnderInspection);
       },
+      tutorialDismissed: false,
     }),
     {
       name: 'appContext',
