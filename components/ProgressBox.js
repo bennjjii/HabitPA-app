@@ -12,9 +12,17 @@ const ProgressBox = props => {
   const [habitCoefficient, setHabitCoefficient] = useState(undefined);
 
   useEffect(() => {
+    //TODO not used vv
     _history = history.filter(instance => {
       return instance.uuid == props.card.uuid;
     });
+
+    const textColor =
+      chroma(Card.cardDefinitions[props.card.code]?.backOfCardColour).get(
+        'lab.l',
+      ) < 70
+        ? 'gainsboro'
+        : 'dimgrey';
     setContractText(
       Card.cardDefinitions[props.card.code].contractRenderFunction(props),
     );
@@ -22,6 +30,7 @@ const ProgressBox = props => {
       Card.cardDefinitions[props.card.code].progressRenderFunction(
         props,
         history,
+        textColor,
       ),
     );
     setHabitCoefficient(
@@ -96,5 +105,6 @@ const styles = StyleSheet.create({
   },
   progressDataStyle: {
     flexDirection: 'row',
+    // backgroundColor: 'green',
   },
 });

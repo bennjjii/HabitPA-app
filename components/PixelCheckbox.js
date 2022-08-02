@@ -17,6 +17,7 @@ const PixelCheckbox = ({
   textStyle,
   altLabel,
   contextColour,
+  greyColor,
 }) => {
   const [clicked, setClicked] = useState(value || false);
 
@@ -54,6 +55,7 @@ const PixelCheckbox = ({
                     .darken(1)
                     .hex(),
                 },
+            greyColor ? {color: greyColor} : {},
             completed ? {color: '#3DC55E'} : {},
             today ? {color: '#157EFB'} : {}, //or #595AD3
           ]}>

@@ -7,22 +7,28 @@ const ProgressBarGraph2 = props => {
       {props.values.map(item => {
         return (
           <View style={styles.columnAndTextContainer}>
-            <Text style={styles.text}>{item.label}</Text>
+            <Text
+              style={[
+                styles.text,
+                props.greyColor ? {color: props.greyColor} : {},
+              ]}>
+              {item.label}
+            </Text>
             <View style={styles.columnContainer}>
-              {item.height - item.completed > 0 && (
-                <View
-                  style={{
-                    backgroundColor: 'whitesmoke',
-                    width: 10 * (item.height - item.completed),
-                    height: 10,
-                  }}
-                />
-              )}
               {item.completed > 0 && (
                 <View
                   style={{
                     backgroundColor: '#3DC55E',
                     width: 10 * Math.min(item.completed, item.height),
+                    height: 10,
+                  }}
+                />
+              )}
+              {item.height - item.completed > 0 && (
+                <View
+                  style={{
+                    backgroundColor: 'whitesmoke',
+                    width: 10 * (item.height - item.completed),
                     height: 10,
                   }}
                 />
@@ -50,7 +56,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   columnContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     // shadowColor: '#000',
     // shadowOffset: {
     //   width: 2,

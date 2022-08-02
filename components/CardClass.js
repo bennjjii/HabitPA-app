@@ -22,6 +22,15 @@ const convertToLevel = coefficient => {
   return Math.floor(Math.max(Math.min(coefficient || 0, 1) * 99, 1));
 };
 
+const trimArray = (arr, n) => {
+  arr.reverse();
+  if (arr.length > n) {
+    arr.length = n;
+  }
+  arr.reverse();
+  return arr;
+};
+
 const getAgeOfCardInMonths = card => {
   const currentDate = new Date().getDate();
   const currentMonth = new Date().getMonth();
@@ -208,7 +217,7 @@ export default class Card {
           return 'Practise this habit every day';
         }
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         //just count if user has done card twice in day etc
         let contractedCardsPerDay = Object.keys(
           props.card.parameters.timeOfDay,
@@ -218,7 +227,7 @@ export default class Card {
         if (contractedCardsPerDay == 0) {
           contractedCardsPerDay = 1;
         }
-        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 7);
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 6);
         let tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {
           const middleOfDay = new Date(
@@ -253,6 +262,7 @@ export default class Card {
             readOnly={true}
             completed={item.completed}
             today={item.today}
+            greyColor={color}
           />
         ));
 
@@ -293,8 +303,8 @@ export default class Card {
           return `Practise this habit ${props.card.parameters.numberOfTimes} times a day`;
         }
       },
-      progressRenderFunction: (props, history) => {
-        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 7);
+      progressRenderFunction: (props, history, color) => {
+        const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 4);
         tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {
           const startOfDay = new Date(
@@ -333,7 +343,10 @@ export default class Card {
             completed: numCompletedThisDay,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -407,7 +420,7 @@ export default class Card {
         }
         return accString;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         tempArray = [];
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         for (let i = ageOfCardInDays; i >= 0; i--) {
@@ -453,11 +466,14 @@ export default class Card {
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
                 today={i == 0 ? true : false}
+                greyColor={color}
               />,
             );
           }
         }
-        return tempArray;
+        //clamp
+
+        return trimArray(tempArray, 7);
       },
     },
     //X times in a set week, and x times in the last 7 days are different
@@ -473,6 +489,7 @@ export default class Card {
         numberOfTimes: undefined,
       },
       progressCoeffFunction: (card, history, parameters) => {
+        //TODO refine this function
         //soft start
         //cond 1 - if card created after this Monday, pro rata times contracted vs times actual
         //cond 2 - if card created before this Monday, but after prev Monday, pro rata first week, pro rata current week, average
@@ -556,7 +573,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit ${props.card.parameters.numberOfTimes} times in each week`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         const cardWeeksOldIndex = Math.trunc(ageOfCardInDays / 7);
         let tempArray = [];
@@ -598,7 +615,11 @@ export default class Card {
             completed: numberOfCardsInWeek,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -632,7 +653,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 7 days`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         const cardWeeksOldIndex = Math.trunc(ageOfCardInDays / 7);
         let tempArray = [];
@@ -671,7 +692,11 @@ export default class Card {
             completed: numberOfCardsInWeek,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -754,7 +779,7 @@ export default class Card {
         }
         return accString;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {
@@ -800,11 +825,12 @@ export default class Card {
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
                 today={i == 0 ? true : false}
+                greyColor={color}
               />,
             );
           }
         }
-        return tempArray;
+        return trimArray(tempArray, 7);
       },
     },
     XpM: {
@@ -901,7 +927,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit ${props.card.parameters.numberOfTimes} times in each month`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
 
         let tempArray = [];
@@ -941,8 +967,11 @@ export default class Card {
             completed: numberOfCardsInMonth,
           });
         }
-
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -976,7 +1005,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 30 days`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
         let tempArray = [];
         for (let i = cardMonthsOldIndex; i >= 0; i--) {
@@ -1011,7 +1040,11 @@ export default class Card {
             completed: numberOfCardsInWeek,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -1047,7 +1080,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in ${props.card.parameters.periodInDays} days`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created);
         const cardMonthsOldIndex = getAgeOfCardInMonths(props.card);
         const cardPeriodsOldIndex = Math.trunc(
@@ -1091,7 +1124,11 @@ export default class Card {
             completed: numberOfCardsInWeek,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -1116,7 +1153,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit ${props.card.parameters.numberOfTimes} times in total`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         //sideways graph would be better here
         const accActual = countCardsAfterDate(
           history,
@@ -1130,7 +1167,9 @@ export default class Card {
             completed: accActual,
           },
         ];
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -1161,7 +1200,7 @@ export default class Card {
           {dateStyle: 'full'},
         )}`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const completed =
           countCardsAfterDate(history, props.card, props.card.created) > 0;
         let componentToRender;
@@ -1171,6 +1210,7 @@ export default class Card {
               label={'not completed...'}
               readOnly={true}
               completed={false}
+              greyColor={color}
             />
           );
         } else {
@@ -1179,6 +1219,7 @@ export default class Card {
               label={'Completed'}
               readOnly={true}
               completed={true}
+              greyColor={color}
             />
           );
         }
@@ -1209,7 +1250,7 @@ export default class Card {
           {dateStyle: 'full'},
         )}`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const completed =
           countCardsAfterDate(history, props.card, props.card.created) > 0;
         let componentToRender;
@@ -1219,6 +1260,7 @@ export default class Card {
               label={'not completed...'}
               readOnly={true}
               completed={false}
+              greyColor={color}
             />
           );
         } else {
@@ -1227,6 +1269,7 @@ export default class Card {
               label={'Completed'}
               readOnly={true}
               completed={true}
+              greyColor={color}
             />
           );
         }
@@ -1315,7 +1358,7 @@ export default class Card {
           new Date().setMonth(props.card.parameters.dayOfYear.month - 1),
         ).toLocaleString('en-GB', {month: 'long'})}`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         //checkbox - if created this year just this year
         //if created last year also last year
         const filteredHistory = history.filter(instance => {
@@ -1341,9 +1384,10 @@ export default class Card {
               readOnly={true}
               completed={completedThisYear}
               today={i == 0 ? true : false}
+              greyColor={color}
             />,
           );
-          return tempArray;
+          return trimArray(tempArray, 4);
         }
       },
     },
@@ -1431,7 +1475,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit ${props.card.parameters.numberOfTimes} times in a calendar year`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         //bar graphs
         //get age of card in years
 
@@ -1475,7 +1519,11 @@ export default class Card {
             completed: numCardsThisYear,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -1511,7 +1559,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 365 days`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         //bar graph for each period
         const ageOfCardInYears = getAgeOfCardInYears(props.card);
         const tempArray = [];
@@ -1552,7 +1600,11 @@ export default class Card {
             completed: numCardsThisYear,
           });
         }
-        const componentToRender = <ProgressBarGraph values={tempArray} />;
+        tempArray = trimArray(tempArray, 4);
+        tempArray.reverse();
+        const componentToRender = (
+          <ProgressBarGraph values={tempArray} greyColor={color} />
+        );
         return componentToRender;
       },
     },
@@ -1574,7 +1626,7 @@ export default class Card {
       contractRenderFunction: props => {
         return `Do this at some point`;
       },
-      progressRenderFunction: (props, history) => {
+      progressRenderFunction: (props, history, color) => {
         const completed =
           countCardsAfterDate(history, props.card, props.card.created) > 0;
         let componentToRender;
@@ -1584,6 +1636,7 @@ export default class Card {
               label={'not completed...'}
               readOnly={true}
               completed={false}
+              greyColor={color}
             />
           );
         } else {
@@ -1592,6 +1645,7 @@ export default class Card {
               label={'Completed'}
               readOnly={true}
               completed={true}
+              greyColor={color}
             />
           );
         }
