@@ -18,6 +18,10 @@ const isSameDay = (d1, d2) => {
   );
 };
 
+const convertToLevel = coefficient => {
+  return Math.floor(Math.max(Math.min(coefficient || 0, 1) * 99, 1));
+};
+
 const getAgeOfCardInMonths = card => {
   const currentDate = new Date().getDate();
   const currentMonth = new Date().getMonth();
@@ -178,7 +182,7 @@ export default class Card {
           );
           accActual += ratioForToday;
         }
-        return Math.min(accActual / ageOfCardInDays, 1);
+        return convertToLevel(accActual / ageOfCardInDays);
       },
       contractRenderFunction: props => {
         const timesOfDayBeingUsed = Object.keys(
@@ -269,7 +273,7 @@ export default class Card {
       progressCoeffFunction: (card, history, parameters) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
-        return Math.min(
+        return convertToLevel(
           countCardsAfterDate(
             history,
             card,
@@ -280,7 +284,6 @@ export default class Card {
             ),
           ) /
             (parameters.numberOfTimes * ageOfCardInDays),
-          1,
         );
       },
       contractRenderFunction: props => {
@@ -382,9 +385,8 @@ export default class Card {
             accContracted++;
           }
         }
-        console.log('accActual', accActual);
-        console.log('accContracted', accContracted);
-        return Math.min(accActual / accContracted || 0, 1);
+
+        return convertToLevel(accActual / accContracted);
       },
       contractRenderFunction: props => {
         let whichDaysOfWeekBeingUsed = Object.keys(
@@ -501,7 +503,7 @@ export default class Card {
             card,
             card.created,
           );
-          return Math.min(accActualThisWeek / accContractedThisWeek, 1);
+          return convertToLevel(accActualThisWeek / accContractedThisWeek);
           //this may be wrong
         } else if (ageOfCardInDays <= daysSinceThisLastMonday + 7) {
           //cond 2 - math.min is fudge
@@ -522,11 +524,10 @@ export default class Card {
             card.created,
             lastMonday,
           );
-          return Math.min(
-            (accActualThisWeek / accContractedThisWeek +
-              accActualFirstWeek / accContractedFirstWeek) /
-              2,
-            1,
+          return convertToLevel(
+            (accActualThisWeek / accContractedThisWeek ||
+              0 + accActualFirstWeek / accContractedFirstWeek ||
+              0) / 2,
           );
         } else {
           //cond 3
@@ -545,11 +546,10 @@ export default class Card {
             lastMonday,
             lastMondayMinus1,
           );
-          return Math.min(
-            (accActualThisWeek / accContractedThisWeek +
-              accActualLastWeek / accContractedLastWeek) /
-              2,
-            1,
+          return convertToLevel(
+            (accActualThisWeek / accContractedThisWeek ||
+              0 + accActualLastWeek / accContractedLastWeek ||
+              0) / 2,
           );
         }
       },
@@ -627,7 +627,7 @@ export default class Card {
         );
         const accContracted =
           (ageOfCardInDays / 14) * (parameters.numberOfTimes * 2);
-        return Math.min(accActual / accContracted || 0, 1);
+        return convertToLevel(accActual / accContracted);
       },
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in 7 days`;
@@ -708,7 +708,7 @@ export default class Card {
             accActual++;
           }
         }
-        return Math.min(accActual / accContracted || 0, 1);
+        return convertToLevel(accActual / accContracted || 0);
       },
       contractRenderFunction: props => {
         let whichDaysOfMonthBeingUsed = Object.keys(
@@ -845,7 +845,7 @@ export default class Card {
           );
           const accContractedThisMonth =
             parameters.numberOfTimes * (ageOfCardInDays / 30);
-          return Math.min(accActualThisMonth / accContractedThisMonth, 1);
+          return convertToLevel(accActualThisMonth / accContractedThisMonth);
         } else if (ageOfCardInDays <= daysSinceFirstOfMonth + 30) {
           const accActualThisMonth = countCardsAfterDate(
             history,
@@ -864,11 +864,16 @@ export default class Card {
             parameters.numberOfTimes *
             ((ageOfCardInDays - daysSinceFirstOfMonth) / 30);
 
-          return Math.min(
-            (accActualThisMonth / accContractedThisMonth +
-              accActualLastMonth / accContractedLastMonth) /
-              2,
-            1,
+          // console.log(
+          //   accActualThisMonth,
+          //   accContractedThisMonth,
+          //   accActualLastMonth,
+          //   accContractedLastMonth,
+          // );
+          return convertToLevel(
+            (accActualThisMonth / accContractedThisMonth ||
+              0 + accActualLastMonth / accContractedLastMonth ||
+              0) / 2,
           );
         } else {
           const accActualThisMonth = countCardsAfterDate(
@@ -885,11 +890,11 @@ export default class Card {
             firstOfThisMonth,
           );
           const accContractedLastMonth = parameters.numberOfTimes;
-          return Math.min(
-            (accActualThisMonth / accContractedThisMonth +
-              accActualLastMonth / accContractedLastMonth) /
-              2,
-            1,
+
+          return convertToLevel(
+            (accActualThisMonth / accContractedThisMonth ||
+              0 + accActualLastMonth / accContractedLastMonth ||
+              0) / 2,
           );
         }
       },
@@ -964,9 +969,8 @@ export default class Card {
             ).setHours(0, 0, 0, 0),
           ),
         );
-        return Math.min(
+        return convertToLevel(
           accActual / (parameters.numberOfTimes * (ageOfCardInDays / 30)),
-          1,
         );
       },
       contractRenderFunction: props => {
@@ -1038,7 +1042,7 @@ export default class Card {
         const accContracted =
           parameters.numberOfTimes *
           (ageOfCardInDays / parameters.periodInDays);
-        return Math.min(accActual / accContracted || 0, 1);
+        return convertToLevel(accActual / accContracted);
       },
       contractRenderFunction: props => {
         return `Practise this habit roughly ${props.card.parameters.numberOfTimes} times in ${props.card.parameters.periodInDays} days`;
@@ -1107,7 +1111,7 @@ export default class Card {
       },
       progressCoeffFunction: (card, history, parameters) => {
         const accActual = countCardsAfterDate(history, card, card.created);
-        return Math.min(accActual / parameters.numberOfTimes, 1);
+        return convertToLevel(accActual / parameters.numberOfTimes);
       },
       contractRenderFunction: props => {
         return `Practise this habit ${props.card.parameters.numberOfTimes} times in total`;
@@ -1146,9 +1150,9 @@ export default class Card {
       },
       progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
-          return 1;
+          return 99;
         } else {
-          return 0;
+          return 1;
         }
       },
       contractRenderFunction: props => {
@@ -1194,9 +1198,9 @@ export default class Card {
       },
       progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
-          return 1;
+          return 99;
         } else {
-          return 0;
+          return 1;
         }
       },
       contractRenderFunction: props => {
@@ -1266,9 +1270,9 @@ export default class Card {
             );
           });
           if (completedThisYear) {
-            return 1;
+            return 99;
           } else {
-            return 0;
+            return 1;
           }
         } else {
           const completedThisYear = filteredHistory.some(instance => {
@@ -1288,11 +1292,11 @@ export default class Card {
             );
           });
           if (completedThisYear && completedPrevYear) {
-            return 1;
+            return 99;
           } else if (completedThisYear || completedPrevYear) {
-            return 0.5;
+            return 50;
           } else {
-            return 0;
+            return 1;
           }
         }
       },
@@ -1363,7 +1367,7 @@ export default class Card {
             ((new Date().getTime() - card.created.getTime()) /
               YEAR_IN_MILLISECONDS);
           let accActual = countCardsAfterDate(history, card, card.created);
-          return Math.min(accActual / accContracted, 1);
+          return convertToLevel(accActual / accContracted);
         }
         //card created last year
         if (card.created.getFullYear() === new Date().getFullYear() - 1) {
@@ -1392,11 +1396,10 @@ export default class Card {
             ).getTime() -
               card.created.getTime()) /
               YEAR_IN_MILLISECONDS);
-          return Math.min(
-            (accActualThisYear / accContractedThisYear +
-              accActualLastYear / accContractedLastYear) /
-              2,
-            1,
+          return convertToLevel(
+            (accActualThisYear / accContractedThisYear ||
+              0 + accActualLastYear / accContractedLastYear ||
+              0) / 2,
           );
         }
         //default case - card created before last year
@@ -1419,11 +1422,10 @@ export default class Card {
           new Date(new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)),
         );
         let accContractedLastYear = parameters.numberOfTimes;
-        return Math.min(
-          (accActualThisYear / accContractedThisYear +
-            accActualLastYear / accContractedLastYear) /
-            2,
-          1,
+        return convertToLevel(
+          (accActualThisYear / accContractedThisYear ||
+            0 + accActualLastYear / accContractedLastYear ||
+            0) / 2,
         );
       },
       contractRenderFunction: props => {
@@ -1503,7 +1505,7 @@ export default class Card {
             card,
             new Date(new Date().getTime() - YEAR_IN_MILLISECONDS),
           );
-          return Math.min(accActual / accContracted, 1);
+          return convertToLevel(accActual / accContracted);
         }
       },
       contractRenderFunction: props => {
@@ -1558,16 +1560,15 @@ export default class Card {
       enabled: true,
       code: 'AsP',
       backOfCardColour: colours.backOfCardPalette[15],
-
       backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'At some point',
       explanation: 'Something to be completed at some point.',
       parameters: {},
       progressCoeffFunction: (card, history, parameters) => {
         if (countCardsAfterDate(history, card, card.created) > 0) {
-          return 1;
+          return 99;
         } else {
-          return 0;
+          return 1;
         }
       },
       contractRenderFunction: props => {

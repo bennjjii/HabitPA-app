@@ -19,6 +19,7 @@ import BackOfCard from './BackOfCard';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import InAction from './InAction';
 
+//TODO delete this
 const piles = [
   'All Cards',
   'Current Hand',

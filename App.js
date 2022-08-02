@@ -19,7 +19,7 @@ const client = new ApolloClient({
 });
 
 import React, {useContext, useEffect, useCallback} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, Image, View, Platform} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -43,7 +43,46 @@ import Home from './components/Home';
 
 import colours from './assets/colours/colours';
 
+import Icon from './assets/appiconoriginal.png';
+
 const Stack = createNativeStackNavigator();
+
+const Header = props => {
+  return (
+    <>
+      {Platform.OS === 'ios' && (
+        <View
+          style={{
+            backgroundColor: colours.mainUiBrown,
+            height: 40,
+          }}></View>
+      )}
+      <View
+        style={{
+          backgroundColor: colours.mainUiBrown,
+          height: 55,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: Platform.OS === 'ios' ? 'center' : 'flex-start',
+          paddingHorizontal: 20,
+        }}>
+        <Text
+          style={{
+            fontFamily: 'PublicPixel',
+            fontSize: 19,
+            color: colours.pixelTextFg1,
+          }}>
+          HabitMage
+        </Text>
+        <Image
+          source={Icon}
+
+          // style={{width: 30, height: 30}}
+        />
+      </View>
+    </>
+  );
+};
 
 const App = () => {
   //const contextListener = useStore.subscribe(console.log);
@@ -78,7 +117,8 @@ const App = () => {
               name="HabitMage"
               component={Home}
               options={{
-                title: 'HabitMage🧙',
+                // title: 'HabitMage🧙',
+                header: Header,
                 headerStyle: {
                   backgroundColor: colours.mainUiBrown,
                 },
