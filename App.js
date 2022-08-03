@@ -111,6 +111,7 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <GestureHandlerRootView style={{flex: 1}}>
+        <View style={styles.floatingContainer} />
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: true}}>
             <Stack.Screen
@@ -142,6 +143,15 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  floatingContainer: {
+    position: 'absolute',
+    top: 130,
+    left: 20,
+    width: 200,
+    height: 200,
+    backgroundColor: 'red',
+    zIndex: 1,
+  },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,

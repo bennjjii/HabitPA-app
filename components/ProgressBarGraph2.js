@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   columnAndTextContainer: {
     flexDirection: 'row',
     marginVertical: 5,
+    alignItems: 'center',
   },
   columnContainer: {
     flexDirection: 'row',
