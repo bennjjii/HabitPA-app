@@ -26,6 +26,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import TutorialOverlay from 'react-native-tutorial-overlay';
 
 import {useStore} from './services/zustandContext';
 import {Context as AuthContext} from './services/Auth';
@@ -40,6 +41,7 @@ import {Context as AuthContext} from './services/Auth';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
+import Tutorial from './components/Tutorial';
 
 import colours from './assets/colours/colours';
 
@@ -111,7 +113,8 @@ const App = () => {
   return (
     <ApolloProvider client={client}>
       <GestureHandlerRootView style={{flex: 1}}>
-        <View style={styles.floatingContainer} />
+        {/* <View style={styles.floatingContainer} /> */}
+        {/* <Tutorial /> */}
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: true}}>
             <Stack.Screen

@@ -28,10 +28,7 @@ const Home = () => {
       screenOptions={{
         tabBarShowLabel: false,
         showLabel: false,
-        tabBarStyle: [
-          Platform.OS === 'android' ? {height: 100} : {},
-          {backgroundColor: colours.mainUiBrown},
-        ],
+        tabBarStyle: [{height: 85}, {backgroundColor: colours.mainUiBrown}],
 
         tabBarLabelStyle:
           Platform.OS === 'android'
@@ -39,7 +36,10 @@ const Home = () => {
                 marginBottom: 15,
               }
             : {},
-      }}>
+        //this could cause problems
+        lazy: false,
+      }}
+      initialRouteName={'Add Card'}>
       <Tab.Screen
         name="Deck"
         component={Deck}
@@ -82,14 +82,14 @@ const Home = () => {
             ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Tooling"
         component={ToolingPage}
         options={{
           headerShown: false,
           tabBarIcon: () => <Entypo name="code" size={32} />,
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

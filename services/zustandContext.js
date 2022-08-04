@@ -236,7 +236,21 @@ export const useStore = create(
       logCardUnderInspection: () => {
         console.log(get().cardUnderInspection);
       },
-      tutorialDismissed: false,
+      tutorialStep: 1,
+      moveToNextTutorialStep: () => {
+        set(state => {
+          return {
+            tutorialStep: state.tutorialStep + 1,
+          };
+        });
+      },
+      resetTutorialStep: () => {
+        set(state => {
+          return {
+            tutorialStep: 1,
+          };
+        });
+      },
     }),
     {
       name: 'appContext',

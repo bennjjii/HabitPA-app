@@ -10,7 +10,7 @@ import colours from '../assets/colours/colours';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CardBackgroundImg from './../assets/Sprite-0001.png';
-const {width, height} = Dimensions.get('screen');
+const {width, height} = Dimensions.get('window');
 FontAwesome.loadFont();
 
 const Card = props => {

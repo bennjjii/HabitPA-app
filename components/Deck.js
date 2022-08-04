@@ -66,7 +66,7 @@ import {Button} from 'react-native-paper';
 //   listCards,
 // } from '../services/SQLite';
 
-const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('screen');
 //const toRadians = angle => angle * (Math.PI / 180);
 // const rotatedWidth =
 //   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
@@ -76,7 +76,12 @@ const yOffset = (width * 0.72) / 1.4;
 // const yOffset = 0;
 
 const Deck = () => {
-  //console.log('Maindeck loading');
+  console.log(
+    'Dims',
+    Dimensions.get('window').height,
+    Dimensions.get('screen').height,
+    height,
+  );
 
   const {
     deck,
@@ -127,8 +132,6 @@ const Deck = () => {
       setIndex2(filteredDeck.length > args + 1 ? args + 1 : 0);
     }, 100);
   };
-
-  const devForHire = true;
 
   const deleteCard = () => {
     console.log('card deleted');

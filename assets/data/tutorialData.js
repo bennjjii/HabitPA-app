@@ -1,9 +1,17 @@
-const strings = [
+const tutorialData = [
   {
     text: `HabitMage is a spellbinding way to build habits. Let's take a quick look around...`,
+    top: undefined,
+    x: '20',
+    y: '80',
+    w: '95%',
+    h: '120',
   },
   {
-    text: `Each habit is represented by a card. Cards can be added to your deck here...`,
+    text: `Each habit is represented by a card...`,
+  },
+  {
+    text: `Cards can be added to your deck here...`,
   },
   {
     text: `Let's add a habit that we want to do every week on specific days...`,
@@ -22,4 +30,4 @@ const strings = [
   },
 ];
 
-export default strings;
+export default tutorialData;
