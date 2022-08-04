@@ -12,13 +12,15 @@ import {
 import React from 'react';
 import TutorialOverlay from 'react-native-tutorial-overlay';
 import {useStore} from '../services/zustandContext';
+import {CommonActions} from '@react-navigation/native';
 
 import colours from '../assets/colours/colours';
 import Icon from '../assets/appiconscaled.png';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
-const Tutorial = props => {
+
+const Tutorial = ({navigationCtx}) => {
   const {tutorialStep, moveToNextTutorialStep, resetTutorialStep} = useStore();
   const titleBarHeight = 55 + (Platform.OS === 'ios' ? 40 : 0);
   const tabBarHeight = 85;
@@ -26,6 +28,8 @@ const Tutorial = props => {
     height - titleBarHeight - tabBarHeight - StatusBar.currentHeight;
   const cardWidth = width * 0.72;
   const cardHeight = (width * 0.72) / 0.7;
+  const miniCardWidth = width * 0.42;
+  const miniCardHeight = (width * 0.42) / 0.7;
 
   const tutorialData = [
     {
@@ -54,24 +58,48 @@ const Tutorial = props => {
     },
     {
       text: `Let's add a habit that we want to do every week on specific days...`,
+      top: undefined,
+      x: width / 2 - miniCardWidth - 20,
+      y: titleBarHeight + miniCardHeight + 20,
+      w: width / 2 - 20,
+      h: miniCardHeight + 20,
     },
     {
       text: `The habit will now come up in our daily deck...`,
+      top: undefined,
+      x: width / 2 - width / 2.25,
+      y: titleBarHeight + viewPortHeight,
+      w: 90,
+      h: tabBarHeight - 20 + (Platform.OS === 'ios' ? 0 : 15),
     },
     {
       text: `We can play the card to the left to do the habit, or play it to the right to skip it for now...`,
+      top: undefined,
+      x: 1000,
+      y: 0,
+      w: 0,
+      h: 0,
     },
     {
       text: `We can view the progress of all of our habits on the progress screen...`,
+      x: width / 2 + width / 4.5,
+      y: titleBarHeight + viewPortHeight,
+      w: 90,
+      h: tabBarHeight - 20 + (Platform.OS === 'ios' ? 0 : 15),
     },
     {
       text: `That's all! Have a look around!`,
+      top: undefined,
+      x: 1000,
+      y: 0,
+      w: 0,
+      h: 0,
     },
   ];
 
   return (
     <TutorialOverlay
-      x={width / 2 - 40}
+      x={width / 2 + width / 4.5}
       y={titleBarHeight + viewPortHeight}
       width={90}
       height={tabBarHeight - 20 + (Platform.OS === 'ios' ? 0 : 15)}
@@ -95,12 +123,17 @@ const Tutorial = props => {
           {tutorialStep == 1 && (
             <Text style={[styles.textStyle]}>[tap to continue]</Text>
           )}
-          {/* <Button
+          <Button
             title={'Reset'}
             onPress={() => {
-              resetTutorialStep();
+              navigationCtx.dispatch(
+                CommonActions.navigate({
+                  name: 'Piles',
+                  params: {},
+                }),
+              );
             }}
-          /> */}
+          />
         </View>
       </Pressable>
     </TutorialOverlay>

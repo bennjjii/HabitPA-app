@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Platform, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Deck from './Deck';
 
 import Piles from './Piles';
@@ -8,7 +8,10 @@ import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContext} from '@react-navigation/native';
+
 import AddCard from './AddCard';
+import Tutorial from './Tutorial';
 import colours from '../assets/colours/colours';
 
 import DeckIcon from '../assets/deckXL.png';
@@ -23,66 +26,70 @@ Entypo.loadFont();
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
+  const navigation = React.useContext(NavigationContext);
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarShowLabel: false,
-        showLabel: false,
-        tabBarStyle: [{height: 85}, {backgroundColor: colours.mainUiBrown}],
+    <>
+      <Tutorial navigationCtx={navigation} />
+      <Tab.Navigator
+        id={'mTabNavigator'}
+        screenOptions={{
+          tabBarShowLabel: false,
+          showLabel: false,
+          tabBarStyle: [{height: 85}, {backgroundColor: colours.mainUiBrown}],
 
-        tabBarLabelStyle:
-          Platform.OS === 'android'
-            ? {
-                marginBottom: 15,
-              }
-            : {},
-        //this could cause problems
-        lazy: false,
-      }}
-      initialRouteName={'Add Card'}>
-      <Tab.Screen
-        name="Deck"
-        component={Deck}
-        options={{
-          headerShown: false,
-          // tabBarIcon: () => <Entypo name="documents" size={32} />,
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <Image source={DeckIcon} style={styles.icon} />
-            ) : (
-              <Image source={DeckIconDim} style={styles.icon} />
-            ),
+          tabBarLabelStyle:
+            Platform.OS === 'android'
+              ? {
+                  marginBottom: 15,
+                }
+              : {},
+          //this could cause problems
+          lazy: false,
         }}
-      />
-      <Tab.Screen
-        name="Add Card"
-        component={AddCard}
-        options={{
-          headerShown: false,
-          // tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <Image source={AddCardIcon} style={styles.icon} />
-            ) : (
-              <Image source={AddCardIconDim} style={styles.icon} />
-            ),
-        }}
-      />
-      <Tab.Screen
-        name="Piles"
-        component={Piles2}
-        options={{
-          headerShown: false,
-          // tabBarIcon: () => <Entypo name="gauge" size={32} />,
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <Image source={ProgressIcon} style={styles.icon} />
-            ) : (
-              <Image source={ProgressIconDim} style={styles.icon} />
-            ),
-        }}
-      />
-      {/* <Tab.Screen
+        initialRouteName={'Add Card'}>
+        <Tab.Screen
+          name="Deck"
+          component={Deck}
+          options={{
+            headerShown: false,
+            // tabBarIcon: () => <Entypo name="documents" size={32} />,
+            tabBarIcon: ({focused}) =>
+              focused ? (
+                <Image source={DeckIcon} style={styles.icon} />
+              ) : (
+                <Image source={DeckIconDim} style={styles.icon} />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Add Card"
+          component={AddCard}
+          options={{
+            headerShown: false,
+            // tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
+            tabBarIcon: ({focused}) =>
+              focused ? (
+                <Image source={AddCardIcon} style={styles.icon} />
+              ) : (
+                <Image source={AddCardIconDim} style={styles.icon} />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Piles"
+          component={Piles2}
+          options={{
+            headerShown: false,
+            // tabBarIcon: () => <Entypo name="gauge" size={32} />,
+            tabBarIcon: ({focused}) =>
+              focused ? (
+                <Image source={ProgressIcon} style={styles.icon} />
+              ) : (
+                <Image source={ProgressIconDim} style={styles.icon} />
+              ),
+          }}
+        />
+        {/* <Tab.Screen
         name="Tooling"
         component={ToolingPage}
         options={{
@@ -90,7 +97,8 @@ const Home = () => {
           tabBarIcon: () => <Entypo name="code" size={32} />,
         }}
       /> */}
-    </Tab.Navigator>
+      </Tab.Navigator>
+    </>
   );
 };
 

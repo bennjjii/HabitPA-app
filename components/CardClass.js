@@ -1140,7 +1140,7 @@ export default class Card {
       backOfCardColourFgColour: colours.pixelTextFg1,
       name: 'X times in total',
       explanation:
-        'Practise of a habit X times in total. You may specify a period.',
+        'Practise a habit X times in total.You may specify a period.',
       parameters: {
         numberOfTimes: undefined,
         //to use this need to record a creation time

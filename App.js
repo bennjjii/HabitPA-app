@@ -41,7 +41,6 @@ import {Context as AuthContext} from './services/Auth';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import Home from './components/Home';
-import Tutorial from './components/Tutorial';
 
 import colours from './assets/colours/colours';
 
@@ -89,6 +88,7 @@ const Header = props => {
 const App = () => {
   //const contextListener = useStore.subscribe(console.log);
   const {deck} = useStore();
+
   // const dbCallback = useCallback(async () => {
   //   try {
   //     const db = await getConnection();
@@ -114,7 +114,7 @@ const App = () => {
     <ApolloProvider client={client}>
       <GestureHandlerRootView style={{flex: 1}}>
         {/* <View style={styles.floatingContainer} /> */}
-        {/* <Tutorial /> */}
+
         <NavigationContainer>
           <Stack.Navigator screenOptions={{headerShown: true}}>
             <Stack.Screen
