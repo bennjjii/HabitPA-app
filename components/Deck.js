@@ -20,7 +20,7 @@ Will need some kind of stable random seed for long term randomisation
 need persist option for a card to persist once drawn
 */
 
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Dimensions,
@@ -97,9 +97,12 @@ const Deck = () => {
     modalVisibleAddCard,
     hideModalAddCard,
     tutorialFillInCard,
+    tutorialAnimateCard,
+    endTutorialAnimateCard,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
+  const tutorialAnimationCounter = useRef(0);
   const [index, setIndex] = useState(0);
   const [index2, setIndex2] = useState(1);
   const translationX = useSharedValue(0 - xOffset);
@@ -108,6 +111,7 @@ const Deck = () => {
   const tempCurrentCard = useSharedValue(0);
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
+  //TODO why async? Test without
   const startCardInAction = async args => {
     console.log('card sent to history', filteredDeck[args[0]]);
     console.log('card index', args[0]);
@@ -154,6 +158,24 @@ const Deck = () => {
     console.log('Card under inspection', cardUnderInspection);
     console.log('Logged deck', deck[2]);
   }, [cardUnderInspection]);
+
+  useEffect(() => {
+    if (tutorialAnimateCard) {
+      const animateInterval = setInterval(() => {
+        if (tutorialAnimationCounter.current % 2 == 0) {
+          translationX.value = withSpring(-100);
+        } else {
+          translationX.value = withSpring(100);
+        }
+        tutorialAnimationCounter.current = tutorialAnimationCounter.current + 1;
+        if (tutorialAnimationCounter.current > 10) {
+          translationX.value = withSpring(0);
+          endTutorialAnimateCard();
+          clearInterval(animateInterval);
+        }
+      }, 1000);
+    }
+  }, [tutorialAnimateCard]);
 
   const manualUpdate = () => {
     console.log('manual update');

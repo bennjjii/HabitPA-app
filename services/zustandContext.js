@@ -238,6 +238,7 @@ export const useStore = create(
       },
       tutorialStep: 1,
       tutorialFillInCard: false,
+      tutorialAnimateCard: false,
       tutorialSkipPermitted: true,
       moveToNextTutorialStep: () => {
         set(state => {
@@ -278,6 +279,20 @@ export const useStore = create(
         set(state => {
           return {
             tutorialSkipPermitted: true,
+          };
+        });
+      },
+      startTutorialAnimateCard: () => {
+        set(state => {
+          return {
+            tutorialAnimateCard: true,
+          };
+        });
+      },
+      endTutorialAnimateCard: () => {
+        set(state => {
+          return {
+            tutorialAnimateCard: false,
           };
         });
       },

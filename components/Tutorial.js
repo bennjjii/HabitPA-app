@@ -31,10 +31,14 @@ const Tutorial = ({navigationCtx}) => {
     endTutorialFillInCard,
     blockTutorialSkip,
     unblockTutorialSkip,
+    tutorialAnimateCard,
+    startTutorialAnimateCard,
+    endTutorialAnimateCard,
   } = useStore();
   useEffect(() => {
     unblockTutorialSkip();
     resetTutorialStep();
+    endTutorialAnimateCard();
   }, []);
 
   const titleBarHeight = 55 + (Platform.OS === 'ios' ? 40 : 0);
@@ -153,7 +157,9 @@ const Tutorial = ({navigationCtx}) => {
 
   useEffect(() => {
     console.log('Tutorial step ', tutorialStep, ' ran');
-    tutorialData[tutorialStep - 1].fn();
+    if (tutorialStep <= tutorialData.length) {
+      tutorialData[tutorialStep - 1].fn();
+    }
   }, [tutorialStep]);
 
   return (
@@ -197,6 +203,16 @@ const Tutorial = ({navigationCtx}) => {
               {tutorialStep == 1 && (
                 <Text style={[styles.textStyle]}>[tap to continue]</Text>
               )}
+              <Button
+                title={'Card'}
+                onPress={() => {
+                  if (tutorialAnimateCard) {
+                    endTutorialAnimateCard();
+                  } else {
+                    startTutorialAnimateCard();
+                  }
+                }}
+              />
               <Button
                 title={'Reset'}
                 onPress={() => {
