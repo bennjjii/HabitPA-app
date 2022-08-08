@@ -96,6 +96,7 @@ const Deck = () => {
     switchToInAction,
     modalVisibleAddCard,
     hideModalAddCard,
+    tutorialFillInCard,
   } = useStore();
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
@@ -300,7 +301,7 @@ const Deck = () => {
           <InAction />
         </Modal>
         <Modal
-          isVisible={modalVisibleAddCard}
+          isVisible={modalVisibleAddCard && !tutorialFillInCard}
           style={styles.modal}
           onRequestClose={() => {
             hideModalAddCard();

@@ -7,7 +7,7 @@
 //need to convert between cardUnderInspection (.parameters)
 //and formData/defaultValues == flat list
 
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -70,10 +70,103 @@ const shortNames = {
 // };
 
 const AddOrEditCardForm = props => {
+  const renderCounterAddOrEditCard = useRef(Math.random());
+  let currentSubTutorialStep = 0;
+  // useEffect(() => {
+  //   console.log('Errors: ', errors);
+  //   console.log('screen', Dimensions.get('screen'));
+  // }, [errors]);
+
+  const runTutorial = () => {
+    const currentDay = new Date().getDay(); //0 is Sunday
+    const steps = [
+      () => {
+        setValue('name', 'G');
+      },
+      () => {
+        setValue('name', 'Go');
+      },
+      () => {
+        setValue('name', 'Go ');
+      },
+      () => {
+        setValue('name', 'Go t');
+      },
+      () => {
+        setValue('name', 'Go to');
+      },
+      () => {
+        setValue('name', 'Go to ');
+      },
+      () => {
+        setValue('name', 'Go to t');
+      },
+      () => {
+        setValue('name', 'Go to th');
+      },
+      () => {
+        setValue('name', 'Go to the');
+      },
+      () => {
+        setValue('name', 'Go to the ');
+      },
+      () => {
+        setValue('name', 'Go to the g');
+      },
+      () => {
+        setValue('name', 'Go to the gy');
+      },
+      () => {
+        setValue('name', 'Go to the gym');
+      },
+      () => {
+        // setValue('parameters.dayOfWeek', {
+        //   Monday: currentDay == 1,
+        //   Tuesday: currentDay == 2,
+        //   Wednesday: currentDay == 3,
+        //   Thursday: currentDay == 4,
+        //   Friday: currentDay == 5,
+        //   Saturday: currentDay == 6,
+        //   Sunday: currentDay == 0,
+        // });
+      },
+      () => {
+        // handleSubmit(onSubmit);
+      },
+    ];
+    // if (tutorialFillInCard) {
+    let mInterval = setInterval(() => {
+      steps[currentSubTutorialStep]();
+      currentSubTutorialStep++;
+      if (currentSubTutorialStep == steps.length - 1) {
+        console.log('currentSubTutorialStep', currentSubTutorialStep);
+        hideModalAddCard();
+        clearInterval(mInterval);
+        unblockTutorialSkip();
+
+        let mTimeout2 = setTimeout(() => {
+          console.log('move to next tutorial step');
+
+          moveToNextTutorialStep();
+          endTutorialFillInCard();
+          clearTimeout(mTimeout2);
+        }, 1000);
+      }
+    }, 300);
+    // }
+  };
+
   useEffect(() => {
-    console.log('Errors: ', errors);
-    console.log('screen', Dimensions.get('screen'));
-  }, [errors]);
+    console.log(renderCounterAddOrEditCard);
+    let mTimeout = setTimeout(() => {
+      console.log('tutorialFillInCard', tutorialFillInCard);
+      if (tutorialFillInCard) {
+        runTutorial();
+        console.log('sub tutorial started');
+      }
+      clearTimeout(mTimeout);
+    }, 1000);
+  }, [tutorialFillInCard]);
 
   const {
     addCardToDeck,
@@ -81,6 +174,10 @@ const AddOrEditCardForm = props => {
     hideModalAddCard,
     modalCode,
     cardUnderInspection,
+    tutorialFillInCard,
+    unblockTutorialSkip,
+    moveToNextTutorialStep,
+    endTutorialFillInCard,
   } = useStore();
 
   const [textColourStyle, setTextColourStyle] = useState({});

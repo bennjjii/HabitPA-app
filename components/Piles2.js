@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -36,6 +36,11 @@ const cardWidth = Dimensions.get('window').width / 2 - 50;
 const cardHeight = cardWidth * cardAspect;
 
 const Piles = () => {
+  // const renderCounterPiles = useRef(0);
+  // useEffect(() => {
+  //   renderCounterPiles.current = renderCounterPiles.current + 1;
+  // });
+  // console.log('Piles', renderCounterPiles);
   const {
     deck,
     getFilteredDeck,

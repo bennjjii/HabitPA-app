@@ -5,7 +5,7 @@ import {
   Dimensions,
   ImageBackground,
 } from 'react-native';
-import React from 'react';
+import React, {useRef, useEffect, memo} from 'react';
 import colours from '../assets/colours/colours';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -14,8 +14,11 @@ const {width, height} = Dimensions.get('window');
 FontAwesome.loadFont();
 
 const Card = props => {
-  console.log('current card width', width * 0.72);
-  console.log('current screen width', width);
+  const renderCounterCard = useRef(0);
+  useEffect(() => {
+    renderCounterCard.current = renderCounterCard.current + 1;
+  });
+  console.log('card', renderCounterCard);
   return (
     <ImageBackground source={CardBackgroundImg} style={styles.container}>
       <Text style={styles.cardText}>
@@ -53,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Card;
+export default memo(Card);

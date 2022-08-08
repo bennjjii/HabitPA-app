@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Platform, Image} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Deck from './Deck';
 
 import Piles from './Piles';
@@ -26,6 +26,11 @@ Entypo.loadFont();
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
+  const renderCounter = useRef(0);
+  useEffect(() => {
+    renderCounter.current = renderCounter.current + 1;
+  });
+  console.log('home', renderCounter);
   const navigation = React.useContext(NavigationContext);
   return (
     <>
@@ -44,9 +49,10 @@ const Home = () => {
                 }
               : {},
           //this could cause problems
-          lazy: false,
+          lazy: true,
         }}
-        initialRouteName={'Add Card'}>
+        // initialRouteName={'Add Card'}
+      >
         <Tab.Screen
           name="Deck"
           component={Deck}

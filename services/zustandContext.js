@@ -237,6 +237,8 @@ export const useStore = create(
         console.log(get().cardUnderInspection);
       },
       tutorialStep: 1,
+      tutorialFillInCard: false,
+      tutorialSkipPermitted: true,
       moveToNextTutorialStep: () => {
         set(state => {
           return {
@@ -248,6 +250,34 @@ export const useStore = create(
         set(state => {
           return {
             tutorialStep: 1,
+          };
+        });
+      },
+      startTutorialFillInCard: () => {
+        set(state => {
+          return {
+            tutorialFillInCard: true,
+          };
+        });
+      },
+      endTutorialFillInCard: () => {
+        set(state => {
+          return {
+            tutorialFillInCard: false,
+          };
+        });
+      },
+      blockTutorialSkip: () => {
+        set(state => {
+          return {
+            tutorialSkipPermitted: false,
+          };
+        });
+      },
+      unblockTutorialSkip: () => {
+        set(state => {
+          return {
+            tutorialSkipPermitted: true,
           };
         });
       },

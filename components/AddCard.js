@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -54,6 +54,11 @@ const TemplateCard = props => {
 
 const AddCard = () => {
   const {modalVisibleAddCard, hideModalAddCard} = useStore();
+  // const renderCounterAddCard = useRef(0);
+  // useEffect(() => {
+  //   renderCounterAddCard.current = renderCounterAddCard.current + 1;
+  // });
+  // console.log('AddCard', renderCounterAddCard);
   //console.log(Object.keys(cardDefinitions));
   return (
     <SafeAreaView style={styles.container}>
@@ -61,8 +66,6 @@ const AddCard = () => {
         <ScrollView style={styles.scrView}>
           <View style={styles.cardFlexContainer}>
             {Object.keys(cardDefinitions).map((card, i) => {
-              //console.log(cardDefinitions[card].code + '\n');
-              console.log(cardDefinitions[card].backOfCardColour);
               return (
                 <TemplateCard
                   name={cardDefinitions[card].name}
