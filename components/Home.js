@@ -96,13 +96,13 @@ const Home = () => {
           }}
         />
         {/* <Tab.Screen
-        name="Tooling"
-        component={ToolingPage}
-        options={{
-          headerShown: false,
-          tabBarIcon: () => <Entypo name="code" size={32} />,
-        }}
-      /> */}
+          name="Tooling"
+          component={ToolingPage}
+          options={{
+            headerShown: false,
+            tabBarIcon: () => <Entypo name="code" size={32} />,
+          }}
+        /> */}
       </Tab.Navigator>
     </>
   );

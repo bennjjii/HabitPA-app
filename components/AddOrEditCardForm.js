@@ -27,7 +27,7 @@ import CardBackgroundImg from './../assets/Sprite-0001.png';
 
 import BallPicker from './BallPicker';
 
-import {useForm, Controller} from 'react-hook-form';
+import {useForm, Controller, get} from 'react-hook-form';
 import {useStore} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import chroma from 'chroma-js';
@@ -108,6 +108,19 @@ const AddOrEditCardForm = props => {
         setValue('name', 'Go to the');
       },
       () => {
+        console.log('getvalues', getValues('parameters.dayOfWeek'));
+        setValue('parameters.dayOfWeek', {
+          Monday: true,
+          Tuesday: false,
+          Wednesday: false,
+          Thursday: false,
+          Friday: false,
+          Saturday: false,
+          Sunday: false,
+        });
+        console.log('getvalues', getValues('parameters.dayOfWeek'));
+      },
+      () => {
         setValue('name', 'Go to the ');
       },
       () => {
@@ -118,17 +131,6 @@ const AddOrEditCardForm = props => {
       },
       () => {
         setValue('name', 'Go to the gym');
-      },
-      () => {
-        // setValue('parameters.dayOfWeek', {
-        //   Monday: currentDay == 1,
-        //   Tuesday: currentDay == 2,
-        //   Wednesday: currentDay == 3,
-        //   Thursday: currentDay == 4,
-        //   Friday: currentDay == 5,
-        //   Saturday: currentDay == 6,
-        //   Sunday: currentDay == 0,
-        // });
       },
       () => {
         // handleSubmit(onSubmit);
@@ -165,7 +167,7 @@ const AddOrEditCardForm = props => {
         console.log('sub tutorial started');
       }
       clearTimeout(mTimeout);
-    }, 1000);
+    }, 300);
   }, [tutorialFillInCard]);
 
   const {
@@ -497,15 +499,17 @@ const AddOrEditCardForm = props => {
                 },
               }}
               render={({field: {onChange, value}}) => (
-                <BallPicker
-                  values={value}
-                  onValueChange={onChange}
-                  textStyle={{fontFamily: 'PublicPixel'}}
-                  altLabels={shortNames}
-                  contextColour={
-                    Card.cardDefinitions[modalCode]?.backOfCardColour
-                  }
-                />
+                <>
+                  <BallPicker
+                    values={value}
+                    onValueChange={onChange}
+                    textStyle={{fontFamily: 'PublicPixel'}}
+                    altLabels={shortNames}
+                    contextColour={
+                      Card.cardDefinitions[modalCode]?.backOfCardColour
+                    }
+                  />
+                </>
               )}
             />
 

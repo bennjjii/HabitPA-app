@@ -108,7 +108,7 @@ const Tutorial = ({navigationCtx}) => {
           startTutorialFillInCard();
           showModalAddCard('EW');
           clearTimeout(t);
-        }, 1000);
+        }, 200);
       },
     },
     {
@@ -134,6 +134,7 @@ const Tutorial = ({navigationCtx}) => {
             params: {},
           }),
         );
+        startTutorialAnimateCard();
       },
     },
     {
@@ -142,7 +143,9 @@ const Tutorial = ({navigationCtx}) => {
       y: titleBarHeight + viewPortHeight,
       w: 90,
       h: tabBarHeight - 20 + (Platform.OS === 'ios' ? 0 : 15),
-      fn: () => {},
+      fn: () => {
+        endTutorialAnimateCard();
+      },
     },
     {
       text: `That's all! Have a look around!`,
@@ -164,7 +167,7 @@ const Tutorial = ({navigationCtx}) => {
 
   return (
     <>
-      {tutorialStep !== 5 && (
+      {tutorialStep !== 5 && tutorialStep <= 9 && (
         <TutorialOverlay
           x={tutorialData[tutorialStep - 1]?.x}
           y={tutorialData[tutorialStep - 1]?.y}
@@ -204,6 +207,13 @@ const Tutorial = ({navigationCtx}) => {
                 <Text style={[styles.textStyle]}>[tap to continue]</Text>
               )}
               <Button
+                title={'Reset'}
+                onPress={() => {
+                  resetTutorialStep();
+                  endTutorialAnimateCard();
+                }}
+              />
+              <Button
                 title={'Card'}
                 onPress={() => {
                   if (tutorialAnimateCard) {
@@ -213,26 +223,21 @@ const Tutorial = ({navigationCtx}) => {
                   }
                 }}
               />
-              <Button
-                title={'Reset'}
-                onPress={() => {
-                  resetTutorialStep();
-                }}
-              />
             </View>
           </Pressable>
         </TutorialOverlay>
       )}
       <Button
-        title={'Modal'}
-        onPress={() => {
-          showModalAddCard('EW');
-        }}
-      />
-      <Button
         title={'Reset'}
         onPress={() => {
           resetTutorialStep();
+          endTutorialAnimateCard();
+        }}
+      />
+      <Button
+        title={'Modal'}
+        onPress={() => {
+          showModalAddCard('EW');
         }}
       />
     </>

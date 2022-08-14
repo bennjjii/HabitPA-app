@@ -168,12 +168,14 @@ const Deck = () => {
           translationX.value = withSpring(100);
         }
         tutorialAnimationCounter.current = tutorialAnimationCounter.current + 1;
-        if (tutorialAnimationCounter.current > 10) {
+        if (tutorialAnimationCounter.current > 4) {
           translationX.value = withSpring(0);
           endTutorialAnimateCard();
           clearInterval(animateInterval);
         }
-      }, 1000);
+      }, 700);
+    } else {
+      translationX.value = withSpring(0);
     }
   }, [tutorialAnimateCard]);
 

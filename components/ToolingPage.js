@@ -31,6 +31,7 @@ const ToolingPage = () => {
     logDeck,
     logFilteredDeck,
     logCardUnderInspection,
+    resetTutorialStep,
   } = useStore();
 
   return (
@@ -59,6 +60,7 @@ const ToolingPage = () => {
         <Button onPress={logCardUnderInspection}>
           log Card Under Inspection
         </Button>
+        <Button onPress={resetTutorialStep}>Reset tutorial</Button>
       </ScrollView>
     </SafeAreaView>
   );
