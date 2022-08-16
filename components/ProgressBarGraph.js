@@ -4,9 +4,11 @@ import React from 'react';
 const ProgressBarGraph = props => {
   return (
     <View style={styles.container}>
-      {props.values.map(item => {
+      {props.values.map((item, index) => {
         return (
-          <View style={styles.columnAndTextContainer}>
+          <View
+            style={styles.columnAndTextContainer}
+            key={'progressBar1' + index}>
             <View style={styles.columnContainer}>
               {item.height - item.completed > 0 && (
                 <View

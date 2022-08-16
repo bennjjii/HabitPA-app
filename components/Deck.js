@@ -54,7 +54,11 @@ import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CustomCheckbox from './CustomCheckBox';
 import {useQuery, gql} from '@apollo/client';
-import AppBackground from './../assets/ElvinWood.jpeg';
+// import AppBackground2 from './../assets/ElvinWood.jpeg';
+//best so far, 5*, 8, 9, 10*, 11**, 13
+// import AppBackground from './../assets/stockbg3.jpeg';
+//5,1,4,8
+import AppBackground from './../assets/pixelBgLic1.jpg';
 
 import {useStore} from '../services/zustandContext';
 import {Button} from 'react-native-paper';

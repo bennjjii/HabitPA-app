@@ -22,12 +22,12 @@ const PixelCheckbox = ({
   const [clicked, setClicked] = useState(value || false);
 
   useEffect(() => {
-    console.log('PixelCheckbox value changed', value);
+    // console.log('PixelCheckbox value changed', value);
     setClicked(value);
   }, [value]);
 
   useEffect(() => {
-    console.log('PixelCheckbox clicked changed', clicked, index);
+    // console.log('PixelCheckbox clicked changed', clicked, index);
     // console.log(clicked, index);
     if (onValueChange && index !== undefined) {
       onValueChange(clicked, index);

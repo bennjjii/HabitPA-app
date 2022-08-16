@@ -13,7 +13,8 @@ import {
 import Modal from 'react-native-modal';
 
 import colours from '../assets/colours/colours';
-import AppBackground from './../assets/ElvinWood.jpeg';
+// import AppBackground from './../assets/ElvinWood.jpeg';
+import AppBackground from './../assets/pixelBgLic1.jpg';
 import {useStore} from '../services/zustandContext';
 import BackOfCard from './BackOfCard';
 import AddOrEditCardForm from './AddOrEditCardForm';

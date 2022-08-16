@@ -256,8 +256,9 @@ export default class Card {
             today: i == 0 ? true : false,
           });
         }
-        const componentToRender = tempArray.map(item => (
+        const componentToRender = tempArray.map((item, index) => (
           <PixelCheckbox
+            key={'pixelCheckboxKey' + index}
             label={item.day}
             readOnly={true}
             completed={item.completed}
@@ -462,6 +463,7 @@ export default class Card {
             );
             tempArray.push(
               <PixelCheckbox
+                key={'EWpixelCheckBox' + i}
                 label={middleOfDay.getDate().toString()}
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
@@ -821,6 +823,7 @@ export default class Card {
             );
             tempArray.push(
               <PixelCheckbox
+                key={'EMpixelCheckBox' + i}
                 label={middleOfDay.getDate().toString()}
                 readOnly={true}
                 completed={numCompletedThisDay > 0}
@@ -1380,6 +1383,7 @@ export default class Card {
           });
           tempArray.push(
             <PixelCheckbox
+              key={'EYpixelCheckBox' + i}
               label={year.getFullYear().toString()}
               readOnly={true}
               completed={completedThisYear}

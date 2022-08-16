@@ -4,9 +4,11 @@ import React from 'react';
 const ProgressBarGraph2 = props => {
   return (
     <View style={styles.container}>
-      {props.values.map(item => {
+      {props.values.map((item, index) => {
         return (
-          <View style={styles.columnAndTextContainer}>
+          <View
+            style={styles.columnAndTextContainer}
+            key={'barGraphKey' + item.label + index}>
             <Text
               style={[
                 styles.text,

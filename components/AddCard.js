@@ -13,7 +13,8 @@ import Modal from 'react-native-modal';
 
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
-import AppBackground from './../assets/ElvinWood.jpeg';
+// import AppBackground from './../assets/ElvinWood.jpeg';
+import AppBackground from './../assets/pixelBgLic1.jpg';
 
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CardClass from './CardClass';

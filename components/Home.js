@@ -2,7 +2,7 @@ import {StyleSheet, Text, View, Platform, Image} from 'react-native';
 import React, {useEffect, useRef} from 'react';
 import Deck from './Deck';
 
-import Piles from './Piles';
+// import Piles from './Piles';
 import Piles2 from './Piles2';
 import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -34,7 +34,7 @@ const Home = () => {
   const navigation = React.useContext(NavigationContext);
   return (
     <>
-      <Tutorial navigationCtx={navigation} />
+      {/* <Tutorial navigationCtx={navigation} /> */}
       <Tab.Navigator
         id={'mTabNavigator'}
         screenOptions={{
@@ -49,7 +49,7 @@ const Home = () => {
                 }
               : {},
           //this could cause problems
-          lazy: true,
+          lazy: false,
         }}
         // initialRouteName={'Add Card'}
       >
