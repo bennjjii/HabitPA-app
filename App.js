@@ -11,13 +11,6 @@ LogBox.ignoreLogs([
   `Modal with 'formSheet' presentation style and 'transparent' value is not supported.`,
 ]);
 
-import {ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
-
-const client = new ApolloClient({
-  uri: 'http://127.0.0.1:4000',
-  cache: new InMemoryCache(),
-});
-
 import React, {useContext, useEffect, useCallback} from 'react';
 import {StyleSheet, Text, Image, View, Platform} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
@@ -111,37 +104,35 @@ const App = () => {
   const {state} = useContext(AuthContext);
 
   return (
-    <ApolloProvider client={client}>
-      <GestureHandlerRootView style={{flex: 1}}>
-        {/* <View style={styles.floatingContainer} /> */}
+    <GestureHandlerRootView style={{flex: 1}}>
+      {/* <View style={styles.floatingContainer} /> */}
 
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: true}}>
-            <Stack.Screen
-              name="HabitMage"
-              component={Home}
-              options={{
-                // title: 'HabitMage🧙',
-                header: Header,
-                headerStyle: {
-                  backgroundColor: colours.mainUiBrown,
-                },
-                headerTitleStyle: {
-                  fontFamily: 'PublicPixel',
-                  color: colours.pixelTextFg1,
-                },
-              }}
-            />
-            {state.email ? (
-              <Stack.Screen name="Home" component={Home} />
-            ) : (
-              <Stack.Screen name="SignIn" component={SignIn} />
-            )}
-            <Stack.Screen name="SignUp" component={SignUp} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </GestureHandlerRootView>
-    </ApolloProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: true}}>
+          <Stack.Screen
+            name="HabitMage"
+            component={Home}
+            options={{
+              // title: 'HabitMage🧙',
+              header: Header,
+              headerStyle: {
+                backgroundColor: colours.mainUiBrown,
+              },
+              headerTitleStyle: {
+                fontFamily: 'PublicPixel',
+                color: colours.pixelTextFg1,
+              },
+            }}
+          />
+          {state.email ? (
+            <Stack.Screen name="Home" component={Home} />
+          ) : (
+            <Stack.Screen name="SignIn" component={SignIn} />
+          )}
+          <Stack.Screen name="SignUp" component={SignUp} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 };
 

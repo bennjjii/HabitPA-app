@@ -53,7 +53,7 @@ import BackOfCard from './BackOfCard';
 import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CustomCheckbox from './CustomCheckBox';
-import {useQuery, gql} from '@apollo/client';
+
 // import AppBackground2 from './../assets/ElvinWood.jpeg';
 //best so far, 5*, 8, 9, 10*, 11**, 13
 // import AppBackground from './../assets/stockbg3.jpeg';
