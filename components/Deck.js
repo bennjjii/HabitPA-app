@@ -104,6 +104,7 @@ const Deck = () => {
     tutorialAnimateCard,
     endTutorialAnimateCard,
   } = useStore();
+
   const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
   const tutorialAnimationCounter = useRef(0);
@@ -340,7 +341,7 @@ const Deck = () => {
           <KeyboardAvoidingView
             enabled
             behavior={Platform.OS === 'android' ? undefined : 'position'}>
-            <AddOrEditCardForm />
+            <AddOrEditCardForm sourceTab="Deck" />
           </KeyboardAvoidingView>
         </Modal>
       </ImageBackground>

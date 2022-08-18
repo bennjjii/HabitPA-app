@@ -88,7 +88,7 @@ const Piles = () => {
           <KeyboardAvoidingView
             enabled
             behavior={Platform.OS === 'android' ? undefined : 'position'}>
-            <AddOrEditCardForm />
+            <AddOrEditCardForm sourceTab="Piles" />
           </KeyboardAvoidingView>
         </Modal>
         <Modal isVisible={modalVisibleInAction}>

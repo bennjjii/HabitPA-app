@@ -100,7 +100,7 @@ const AddCard = () => {
         <KeyboardAvoidingView
           enabled
           behavior={Platform.OS === 'android' ? undefined : 'position'}>
-          <AddOrEditCardForm />
+          <AddOrEditCardForm sourceTab="AddCard" />
         </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>

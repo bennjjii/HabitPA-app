@@ -72,10 +72,10 @@ const shortNames = {
 const AddOrEditCardForm = props => {
   const renderCounterAddOrEditCard = useRef(Math.random());
   let currentSubTutorialStep = 0;
-  // useEffect(() => {
-  //   console.log('Errors: ', errors);
-  //   console.log('screen', Dimensions.get('screen'));
-  // }, [errors]);
+  useEffect(() => {
+    console.log('Errors: ', formState.errors);
+    // console.log('screen', Dimensions.get('screen'));
+  }, [formState]);
 
   const runTutorial = () => {
     const currentDay = new Date().getDay(); //0 is Sunday
@@ -108,19 +108,6 @@ const AddOrEditCardForm = props => {
         setValue('name', 'Go to the');
       },
       () => {
-        console.log('getvalues', getValues('parameters.dayOfWeek'));
-        setValue('parameters.dayOfWeek', {
-          Monday: true,
-          Tuesday: false,
-          Wednesday: false,
-          Thursday: false,
-          Friday: false,
-          Saturday: false,
-          Sunday: false,
-        });
-        console.log('getvalues', getValues('parameters.dayOfWeek'));
-      },
-      () => {
         setValue('name', 'Go to the ');
       },
       () => {
@@ -132,9 +119,79 @@ const AddOrEditCardForm = props => {
       () => {
         setValue('name', 'Go to the gym');
       },
+      () => {},
       () => {
-        // handleSubmit(onSubmit);
+        setValue('parameters.dayOfWeek', {
+          Monday: true,
+          Tuesday: false,
+          Wednesday: false,
+          Thursday: false,
+          Friday: false,
+          Saturday: false,
+          Sunday: false,
+        });
       },
+      () => {},
+      () => {},
+      () => {
+        onSubmit({
+          name: 'Go to the gym',
+          backburner: false,
+          current: true,
+          parameters: {
+            timeOfDay: {
+              Morning: false,
+              Afternoon: false,
+              Evening: false,
+              Bedtime: false,
+            },
+            dayOfWeek: {
+              Monday: true,
+              Tuesday: false,
+              Wednesday: false,
+              Thursday: false,
+              Friday: false,
+              Saturday: false,
+              Sunday: false,
+            },
+            dayOfMonth: {
+              1: false,
+              2: false,
+              3: false,
+              4: false,
+              5: false,
+              6: false,
+              7: false,
+              8: false,
+              9: false,
+              10: false,
+              11: false,
+              12: false,
+              13: false,
+              14: false,
+              15: false,
+              16: false,
+              17: false,
+              18: false,
+              19: false,
+              20: false,
+              21: false,
+              22: false,
+              23: false,
+              24: false,
+              25: false,
+              26: false,
+              27: false,
+              28: false,
+              29: false,
+              30: false,
+              31: false,
+            },
+          },
+        });
+      },
+      () => {},
+      () => {},
     ];
     // if (tutorialFillInCard) {
     let mInterval = setInterval(() => {
@@ -145,10 +202,8 @@ const AddOrEditCardForm = props => {
         hideModalAddCard();
         clearInterval(mInterval);
         unblockTutorialSkip();
-
         let mTimeout2 = setTimeout(() => {
           console.log('move to next tutorial step');
-
           moveToNextTutorialStep();
           endTutorialFillInCard();
           clearTimeout(mTimeout2);
@@ -159,15 +214,17 @@ const AddOrEditCardForm = props => {
   };
 
   useEffect(() => {
-    console.log(renderCounterAddOrEditCard);
-    let mTimeout = setTimeout(() => {
-      console.log('tutorialFillInCard', tutorialFillInCard);
-      if (tutorialFillInCard) {
+    if (props.sourceTab === 'AddCard' && tutorialFillInCard) {
+      // console.log('renderCounterAddOrEditCard', renderCounterAddOrEditCard);
+      let mTimeout = setTimeout(() => {
+        // console.log('tutorialFillInCard', tutorialFillInCard);
+        // if (tutorialFillInCard) {
         runTutorial();
-        console.log('sub tutorial started');
-      }
-      clearTimeout(mTimeout);
-    }, 300);
+        // console.log('sub tutorial started');
+        // }
+        clearTimeout(mTimeout);
+      }, 300);
+    }
   }, [tutorialFillInCard]);
 
   const {
@@ -309,6 +366,8 @@ const AddOrEditCardForm = props => {
   //date, dayOfYear, are handled separately
 
   const onSubmit = formData => {
+    console.log('SUBMITTING');
+    //Date validation
     if (date && date.getTime() < new Date().getTime()) {
       setDateError(true);
       return;

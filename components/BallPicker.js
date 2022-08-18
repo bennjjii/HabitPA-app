@@ -19,10 +19,10 @@ const BallPicker = ({
   //   }
   // }, [intValues]);
 
-  useEffect(() => {
-    console.log('Ballpicker values', values);
-    // setIntValues(values);
-  }, [values]);
+  // useEffect(() => {
+  //   console.log('Ballpicker values', values);
+  //   // setIntValues(values);
+  // }, [values]);
 
   // const setValueWithIndex = (value, index) => {
   //   let tempObj = intValues;

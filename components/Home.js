@@ -34,7 +34,7 @@ const Home = () => {
   const navigation = React.useContext(NavigationContext);
   return (
     <>
-      {/* <Tutorial navigationCtx={navigation} /> */}
+      <Tutorial navigationCtx={navigation} />
       <Tab.Navigator
         id={'mTabNavigator'}
         screenOptions={{
