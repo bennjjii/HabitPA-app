@@ -63,13 +63,6 @@ import AppBackground from './../assets/pixelBgLic1.jpg';
 import {useStore} from '../services/zustandContext';
 import {Button} from 'react-native-paper';
 
-// import {
-//   getConnection,
-//   syncGetConnection,
-//   addHistoryInstance,
-//   listCards,
-// } from '../services/SQLite';
-
 const {width, height} = Dimensions.get('screen');
 //const toRadians = angle => angle * (Math.PI / 180);
 // const rotatedWidth =
@@ -105,7 +98,6 @@ const Deck = () => {
     endTutorialAnimateCard,
   } = useStore();
 
-  const {state, signout} = useContext(AuthContext);
   const [cardInAction, setCardInAction] = useState(undefined);
   const tutorialAnimationCounter = useRef(0);
   const [index, setIndex] = useState(0);

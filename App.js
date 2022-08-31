@@ -19,20 +19,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import TutorialOverlay from 'react-native-tutorial-overlay';
 
 import {useStore} from './services/zustandContext';
-import {Context as AuthContext} from './services/Auth';
-// import {
-//   getConnection,
-//   createTables,
-//   listTables,
-//   uploadTestCards,
-//   listCards,
-// } from './services/SQLite';
 
-import SignIn from './components/SignIn';
-import SignUp from './components/SignUp';
 import Home from './components/Home';
 
 import colours from './assets/colours/colours';
@@ -101,8 +90,6 @@ const App = () => {
     SplashScreen.hide();
   }, []);
 
-  const {state} = useContext(AuthContext);
-
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       {/* <View style={styles.floatingContainer} /> */}
@@ -124,12 +111,6 @@ const App = () => {
               },
             }}
           />
-          {state.email ? (
-            <Stack.Screen name="Home" component={Home} />
-          ) : (
-            <Stack.Screen name="SignIn" component={SignIn} />
-          )}
-          <Stack.Screen name="SignUp" component={SignUp} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

@@ -11,13 +11,7 @@ import 'react-native-gesture-handler';
 import {Provider as PaperProvider} from 'react-native-paper';
 
 const Root = () => {
-  return (
-    <AuthProvider>
-      <PaperProvider>
-        <App />
-      </PaperProvider>
-    </AuthProvider>
-  );
+  return <App />;
 };
 
 AppRegistry.registerComponent(appName, () => Root);

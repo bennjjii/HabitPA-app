@@ -39,7 +39,6 @@
     "react-native-tutorial-overlay": "^0.1.1",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
-    "sqlite3": "^5.0.2",
     "zustand": "^3.7.1"
   },
   "devDependencies": {

@@ -155,7 +155,7 @@ export default class Card {
       progressCoeffFunction: (card, history, parameters) => {
         //soft start
         //what percentage of last 7 days has habit been observed
-        let contractedCardsPerDay = Object.keys(
+        letcontractedCardsPerDay = Object.keys(
           card.parameters.timeOfDay,
         ).filter(timeOfDay => {
           return card.parameters.timeOfDay[timeOfDay];
