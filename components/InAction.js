@@ -3,12 +3,16 @@ import React from 'react';
 import {Button, Text} from 'react-native-paper';
 const {width, height} = Dimensions.get('window');
 import colours from '../assets/colours/colours';
-import {useStore} from '../services/zustandContext';
+import {
+  usePersistentStore,
+  useNonPersistentStore,
+} from '../services/zustandContext';
 import Card from './CardClass';
 import chroma from 'chroma-js';
 
 const InAction = props => {
-  const {pushCardToHistory, hideModalInAction, cardInAction} = useStore();
+  const {pushCardToHistory} = usePersistentStore();
+  const {hideModalInAction, cardInAction} = useNonPersistentStore();
   return (
     <View
       style={[

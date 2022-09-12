@@ -28,7 +28,7 @@ const dateReviver = (key, value) => {
 //this is where the magic happens
 //tried to abstract most of the logic up here
 
-export const useStore = create(
+export const usePersistentStore = create(
   persist(
     (set, get) => ({
       deck: [...testCards],
@@ -64,6 +64,13 @@ export const useStore = create(
           };
         });
       },
+      // deleteCardFromDeck: cardToDelete => {
+      //   let tempFilteredDeck = get().deck.filter(card => {
+      //     return cardToDelete.uuid !== card.uuid;
+      //   });
+      //   set(() => ({deck: []}));
+      //   set(() => ({deck: tempFilteredDeck}));
+      // },
       history: [
         {uuid: 2, timestamp: new Date(2022, 3, 13)},
         {uuid: 2, timestamp: new Date(2022, 3, 12)},
@@ -102,91 +109,6 @@ export const useStore = create(
         Afternoon: [13, 17],
         Evening: [18, 22],
         Bedtime: [22, 23],
-      },
-      //-------------------------------------------------------------------------------
-      // Modals
-      //-------------------------------------------------------------------------------
-      modalCode: undefined,
-      modalVisibleAddCard: false,
-      showModalAddCard: code => {
-        set(() => ({
-          modalVisibleAddCard: true,
-          modalCode: code,
-        }));
-      },
-      hideModalAddCard: () => {
-        set(() => ({
-          modalVisibleAddCard: false,
-          modalCode: undefined,
-          cardUnderInspection: undefined,
-        }));
-      },
-      modalVisibleBackOfCard: false,
-      cardUnderInspection: undefined,
-      showModalBackOfCard: () => {
-        set(() => ({
-          modalVisibleBackOfCard: true,
-          //modalVisibleAddCard: true,
-        }));
-      },
-      switchToEditCard: cardToEdit => {
-        console.log('Switch to edit card');
-        set(() => ({
-          cardUnderInspection: cardToEdit,
-          modalCode: cardToEdit.code,
-          modalVisiblePiles: false,
-          modalVisibleBackOfCard: false,
-        }));
-        setTimeout(() => {
-          set(() => ({
-            modalVisibleAddCard: true,
-          }));
-        }, 400);
-      },
-      hideModalBackOfCard: () => {
-        set(() => ({
-          cardUnderInspection: undefined,
-          modalCode: undefined,
-          modalVisibleBackOfCard: false,
-          modalVisiblePiles: false,
-        }));
-      },
-      modalVisibleInAction: false,
-      cardInAction: undefined,
-      switchToInAction: (card, ignoreTimeout) => {
-        set(() => ({
-          modalVisiblePiles: false,
-          modalVisibleBackOfCard: false,
-          cardInAction: card,
-        }));
-        if (ignoreTimeout) {
-          set(() => ({
-            modalVisibleInAction: true,
-          }));
-        } else {
-          setTimeout(() => {
-            set(() => ({
-              modalVisibleInAction: true,
-            }));
-          }, 400);
-        }
-      },
-      hideModalInAction: () => {
-        set(() => ({
-          modalVisibleInAction: false,
-          cardInAction: undefined,
-        }));
-      },
-      modalVisiblePiles: false,
-      showModalPiles: () => {
-        set(() => ({
-          modalVisiblePiles: true,
-        }));
-      },
-      hideModalPiles: () => {
-        set(() => ({
-          modalVisiblePiles: false,
-        }));
       },
       //-------------------------------------------------------------------------------
       // Logging
@@ -233,69 +155,6 @@ export const useStore = create(
         });
         console.log('\n');
       },
-      logCardUnderInspection: () => {
-        console.log(get().cardUnderInspection);
-      },
-      tutorialStep: 1,
-      tutorialFillInCard: false,
-      tutorialAnimateCard: false,
-      tutorialSkipPermitted: true,
-      moveToNextTutorialStep: () => {
-        set(state => {
-          return {
-            tutorialStep: state.tutorialStep + 1,
-          };
-        });
-      },
-      resetTutorialStep: () => {
-        set(state => {
-          return {
-            tutorialStep: 1,
-          };
-        });
-      },
-      startTutorialFillInCard: () => {
-        set(state => {
-          return {
-            tutorialFillInCard: true,
-          };
-        });
-      },
-      endTutorialFillInCard: () => {
-        set(state => {
-          return {
-            tutorialFillInCard: false,
-          };
-        });
-      },
-      blockTutorialSkip: () => {
-        set(state => {
-          return {
-            tutorialSkipPermitted: false,
-          };
-        });
-      },
-      unblockTutorialSkip: () => {
-        set(state => {
-          return {
-            tutorialSkipPermitted: true,
-          };
-        });
-      },
-      startTutorialAnimateCard: () => {
-        set(state => {
-          return {
-            tutorialAnimateCard: true,
-          };
-        });
-      },
-      endTutorialAnimateCard: () => {
-        set(state => {
-          return {
-            tutorialAnimateCard: false,
-          };
-        });
-      },
     }),
     {
       name: 'appContext',
@@ -304,3 +163,97 @@ export const useStore = create(
     },
   ),
 );
+
+export const useNonPersistentStore = create((set, get) => ({
+  //-------------------------------------------------------------------------------
+  // Modals
+  //-------------------------------------------------------------------------------
+  modalCode: undefined,
+  modalVisibleAddCard: false,
+  showModalAddCard: code => {
+    set(() => ({
+      modalVisibleAddCard: true,
+      modalCode: code,
+    }));
+  },
+  hideModalAddCard: () => {
+    set(() => ({
+      modalVisibleAddCard: false,
+      modalCode: undefined,
+      cardUnderInspection: undefined,
+    }));
+  },
+  modalVisibleBackOfCard: false,
+  cardUnderInspection: undefined,
+  showModalBackOfCard: () => {
+    set(() => ({
+      modalVisibleBackOfCard: true,
+      //modalVisibleAddCard: true,
+    }));
+  },
+  switchToEditCard: cardToEdit => {
+    console.log('Switch to edit card');
+    set(() => ({
+      cardUnderInspection: cardToEdit,
+      modalCode: cardToEdit.code,
+      modalVisiblePiles: false,
+      modalVisibleBackOfCard: false,
+    }));
+    setTimeout(() => {
+      set(() => ({
+        modalVisibleAddCard: true,
+      }));
+    }, 400);
+  },
+  hideModalBackOfCard: () => {
+    set(() => ({
+      cardUnderInspection: undefined,
+      modalCode: undefined,
+      modalVisibleBackOfCard: false,
+      modalVisiblePiles: false,
+    }));
+  },
+  modalVisibleInAction: false,
+  cardInAction: undefined,
+  switchToInAction: (card, ignoreTimeout) => {
+    set(() => ({
+      modalVisiblePiles: false,
+      modalVisibleBackOfCard: false,
+      cardInAction: card,
+    }));
+    if (ignoreTimeout) {
+      set(() => ({
+        modalVisibleInAction: true,
+      }));
+    } else {
+      setTimeout(() => {
+        set(() => ({
+          modalVisibleInAction: true,
+        }));
+      }, 400);
+    }
+  },
+  hideModalInAction: () => {
+    set(() => ({
+      modalVisibleInAction: false,
+      cardInAction: undefined,
+    }));
+  },
+  modalVisiblePiles: false,
+  showModalPiles: () => {
+    set(() => ({
+      modalVisiblePiles: true,
+    }));
+  },
+  hideModalPiles: () => {
+    set(() => ({
+      modalVisiblePiles: false,
+    }));
+  },
+  //-------------------------------------------------------------------------------
+  // Logging
+  //-------------------------------------------------------------------------------
+  logCardUnderInspection: () => {
+    console.log(get().cardUnderInspection);
+  },
+}));

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import TutorialOverlay from 'react-native-tutorial-overlay';
-import {useStore} from '../services/zustandContext';
+import {usePersistentStore} from '../services/zustandContext';
 import {CommonActions} from '@react-navigation/native';
 
 import colours from '../assets/colours/colours';
@@ -21,25 +21,12 @@ const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 const Tutorial = ({navigationCtx}) => {
-  const {
-    tutorialStep,
-    tutorialSkipPermitted,
-    moveToNextTutorialStep,
-    resetTutorialStep,
-    showModalAddCard,
-    startTutorialFillInCard,
-    endTutorialFillInCard,
-    blockTutorialSkip,
-    unblockTutorialSkip,
-    tutorialAnimateCard,
-    startTutorialAnimateCard,
-    endTutorialAnimateCard,
-  } = useStore();
-  useEffect(() => {
-    unblockTutorialSkip();
-    resetTutorialStep();
-    endTutorialAnimateCard();
-  }, []);
+  const {showModalAddCard} = usePersistentStore();
+  // useEffect(() => {
+  //   unblockTutorialSkip();
+  //   resetTutorialStep();
+  //   endTutorialAnimateCard();
+  // }, []);
 
   const titleBarHeight = 55 + (Platform.OS === 'ios' ? 40 : 0);
   const tabBarHeight = 85;

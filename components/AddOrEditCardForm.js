@@ -28,7 +28,10 @@ import CardBackgroundImg from './../assets/Sprite-0001.png';
 import BallPicker from './BallPicker';
 
 import {useForm, Controller, get} from 'react-hook-form';
-import {useStore} from '../services/zustandContext';
+import {
+  usePersistentStore,
+  useNonPersistentStore,
+} from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import chroma from 'chroma-js';
 import Card from './CardClass';
@@ -71,173 +74,21 @@ const shortNames = {
 
 const AddOrEditCardForm = props => {
   const renderCounterAddOrEditCard = useRef(Math.random());
-  let currentSubTutorialStep = 0;
+
+  //how many of these modals are being launched?
+  useEffect(() => {
+    console.log(renderCounterAddOrEditCard);
+  }, []);
+
   useEffect(() => {
     console.log('Errors: ', formState.errors);
     // console.log('screen', Dimensions.get('screen'));
   }, [formState]);
 
-  const runTutorial = () => {
-    const currentDay = new Date().getDay(); //0 is Sunday
-    const steps = [
-      () => {
-        setValue('name', 'G');
-      },
-      () => {
-        setValue('name', 'Go');
-      },
-      () => {
-        setValue('name', 'Go ');
-      },
-      () => {
-        setValue('name', 'Go t');
-      },
-      () => {
-        setValue('name', 'Go to');
-      },
-      () => {
-        setValue('name', 'Go to ');
-      },
-      () => {
-        setValue('name', 'Go to t');
-      },
-      () => {
-        setValue('name', 'Go to th');
-      },
-      () => {
-        setValue('name', 'Go to the');
-      },
-      () => {
-        setValue('name', 'Go to the ');
-      },
-      () => {
-        setValue('name', 'Go to the g');
-      },
-      () => {
-        setValue('name', 'Go to the gy');
-      },
-      () => {
-        setValue('name', 'Go to the gym');
-      },
-      () => {},
-      () => {
-        setValue('parameters.dayOfWeek', {
-          Monday: true,
-          Tuesday: false,
-          Wednesday: false,
-          Thursday: false,
-          Friday: false,
-          Saturday: false,
-          Sunday: false,
-        });
-      },
-      () => {},
-      () => {},
-      () => {
-        onSubmit({
-          name: 'Go to the gym',
-          backburner: false,
-          current: true,
-          parameters: {
-            timeOfDay: {
-              Morning: false,
-              Afternoon: false,
-              Evening: false,
-              Bedtime: false,
-            },
-            dayOfWeek: {
-              Monday: true,
-              Tuesday: false,
-              Wednesday: false,
-              Thursday: false,
-              Friday: false,
-              Saturday: false,
-              Sunday: false,
-            },
-            dayOfMonth: {
-              1: false,
-              2: false,
-              3: false,
-              4: false,
-              5: false,
-              6: false,
-              7: false,
-              8: false,
-              9: false,
-              10: false,
-              11: false,
-              12: false,
-              13: false,
-              14: false,
-              15: false,
-              16: false,
-              17: false,
-              18: false,
-              19: false,
-              20: false,
-              21: false,
-              22: false,
-              23: false,
-              24: false,
-              25: false,
-              26: false,
-              27: false,
-              28: false,
-              29: false,
-              30: false,
-              31: false,
-            },
-          },
-        });
-      },
-      () => {},
-      () => {},
-    ];
-    // if (tutorialFillInCard) {
-    let mInterval = setInterval(() => {
-      steps[currentSubTutorialStep]();
-      currentSubTutorialStep++;
-      if (currentSubTutorialStep == steps.length - 1) {
-        console.log('currentSubTutorialStep', currentSubTutorialStep);
-        hideModalAddCard();
-        clearInterval(mInterval);
-        unblockTutorialSkip();
-        let mTimeout2 = setTimeout(() => {
-          console.log('move to next tutorial step');
-          moveToNextTutorialStep();
-          endTutorialFillInCard();
-          clearTimeout(mTimeout2);
-        }, 1000);
-      }
-    }, 300);
-    // }
-  };
+  const {addCardToDeck, editCard} = usePersistentStore();
 
-  useEffect(() => {
-    if (props.sourceTab === 'AddCard' && tutorialFillInCard) {
-      // console.log('renderCounterAddOrEditCard', renderCounterAddOrEditCard);
-      let mTimeout = setTimeout(() => {
-        // console.log('tutorialFillInCard', tutorialFillInCard);
-        // if (tutorialFillInCard) {
-        runTutorial();
-        // console.log('sub tutorial started');
-        // }
-        clearTimeout(mTimeout);
-      }, 300);
-    }
-  }, [tutorialFillInCard]);
-
-  const {
-    addCardToDeck,
-    editCard,
-    hideModalAddCard,
-    modalCode,
-    cardUnderInspection,
-    tutorialFillInCard,
-    unblockTutorialSkip,
-    moveToNextTutorialStep,
-    endTutorialFillInCard,
-  } = useStore();
+  const {hideModalAddCard, modalCode, cardUnderInspection} =
+    useNonPersistentStore();
 
   const [textColourStyle, setTextColourStyle] = useState({});
   const [textColour, setTextColour] = useState('white');

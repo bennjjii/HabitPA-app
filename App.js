@@ -20,9 +20,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-import {useStore} from './services/zustandContext';
+import {usePersistentStore} from './services/zustandContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Home from './components/Home';
+import OnboardingScreen from './components/OnboardingScreen';
 
 import colours from './assets/colours/colours';
 
@@ -69,7 +71,7 @@ const Header = props => {
 
 const App = () => {
   //const contextListener = useStore.subscribe(console.log);
-  const {deck} = useStore();
+  const {deck} = usePersistentStore();
 
   // const dbCallback = useCallback(async () => {
   //   try {
@@ -97,10 +99,23 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: true}}>
           <Stack.Screen
+            name="Onboarding"
+            component={OnboardingScreen}
+            options={{
+              header: Header,
+              headerStyle: {
+                backgroundColor: colours.mainUiBrown,
+              },
+              headerTitleStyle: {
+                fontFamily: 'PublicPixel',
+                color: colours.pixelTextFg1,
+              },
+            }}
+          />
+          <Stack.Screen
             name="HabitMage"
             component={Home}
             options={{
-              // title: 'HabitMage🧙',
               header: Header,
               headerStyle: {
                 backgroundColor: colours.mainUiBrown,

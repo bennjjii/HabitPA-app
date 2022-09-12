@@ -15,7 +15,7 @@ import {Button} from 'react-native-paper';
 //import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import colours from '../assets/colours/colours';
-import {useStore} from '../services/zustandContext';
+import {usePersistentStore} from '../services/zustandContext';
 
 const cardAspect = 400 / 280;
 const cardWidth = Dimensions.get('window').width / 2 - 30;
@@ -25,14 +25,11 @@ const ToolingPage = () => {
   const {
     deck,
     getFilteredDeck,
-    modalVisiblePiles,
-    hideModalPiles,
     logHistory,
     logDeck,
     logFilteredDeck,
     logCardUnderInspection,
-    resetTutorialStep,
-  } = useStore();
+  } = usePersistentStore();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,7 +47,7 @@ const ToolingPage = () => {
 
         <Button
           onPress={() => {
-            useStore.persist.clearStorage();
+            usePersistentStore.persist.clearStorage();
           }}>
           Clear storage
         </Button>

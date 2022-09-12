@@ -1,11 +1,11 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useStore} from '../services/zustandContext';
+import {usePersistentStore} from '../services/zustandContext';
 import Card from './CardClass';
 import chroma from 'chroma-js';
 
 const ProgressBox = props => {
-  const {history} = useStore();
+  const {history} = usePersistentStore();
 
   const [contractText, setContractText] = useState('');
   const [dataToRender, setDataToRender] = useState(null);
@@ -16,7 +16,7 @@ const ProgressBox = props => {
     _history = history.filter(instance => {
       return instance.uuid == props.card.uuid;
     });
-
+    console.log('props.card.code', props.card.code);
     const textColor =
       chroma(Card.cardDefinitions[props.card.code]?.backOfCardColour).get(
         'lab.l',
@@ -47,28 +47,32 @@ const ProgressBox = props => {
       <Text
         style={[
           styles.contractText,
-          {
-            color:
-              chroma(
-                Card.cardDefinitions[props.card.code]?.backOfCardColour,
-              ).get('lab.l') < 70
-                ? 'gainsboro'
-                : 'dimgrey',
-          },
+          props.card?.code
+            ? {
+                color:
+                  chroma(
+                    Card.cardDefinitions[props.card.code]?.backOfCardColour,
+                  ).get('lab.l') < 70
+                    ? 'gainsboro'
+                    : 'dimgrey',
+              }
+            : {},
         ]}>
         {contractText + '\n'}
       </Text>
       <Text
         style={[
           styles.progressText,
-          {
-            color:
-              chroma(
-                Card.cardDefinitions[props.card.code]?.backOfCardColour,
-              ).get('lab.l') < 70
-                ? 'gainsboro'
-                : 'dimgrey',
-          },
+          props.card?.code
+            ? {
+                color:
+                  chroma(
+                    Card.cardDefinitions[props.card.code]?.backOfCardColour,
+                  ).get('lab.l') < 70
+                    ? 'gainsboro'
+                    : 'dimgrey',
+              }
+            : {},
         ]}>
         Progress...
       </Text>
@@ -76,14 +80,16 @@ const ProgressBox = props => {
       <Text
         style={[
           styles.levelText,
-          {
-            color:
-              chroma(
-                Card.cardDefinitions[props.card.code]?.backOfCardColour,
-              ).get('lab.l') < 70
-                ? 'gainsboro'
-                : 'dimgrey',
-          },
+          props.card?.code
+            ? {
+                color:
+                  chroma(
+                    Card.cardDefinitions[props.card.code]?.backOfCardColour,
+                  ).get('lab.l') < 70
+                    ? 'gainsboro'
+                    : 'dimgrey',
+              }
+            : {},
         ]}>
         Level: {habitCoefficient}
       </Text>

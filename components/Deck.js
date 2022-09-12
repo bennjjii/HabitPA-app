@@ -18,6 +18,7 @@ RxW
 RxM
 Will need some kind of stable random seed for long term randomisation
 need persist option for a card to persist once drawn
+HabitMage is an app designed to facilitate incremental learning
 */
 
 import React, {useContext, useState, useEffect, useRef} from 'react';
@@ -52,6 +53,7 @@ import NoCards from './NoCards';
 import BackOfCard from './BackOfCard';
 import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
+import {useNavigationState} from '@react-navigation/native';
 import CustomCheckbox from './CustomCheckBox';
 
 // import AppBackground2 from './../assets/ElvinWood.jpeg';
@@ -60,8 +62,10 @@ import CustomCheckbox from './CustomCheckBox';
 //5,1,4,8
 import AppBackground from './../assets/pixelBgLic1.jpg';
 
-import {useStore} from '../services/zustandContext';
-import {Button} from 'react-native-paper';
+import {
+  usePersistentStore,
+  useNonPersistentStore,
+} from '../services/zustandContext';
 
 const {width, height} = Dimensions.get('screen');
 //const toRadians = angle => angle * (Math.PI / 180);
@@ -73,6 +77,8 @@ const yOffset = (width * 0.72) / 1.4;
 // const yOffset = 0;
 
 const Deck = () => {
+  const navState = useNavigationState(state => state.index);
+  console.log('NavstateDeck', navState);
   console.log(
     'Dims',
     Dimensions.get('window').height,
@@ -80,28 +86,23 @@ const Deck = () => {
     height,
   );
 
+  const {deck, history, deleteCardFromDeck, getFilteredDeck} =
+    usePersistentStore();
+
   const {
-    deck,
-    history,
-    deleteCardFromDeck,
-    getFilteredDeck,
-    modalVisibleBackOfCard,
     cardUnderInspection,
+    modalVisibleBackOfCard,
     showModalBackOfCard,
     hideModalBackOfCard,
-    modalVisibleInAction,
     switchToInAction,
+    modalVisibleInAction,
     modalVisibleAddCard,
     hideModalAddCard,
-    tutorialFillInCard,
-    tutorialAnimateCard,
-    endTutorialAnimateCard,
-  } = useStore();
+  } = useNonPersistentStore();
 
   const [cardInAction, setCardInAction] = useState(undefined);
-  const tutorialAnimationCounter = useRef(0);
-  const [index, setIndex] = useState(0);
-  const [index2, setIndex2] = useState(1);
+  const [index, setIndex] = useState(0); //Top card in stack
+  const [index2, setIndex2] = useState(1); //Second from top card in stack
   const translationX = useSharedValue(0 - xOffset);
   const translationY = useSharedValue(0 - yOffset);
   const currentCard = useSharedValue(0);
@@ -135,12 +136,6 @@ const Deck = () => {
     }, 100);
   };
 
-  const deleteCard = () => {
-    console.log('card deleted');
-    deleteCardFromDeck(filteredDeck[index]);
-    currentCard.value = 0;
-  };
-
   useEffect(() => {
     console.log('updating deck cos history changed');
     setFilteredDeck(getFilteredDeck());
@@ -148,40 +143,15 @@ const Deck = () => {
 
   useEffect(() => {
     console.log('updating deck cos deck changed');
+    console.log('oieod', index, getFilteredDeck().length);
     setFilteredDeck(getFilteredDeck());
+    if (index >= getFilteredDeck().length) {
+      currentCard.value = 0;
+      setIndex(0);
+      setIndex2(1);
+    }
   }, [deck]);
 
-  useEffect(() => {
-    console.log('Card under inspection', cardUnderInspection);
-    console.log('Logged deck', deck[2]);
-  }, [cardUnderInspection]);
-
-  useEffect(() => {
-    if (tutorialAnimateCard) {
-      const animateInterval = setInterval(() => {
-        if (tutorialAnimationCounter.current % 2 == 0) {
-          translationX.value = withSpring(-100);
-        } else {
-          translationX.value = withSpring(100);
-        }
-        tutorialAnimationCounter.current = tutorialAnimationCounter.current + 1;
-        if (tutorialAnimationCounter.current > 4) {
-          translationX.value = withSpring(0);
-          endTutorialAnimateCard();
-          clearInterval(animateInterval);
-        }
-      }, 700);
-    } else {
-      translationX.value = withSpring(0);
-    }
-  }, [tutorialAnimateCard]);
-
-  const manualUpdate = () => {
-    console.log('manual update');
-    setFilteredDeck(getFilteredDeck());
-  };
-
-  // const deckSub = useStore.subscribe(manualUpdate);
   const gesture = Gesture.Pan()
     .onUpdate(event => {
       translationX.value = event.translationX - xOffset;
@@ -251,14 +221,6 @@ const Deck = () => {
     return (translationX.value + xOffset) / (width / 30) + 'deg';
   };
 
-  // const updateIndex = args => {
-  //   setIndex(args);
-  // };
-
-  // useDerivedValue(() => {
-  //   runOnJS(updateIndex)(currentCard.value);
-  // });
-
   const rStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -278,6 +240,8 @@ const Deck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text>{`Index: ${index}`}</Text>
+      <Text>{`Index2: ${index2}`}</Text>
       <ImageBackground
         style={styles.imageBackground}
         resizeMode={'cover'}
@@ -299,7 +263,8 @@ const Deck = () => {
                 <Card
                   index={index}
                   name={filteredDeck[index]?.name}
-                  delete={deleteCard}
+                  //TODO we see 'crd name here' because index doesn't update
+                  // delete={deleteCard}
                 />
               </Pressable>
             ) : (
@@ -308,7 +273,7 @@ const Deck = () => {
           </Animated.View>
         </GestureDetector>
         <Modal
-          isVisible={modalVisibleBackOfCard}
+          isVisible={modalVisibleBackOfCard && navState == 0}
           onRequestClose={() => {
             hideModalBackOfCard();
           }}
@@ -318,11 +283,11 @@ const Deck = () => {
           style={styles.modalContainer}>
           <BackOfCard card={filteredDeck[index]} />
         </Modal>
-        <Modal isVisible={modalVisibleInAction}>
+        <Modal isVisible={modalVisibleInAction && navState == 0}>
           <InAction />
         </Modal>
         <Modal
-          isVisible={modalVisibleAddCard && !tutorialFillInCard}
+          isVisible={modalVisibleAddCard && navState == 0}
           style={styles.modal}
           onRequestClose={() => {
             hideModalAddCard();

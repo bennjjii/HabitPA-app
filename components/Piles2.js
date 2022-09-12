@@ -11,11 +11,15 @@ import {
   ImageBackground,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import {useNavigationState} from '@react-navigation/native';
 
 import colours from '../assets/colours/colours';
 // import AppBackground from './../assets/ElvinWood.jpeg';
 import AppBackground from './../assets/pixelBgLic1.jpg';
-import {useStore} from '../services/zustandContext';
+import {
+  usePersistentStore,
+  useNonPersistentStore,
+} from '../services/zustandContext';
 import BackOfCard from './BackOfCard';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import InAction from './InAction';
@@ -37,6 +41,8 @@ const cardWidth = Dimensions.get('window').width / 2 - 50;
 const cardHeight = cardWidth * cardAspect;
 
 const Piles = () => {
+  const navState = useNavigationState(state => state.index);
+  console.log('NavstatePiles', navState);
   // const renderCounterPiles = useRef(0);
   // useEffect(() => {
   //   renderCounterPiles.current = renderCounterPiles.current + 1;
@@ -48,12 +54,14 @@ const Piles = () => {
     getComingUpDeck,
     getBackburnerDeck,
     getInactiveDeck,
+  } = usePersistentStore();
+  const {
     modalVisiblePiles,
     modalVisibleAddCard,
     modalVisibleInAction,
     hideModalPiles,
     hideModalAddCard,
-  } = useStore();
+  } = useNonPersistentStore();
   const [pileType, setPileType] = useState(undefined);
 
   return (
@@ -75,7 +83,7 @@ const Piles = () => {
         {/* </ScrollView> */}
 
         <Modal
-          isVisible={modalVisibleAddCard}
+          isVisible={modalVisibleAddCard && navState == 2}
           style={styles.modal}
           onRequestClose={() => {
             hideModalAddCard();
@@ -91,7 +99,7 @@ const Piles = () => {
             <AddOrEditCardForm sourceTab="Piles" />
           </KeyboardAvoidingView>
         </Modal>
-        <Modal isVisible={modalVisibleInAction}>
+        <Modal isVisible={modalVisibleInAction && navState == 2}>
           <InAction />
         </Modal>
       </SafeAreaView>

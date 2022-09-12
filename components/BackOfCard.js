@@ -7,8 +7,11 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {useStore} from '../services/zustandContext';
+import React, {useState, useEffect, useRef} from 'react';
+import {
+  usePersistentStore,
+  useNonPersistentStore,
+} from '../services/zustandContext';
 
 import ProgressBox from './ProgressBox';
 
@@ -30,18 +33,22 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
 
 const BackOfCard = props => {
+  const renderCounterBackOfCard = useRef(Math.random());
+  useEffect(() => {
+    console.log('BoC', renderCounterBackOfCard);
+  }, []);
+  const {deleteCardFromDeck} = usePersistentStore();
   const {
-    deleteCardFromDeck,
     cardUnderInspection,
     hideModalBackOfCard,
     switchToEditCard,
     switchToInAction,
-  } = useStore();
+  } = useNonPersistentStore();
 
   const [cardTheme, setCardTheme] = useState(undefined);
 
   useEffect(() => {
-    if (props.card.code) {
+    if (props.card?.code) {
       if (
         chroma(Card.cardDefinitions[props.card.code].backOfCardColour).get(
           'lab.l',

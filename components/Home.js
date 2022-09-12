@@ -11,7 +11,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContext} from '@react-navigation/native';
 
 import AddCard from './AddCard';
-import Tutorial from './Tutorial';
+// import Tutorial from './Tutorial';
 import colours from '../assets/colours/colours';
 
 import DeckIcon from '../assets/deckXL.png';
@@ -31,10 +31,10 @@ const Home = () => {
     renderCounter.current = renderCounter.current + 1;
   });
   console.log('home', renderCounter);
-  const navigation = React.useContext(NavigationContext);
+  // const navigation = React.useContext(NavigationContext);
   return (
     <>
-      <Tutorial navigationCtx={navigation} />
+      {/* <Tutorial navigationCtx={navigation} /> */}
       <Tab.Navigator
         id={'mTabNavigator'}
         screenOptions={{

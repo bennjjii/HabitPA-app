@@ -10,6 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import {useNavigationState} from '@react-navigation/native';
 
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
@@ -19,7 +20,7 @@ import AppBackground from './../assets/pixelBgLic1.jpg';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CardClass from './CardClass';
 
-import {useStore} from '../services/zustandContext';
+import {useNonPersistentStore} from '../services/zustandContext';
 import chroma from 'chroma-js';
 
 const cardDefinitions = CardClass.cardDefinitions;
@@ -27,7 +28,7 @@ const cardDefinitions = CardClass.cardDefinitions;
 const {width, height} = Dimensions.get('screen');
 
 const TemplateCard = props => {
-  const {showModalAddCard} = useStore();
+  const {showModalAddCard} = useNonPersistentStore();
 
   return (
     <Pressable
@@ -54,7 +55,9 @@ const TemplateCard = props => {
 };
 
 const AddCard = () => {
-  const {modalVisibleAddCard, hideModalAddCard} = useStore();
+  const navState = useNavigationState(state => state.index);
+  console.log('NavstateAdd', navState);
+  const {modalVisibleAddCard, hideModalAddCard} = useNonPersistentStore();
   // const renderCounterAddCard = useRef(0);
   // useEffect(() => {
   //   renderCounterAddCard.current = renderCounterAddCard.current + 1;
@@ -87,7 +90,7 @@ const AddCard = () => {
         </ScrollView>
       </ImageBackground>
       <Modal
-        isVisible={modalVisibleAddCard}
+        isVisible={modalVisibleAddCard && navState == 1}
         style={styles.modal}
         onRequestClose={() => {
           hideModalAddCard();
