@@ -142,8 +142,6 @@ const Deck = () => {
   }, [history]);
 
   useEffect(() => {
-    console.log('updating deck cos deck changed');
-    console.log('oieod', index, getFilteredDeck().length);
     setFilteredDeck(getFilteredDeck());
     if (index >= getFilteredDeck().length) {
       currentCard.value = 0;
@@ -240,8 +238,6 @@ const Deck = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>{`Index: ${index}`}</Text>
-      <Text>{`Index2: ${index2}`}</Text>
       <ImageBackground
         style={styles.imageBackground}
         resizeMode={'cover'}

@@ -22,7 +22,7 @@ const Card = props => {
   return (
     <ImageBackground source={CardBackgroundImg} style={styles.container}>
       <Text style={styles.cardText}>
-        {props.name?.toString() || 'crd name here'}
+        {props.name?.toString() || 'card name here'}
       </Text>
     </ImageBackground>
   );
