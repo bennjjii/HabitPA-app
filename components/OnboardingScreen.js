@@ -18,7 +18,9 @@ import {
 import Video from 'react-native-video';
 import step1 from '../assets/video/step1.mp4';
 import step2 from '../assets/video/step2.mp4';
-import step34 from '../assets/video/step3+4.mp4';
+import step3 from '../assets/video/step3.mp4';
+import step4 from '../assets/video/step4.mp4';
+import step5 from '../assets/video/step5.mp4';
 import step6 from '../assets/video/step6.mp4';
 import step7 from '../assets/video/step7.mp4';
 
@@ -110,7 +112,9 @@ const Footer = props => {
   );
 };
 
-const Slide = ({item, videoRef}) => {
+const Slide = ({item, videoRef, index, currentSlideIndex}) => {
+  console.log(index);
+  console.log(currentSlideIndex);
   return (
     <View
       style={{
@@ -127,6 +131,7 @@ const Slide = ({item, videoRef}) => {
         }}
         ref={ref => (videoRef.current = ref)}
         repeat={item.repeat}
+        paused={!(parseInt(index) === parseInt(currentSlideIndex))}
       />
       <View>
         <Text style={styles.title}>{item?.text}</Text>
@@ -152,19 +157,19 @@ const OnboardingScreen = props => {
     {
       id: 2,
       text: `Cards can be added to your deck in this tab...`,
-      videoSource: step34,
-      repeat: false,
+      videoSource: step3,
+      repeat: true,
     },
     {
       id: 3,
       text: `Let's add a habit that we want to do every week on specific days...`,
-      videoSource: step34,
+      videoSource: step4,
       repeat: true,
     },
     {
       id: 4,
       text: `The habit will now come up in our daily deck...`,
-      videoSource: step6,
+      videoSource: step5,
       repeat: false,
     },
     {
@@ -183,7 +188,7 @@ const OnboardingScreen = props => {
       id: 7,
       text: `That's all! Have a look around!`,
       videoSource: step1,
-      repeat: false,
+      repeat: true,
     },
   ];
   const [slideIndex, setSlideIndex] = useState(0);
@@ -198,11 +203,13 @@ const OnboardingScreen = props => {
     useRef(),
     useRef(),
   ];
+  // const [videoPauseState, setVideoPauseState] = useState()
 
   const updateCurrentSlideIndex = e => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(contentOffsetX / width);
     videoRefArr[currentIndex].current.seek(0);
+    console.log(videoRefArr[currentIndex].current);
     setSlideIndex(currentIndex);
   };
 
@@ -242,8 +249,13 @@ const OnboardingScreen = props => {
         horizontal
         data={tutorialData}
         pagingEnabled
-        renderItem={({item}) => (
-          <Slide item={item} videoRef={videoRefArr[item.id]} />
+        renderItem={({item, index}) => (
+          <Slide
+            item={item}
+            index={index}
+            videoRef={videoRefArr[item.id]}
+            currentSlideIndex={slideIndex}
+          />
         )}
       />
       <Footer

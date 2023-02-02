@@ -1,9 +1,7 @@
 import create from 'zustand';
 import {persist} from 'zustand/middleware';
-import testCards from '../assets/data/testCards2';
+import starterCards from '../assets/data/starterCards';
 import filterCards from '../utilities/filterCards';
-//import dateReviver from '../utilities/dateReviver';
-import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 var _ = require('lodash');
 //use immer
@@ -31,7 +29,7 @@ const dateReviver = (key, value) => {
 export const usePersistentStore = create(
   persist(
     (set, get) => ({
-      deck: [...testCards],
+      deck: [...starterCards],
       addCardToDeck: card =>
         set(state => {
           return {
@@ -64,19 +62,7 @@ export const usePersistentStore = create(
           };
         });
       },
-      // deleteCardFromDeck: cardToDelete => {
-      //   let tempFilteredDeck = get().deck.filter(card => {
-      //     return cardToDelete.uuid !== card.uuid;
-      //   });
-      //   set(() => ({deck: []}));
-      //   set(() => ({deck: tempFilteredDeck}));
-      // },
-      history: [
-        {uuid: 2, timestamp: new Date(2022, 3, 13)},
-        {uuid: 2, timestamp: new Date(2022, 3, 12)},
-        {uuid: 2, timestamp: new Date(2022, 3, 10)},
-        {uuid: 2, timestamp: new Date(2022, 3, 9)},
-      ],
+      history: [],
       pushCardToHistory: card => {
         set(state => {
           return {

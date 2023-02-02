@@ -11,23 +11,16 @@ LogBox.ignoreLogs([
   `Modal with 'formSheet' presentation style and 'transparent' value is not supported.`,
 ]);
 
-import React, {useContext, useEffect, useCallback} from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, Image, View, Platform} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-
 import {usePersistentStore} from './services/zustandContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import Home from './components/Home';
 import OnboardingScreen from './components/OnboardingScreen';
-
 import colours from './assets/colours/colours';
-
 import Icon from './assets/appiconoriginal.png';
 
 const Stack = createNativeStackNavigator();
@@ -59,35 +52,15 @@ const Header = props => {
           }}>
           HabitMage
         </Text>
-        <Image
-          source={Icon}
-
-          // style={{width: 30, height: 30}}
-        />
+        <Image source={Icon} />
       </View>
     </>
   );
 };
 
 const App = () => {
-  //const contextListener = useStore.subscribe(console.log);
   const {deck} = usePersistentStore();
 
-  // const dbCallback = useCallback(async () => {
-  //   try {
-  //     const db = await getConnection();
-  //     await createTables(db);
-  //     await uploadTestCards(db, deck);
-  //     const tables = await listTables(db);
-  //     const cards = await listCards(db);
-  //     //console.log(cards[0].rows.raw());
-  //     // console.log(
-  //     //   JSON.parse(decodeURIComponent(cards[0].rows.raw()[0].parameters)),
-  //     // );
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // });
   useEffect(() => {
     SplashScreen.hide();
   }, []);

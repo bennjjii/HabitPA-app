@@ -60,7 +60,7 @@ import CustomCheckbox from './CustomCheckBox';
 //best so far, 5*, 8, 9, 10*, 11**, 13
 // import AppBackground from './../assets/stockbg3.jpeg';
 //5,1,4,8
-import AppBackground from './../assets/pixelBgLic1.jpg';
+import AppBackground from './../assets/pixelBgLic1.png';
 
 import {
   usePersistentStore,

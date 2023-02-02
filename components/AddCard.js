@@ -15,7 +15,7 @@ import {useNavigationState} from '@react-navigation/native';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
 // import AppBackground from './../assets/ElvinWood.jpeg';
-import AppBackground from './../assets/pixelBgLic1.jpg';
+import AppBackground from './../assets/pixelBgLic1.png';
 
 import AddOrEditCardForm from './AddOrEditCardForm';
 import CardClass from './CardClass';
