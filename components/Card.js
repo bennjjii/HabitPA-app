@@ -14,11 +14,6 @@ const {width, height} = Dimensions.get('window');
 FontAwesome.loadFont();
 
 const Card = props => {
-  const renderCounterCard = useRef(0);
-  useEffect(() => {
-    renderCounterCard.current = renderCounterCard.current + 1;
-  });
-  console.log('card', renderCounterCard);
   return (
     <ImageBackground source={CardBackgroundImg} style={styles.container}>
       <Text style={styles.cardText}>

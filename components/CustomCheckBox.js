@@ -23,7 +23,6 @@ const CustomCheckbox = ({
   }, [value]);
 
   useEffect(() => {
-    // console.log(clicked, index);
     if (onValueChange && index !== undefined) {
       onValueChange(clicked, index);
     } else {

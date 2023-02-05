@@ -38,7 +38,6 @@ const InAction = props => {
           onPress={() => {
             // props.onCancel();
             hideModalInAction();
-            console.log('action cancelled');
           }}
           style={{marginTop: 20}}
           labelStyle={[
@@ -80,6 +79,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6.27,
     elevation: 10,
     paddingVertical: 30,
+    paddingHorizontal: 30,
   },
   letsGoText: {
     color: 'white',

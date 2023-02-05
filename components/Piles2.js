@@ -42,20 +42,9 @@ const cardHeight = cardWidth * cardAspect;
 
 const Piles = () => {
   const navState = useNavigationState(state => state.index);
-  console.log('NavstatePiles', navState);
-  // const renderCounterPiles = useRef(0);
-  // useEffect(() => {
-  //   renderCounterPiles.current = renderCounterPiles.current + 1;
-  // });
-  // console.log('Piles', renderCounterPiles);
-  const {
-    deck,
-  } = usePersistentStore();
-  const {
-    modalVisibleAddCard,
-    modalVisibleInAction,
-    hideModalAddCard,
-  } = useNonPersistentStore();
+  const {deck} = usePersistentStore();
+  const {modalVisibleAddCard, modalVisibleInAction, hideModalAddCard} =
+    useNonPersistentStore();
   const [pileType, setPileType] = useState(undefined);
 
   return (

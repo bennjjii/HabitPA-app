@@ -10,7 +10,6 @@ import colours from '../assets/colours/colours';
 const YEAR_IN_MILLISECONDS = 31557600000;
 
 const isSameDay = (d1, d2) => {
-  console.log('dates', d1, d2);
   return (
     d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
@@ -366,15 +365,11 @@ export default class Card {
         timeOfDay: [],
       },
       progressCoeffFunction: (card, history, parameters) => {
-        console.log('cardcoeff', card);
-        console.log('history', history);
-        console.log('parameters', parameters);
         //soft start
         //for every time you contracted you would in the past month, how many did you do?
         let filteredHistory = history.filter(instance => {
           return instance.uuid == card.uuid;
         });
-        console.log('filtered history', filteredHistory);
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 30);
         //go through each day of past 30 and count each we said we would
         let accContracted = 0;
@@ -896,13 +891,6 @@ export default class Card {
           const accContractedLastMonth =
             parameters.numberOfTimes *
             ((ageOfCardInDays - daysSinceFirstOfMonth) / 30);
-
-          // console.log(
-          //   accActualThisMonth,
-          //   accContractedThisMonth,
-          //   accActualLastMonth,
-          //   accContractedLastMonth,
-          // );
           return convertToLevel(
             (accActualThisMonth / accContractedThisMonth ||
               0 + accActualLastMonth / accContractedLastMonth ||

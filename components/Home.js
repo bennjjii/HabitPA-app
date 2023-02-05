@@ -24,12 +24,6 @@ Entypo.loadFont();
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
-  const renderCounter = useRef(0);
-  useEffect(() => {
-    renderCounter.current = renderCounter.current + 1;
-  });
-  console.log('home', renderCounter);
-  // const navigation = React.useContext(NavigationContext);
   return (
     <>
       {/* <Tutorial navigationCtx={navigation} /> */}
@@ -109,6 +103,5 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
-  icon: {
-  },
+  icon: {},
 });
