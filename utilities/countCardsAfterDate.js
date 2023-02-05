@@ -5,7 +5,7 @@ const countCardsAfterDate = (
   optionalOutTimestamp,
   enableLogging,
 ) => {
-  if (enableLogging) {
+  if (global.enableLogging) {
     console.log('history', history);
     console.log('card', card);
     console.log('inTimeStamp', inTimestamp);

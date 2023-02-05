@@ -33,10 +33,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
 
 const BackOfCard = props => {
-  const renderCounterBackOfCard = useRef(Math.random());
-  useEffect(() => {
-    console.log('BoC', renderCounterBackOfCard);
-  }, []);
   const {deleteCardFromDeck} = usePersistentStore();
   const {
     cardUnderInspection,
@@ -75,14 +71,6 @@ const BackOfCard = props => {
 
       <ProgressBox card={props.card} />
       <View style={styles.iconContainer}>
-        {/* <FontAwesome
-          style={styles.icon}
-          name="check"
-          size={40}
-          onPress={() => {
-            switchToInAction(props.card);
-          }}
-        /> */}
         <TouchableOpacity
           onPress={() => {
             switchToInAction(props.card);
@@ -92,14 +80,6 @@ const BackOfCard = props => {
             style={styles.icon}
           />
         </TouchableOpacity>
-        {/* <FontAwesome
-          style={styles.icon}
-          name="edit"
-          size={40}
-          onPress={() => {
-            switchToEditCard(props.card);
-          }}
-        /> */}
         <TouchableOpacity
           onPress={() => {
             switchToEditCard(props.card);
@@ -109,15 +89,6 @@ const BackOfCard = props => {
             style={[styles.icon, {marginRight: 5}]}
           />
         </TouchableOpacity>
-        {/* <FontAwesome
-          style={styles.icon}
-          name="trash-o"
-          size={40}
-          onPress={() => {
-            deleteCardFromDeck(props.card);
-            hideModalBackOfCard();
-          }}
-        /> */}
         <TouchableOpacity
           onPress={() => {
             deleteCardFromDeck(props.card);

@@ -53,7 +53,6 @@ import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import {useNavigationState} from '@react-navigation/native';
 
-
 import AppBackground from './../assets/pixelBgLic1.png';
 
 import {
@@ -67,16 +66,17 @@ const yOffset = (width * 0.72) / 1.4;
 
 const Deck = () => {
   const navState = useNavigationState(state => state.index);
-  console.log('NavstateDeck', navState);
-  console.log(
-    'Dims',
-    Dimensions.get('window').height,
-    Dimensions.get('screen').height,
-    height,
-  );
+  if (global.enableLogging) {
+    console.log('NavstateDeck', navState);
+    console.log(
+      'Dims',
+      Dimensions.get('window').height,
+      Dimensions.get('screen').height,
+      height,
+    );
+  }
 
-  const {deck, history,  getFilteredDeck} =
-    usePersistentStore();
+  const {deck, history, getFilteredDeck} = usePersistentStore();
 
   const {
     modalVisibleBackOfCard,
@@ -99,8 +99,10 @@ const Deck = () => {
 
   //TODO why async? Test without
   const startCardInAction = async args => {
-    console.log('card sent to history', filteredDeck[args[0]]);
-    console.log('card index', args[0]);
+    if (global.enableLogging) {
+      console.log('card sent to history', filteredDeck[args[0]]);
+      console.log('card index', args[0]);
+    }
     setCardInAction(filteredDeck[args[0]]);
     switchToInAction(filteredDeck[args[0]], true);
   };
@@ -120,7 +122,6 @@ const Deck = () => {
   };
 
   useEffect(() => {
-    console.log('updating deck cos history changed');
     setFilteredDeck(getFilteredDeck());
   }, [history]);
 
@@ -227,13 +228,12 @@ const Deck = () => {
             {filteredDeck.length > 0 ? (
               <Pressable
                 onPress={() => {
-                  console.log('cui', filteredDeck[index]);
+                  if (global.enableLogging) {
+                    console.log('cui', filteredDeck[index]);
+                  }
                   showModalBackOfCard(filteredDeck[index]);
                 }}>
-                <Card
-                  index={index}
-                  name={filteredDeck[index]?.name}
-                />
+                <Card index={index} name={filteredDeck[index]?.name} />
               </Pressable>
             ) : (
               <NoCards />
