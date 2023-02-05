@@ -1,4 +1,4 @@
-package com.app;
+package com.habitmage;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;
