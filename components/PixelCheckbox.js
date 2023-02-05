@@ -22,13 +22,10 @@ const PixelCheckbox = ({
   const [clicked, setClicked] = useState(value || false);
 
   useEffect(() => {
-    // console.log('PixelCheckbox value changed', value);
     setClicked(value);
   }, [value]);
 
   useEffect(() => {
-    // console.log('PixelCheckbox clicked changed', clicked, index);
-    // console.log(clicked, index);
     if (onValueChange && index !== undefined) {
       onValueChange(clicked, index);
     } else {
@@ -72,8 +69,6 @@ export default PixelCheckbox;
 
 const styles = StyleSheet.create({
   view: {
-    // width: 35,
-    // backgroundColor: 'red',
     height: 35,
     justifyContent: 'center',
     alignItems: 'center',

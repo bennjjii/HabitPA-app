@@ -50,16 +50,10 @@ const Piles = () => {
   // console.log('Piles', renderCounterPiles);
   const {
     deck,
-    getFilteredDeck,
-    getComingUpDeck,
-    getBackburnerDeck,
-    getInactiveDeck,
   } = usePersistentStore();
   const {
-    modalVisiblePiles,
     modalVisibleAddCard,
     modalVisibleInAction,
-    hideModalPiles,
     hideModalAddCard,
   } = useNonPersistentStore();
   const [pileType, setPileType] = useState(undefined);
@@ -70,17 +64,14 @@ const Piles = () => {
       resizeMode={'cover'}
       source={AppBackground}>
       <SafeAreaView style={styles.container}>
-        {/* <ScrollView style={styles.scrView}> */}
         <ScrollView
           style={styles.styleBOCScrollview}
           contentContainerStyle={styles.BOCScrollview}>
-          {/* //replace this */}
           <Text>{''}</Text>
           {deck.map(card => {
             return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
           })}
         </ScrollView>
-        {/* </ScrollView> */}
 
         <Modal
           isVisible={modalVisibleAddCard && navState == 2}

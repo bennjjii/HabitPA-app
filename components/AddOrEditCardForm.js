@@ -15,7 +15,6 @@ import {
   Text,
   Pressable,
   Dimensions,
-  ImageBackground,
   TextInput as TextInput,
   Platform,
 } from 'react-native';
@@ -23,7 +22,6 @@ import {Button} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {Picker, DatePicker} from '@davidgovea/react-native-wheel-datepicker';
-import CardBackgroundImg from './../assets/Sprite-0001.png';
 
 import BallPicker from './BallPicker';
 
@@ -73,18 +71,6 @@ const shortNames = {
 // };
 
 const AddOrEditCardForm = props => {
-  const renderCounterAddOrEditCard = useRef(Math.random());
-
-  //how many of these modals are being launched?
-  useEffect(() => {
-    console.log(renderCounterAddOrEditCard);
-  }, []);
-
-  useEffect(() => {
-    console.log('Errors: ', formState.errors);
-    // console.log('screen', Dimensions.get('screen'));
-  }, [formState]);
-
   const {addCardToDeck, editCard} = usePersistentStore();
 
   const {hideModalAddCard, modalCode, cardUnderInspection} =
@@ -112,9 +98,7 @@ const AddOrEditCardForm = props => {
     }
   }, [modalCode]);
 
-  //console.log('Card under inspection', cardUnderInspection);
   const {
-    register,
     handleSubmit,
     formState,
     formState: {errors},
@@ -197,7 +181,6 @@ const AddOrEditCardForm = props => {
   );
 
   const numberOfTimesCB = useCallback(value => {
-    console.log(value);
     setNumberOfTimes(value);
   }, []);
 
@@ -210,20 +193,17 @@ const AddOrEditCardForm = props => {
   );
 
   const periodInDaysCB = useCallback(value => {
-    console.log(value);
     setPeriodInDays(value);
   }, []);
 
   //date, dayOfYear, are handled separately
 
   const onSubmit = formData => {
-    console.log('SUBMITTING');
     //Date validation
     if (date && date.getTime() < new Date().getTime()) {
       setDateError(true);
       return;
     }
-    console.log('formData', formData);
     if (cardUnderInspection) {
       let cardToSubmit = {
         ...cardUnderInspection,
@@ -255,11 +235,16 @@ const AddOrEditCardForm = props => {
         },
       };
       //edit the card
-      console.log('Card to submit', cardToSubmit);
+      if (global.enableLogging) {
+        console.log('Card to submit', cardToSubmit);
+      }
+
       editCard(cardToSubmit);
     } else {
-      console.log('formDataNew', formData);
-      console.log(checkForParam(modalCode, 'dayOfYear'));
+      if (global.enableLogging) {
+        console.log('formDataNew', formData);
+        console.log(checkForParam(modalCode, 'dayOfYear'));
+      }
       addCardToDeck(
         new Card({
           code: modalCode,
@@ -296,11 +281,6 @@ const AddOrEditCardForm = props => {
     }
     hideModalAddCard();
   };
-
-  useEffect(() => {
-    // console.log('state', getValues());
-    // console.log('errors', errors);
-  }, [formState]);
 
   return (
     <Pressable
@@ -480,7 +460,6 @@ const AddOrEditCardForm = props => {
                 textColor={textColour}
                 onValueChange={value => {
                   setDayOfYearMonth(value);
-                  console.log(value);
                   switch (value) {
                     case 1:
                       setDayOfYearDayComponent(
@@ -731,14 +710,6 @@ const AddOrEditCardForm = props => {
         {checkForParam(modalCode, 'date') && (
           <>
             <View style={styles.date}>
-              {/* <DateTimePicker
-              display="spinner"
-              minimumDate={new Date()}
-              onChange={(event, date) => {
-                setDate(date);
-              }}
-              value={date}
-            /> */}
               {Platform.OS !== 'ios' ? (
                 <DatePicker
                   mode={'date'}
@@ -779,15 +750,6 @@ const AddOrEditCardForm = props => {
             <Controller
               name={`parameters.timeOfDay`}
               control={control}
-              // rules={{
-              //   validate: v => {
-              //     return Object.keys(getValues('parameters.timeOfDay')).some(
-              //       day => {
-              //         return getValues('parameters.timeOfDay')[day];
-              //       },
-              //     );
-              //   },
-              // }}
               render={({field: {onChange, value}}) => (
                 <BallPicker
                   values={value}
@@ -800,10 +762,6 @@ const AddOrEditCardForm = props => {
                 />
               )}
             />
-
-            {/* {errors.parameters?.timeOfDay && (
-                <Text>Please select a time of day</Text>
-              )} */}
           </View>
         )}
         {/* </View> */}

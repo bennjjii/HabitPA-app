@@ -4,14 +4,12 @@ import Deck from './Deck';
 
 // import Piles from './Piles';
 import Piles2 from './Piles2';
-import ToolingPage from './ToolingPage';
+// import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContext} from '@react-navigation/native';
 
 import AddCard from './AddCard';
-// import Tutorial from './Tutorial';
 import colours from '../assets/colours/colours';
 
 import DeckIcon from '../assets/deckXL.png';
@@ -112,8 +110,5 @@ export default Home;
 
 const styles = StyleSheet.create({
   icon: {
-    // width: 40,
-    // height: 40,
-    // resizeMode: 'stretch',
   },
 });

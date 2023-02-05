@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {Button} from 'react-native-paper';
-//import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import colours from '../assets/colours/colours';
 import {usePersistentStore} from '../services/zustandContext';

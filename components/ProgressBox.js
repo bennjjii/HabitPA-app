@@ -12,11 +12,6 @@ const ProgressBox = props => {
   const [habitCoefficient, setHabitCoefficient] = useState(undefined);
 
   useEffect(() => {
-    //TODO not used vv
-    _history = history.filter(instance => {
-      return instance.uuid == props.card.uuid;
-    });
-    console.log('props.card.code', props.card.code);
     const textColor =
       chroma(Card.cardDefinitions[props.card.code]?.backOfCardColour).get(
         'lab.l',

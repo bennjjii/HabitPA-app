@@ -22,11 +22,6 @@ const height = Dimensions.get('window').height;
 
 const Tutorial = ({navigationCtx}) => {
   const {showModalAddCard} = usePersistentStore();
-  // useEffect(() => {
-  //   unblockTutorialSkip();
-  //   resetTutorialStep();
-  //   endTutorialAnimateCard();
-  // }, []);
 
   const titleBarHeight = 55 + (Platform.OS === 'ios' ? 40 : 0);
   const tabBarHeight = 85;

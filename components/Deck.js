@@ -28,7 +28,6 @@ import {
   SafeAreaView,
   Pressable,
   View,
-  Text,
   ImageBackground,
 } from 'react-native';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
@@ -36,7 +35,6 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  useDerivedValue,
   withSpring,
 } from 'react-native-reanimated';
 import {
@@ -54,12 +52,8 @@ import BackOfCard from './BackOfCard';
 import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import {useNavigationState} from '@react-navigation/native';
-import CustomCheckbox from './CustomCheckBox';
 
-// import AppBackground2 from './../assets/ElvinWood.jpeg';
-//best so far, 5*, 8, 9, 10*, 11**, 13
-// import AppBackground from './../assets/stockbg3.jpeg';
-//5,1,4,8
+
 import AppBackground from './../assets/pixelBgLic1.png';
 
 import {
@@ -68,13 +62,8 @@ import {
 } from '../services/zustandContext';
 
 const {width, height} = Dimensions.get('screen');
-//const toRadians = angle => angle * (Math.PI / 180);
-// const rotatedWidth =
-//   width * Math.sin(toRadians(90 - 15)) + height * Math.sin(toRadians(15));
-// const xOffset = (width * 0.72) / 2;
 const xOffset = 0;
 const yOffset = (width * 0.72) / 1.4;
-// const yOffset = 0;
 
 const Deck = () => {
   const navState = useNavigationState(state => state.index);
@@ -86,11 +75,10 @@ const Deck = () => {
     height,
   );
 
-  const {deck, history, deleteCardFromDeck, getFilteredDeck} =
+  const {deck, history,  getFilteredDeck} =
     usePersistentStore();
 
   const {
-    cardUnderInspection,
     modalVisibleBackOfCard,
     showModalBackOfCard,
     hideModalBackOfCard,
@@ -125,11 +113,6 @@ const Deck = () => {
   };
 
   const updateCardIndex = args => {
-    // if (currentCard.value + 1 < filteredDeck.length) {
-    //   currentCard.value = currentCard.value + 1;
-    // } else {
-    //   currentCard.value = 0;
-    // }
     setIndex(args);
     setTimeout(() => {
       setIndex2(filteredDeck.length > args + 1 ? args + 1 : 0);
@@ -172,12 +155,8 @@ const Deck = () => {
                 runOnJS(updateCardIndex)(currentCard.value);
                 runOnJS(resetCardPosn)();
                 runOnJS(startCardInAction)([tempCurrentCard.value]);
-                // translationX.value = -xOffset;
-                // translationY.value = -yOffset;
               } else {
                 runOnJS(resetCardPosn)();
-                // translationX.value = -xOffset;
-                // translationY.value = -yOffset;
               }
             },
           );
@@ -196,13 +175,8 @@ const Deck = () => {
                 runOnJS(updateCardIndex)(currentCard.value);
                 // resetCardPosn();
                 runOnJS(resetCardPosn)();
-                // translationX.value = -xOffset;
-                // translationY.value = -yOffset;
               } else {
-                // resetCardPosn();
                 runOnJS(resetCardPosn)();
-                // translationX.value = -xOffset;
-                // translationY.value = -yOffset;
               }
             },
           );
@@ -259,8 +233,6 @@ const Deck = () => {
                 <Card
                   index={index}
                   name={filteredDeck[index]?.name}
-                  //TODO we see 'crd name here' because index doesn't update
-                  // delete={deleteCard}
                 />
               </Pressable>
             ) : (

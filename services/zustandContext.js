@@ -100,46 +100,52 @@ export const usePersistentStore = create(
       // Logging
       //-------------------------------------------------------------------------------
       logHistory: () => {
-        console.log('History:');
-        get().history.forEach(item => console.log(item));
-        console.log(new Date());
-        console.log('\n');
+        if (global.enableLogging) {
+          console.log('History:');
+          get().history.forEach(item => console.log(item));
+          console.log(new Date());
+          console.log('\n');
+        }
       },
       logDeck: () => {
-        console.log('Deck:');
-        console.log('\n');
-        get().deck.forEach(item => {
+        if (global.enableLogging) {
+          console.log('Deck:');
           console.log('\n');
-          console.log('-----------------------------');
-          let mergedCard = _.flatMap(item);
-          Object.keys(mergedCard).forEach((item2, index) => {
-            if (index !== 7) {
-              console.log(mergedCard[item2]);
-            }
+          get().deck.forEach(item => {
+            console.log('\n');
+            console.log('-----------------------------');
+            let mergedCard = _.flatMap(item);
+            Object.keys(mergedCard).forEach((item2, index) => {
+              if (index !== 7) {
+                console.log(mergedCard[item2]);
+              }
+            });
+            console.log(item.parameters);
+            console.log('-----------------------------');
           });
-          console.log(item.parameters);
-          console.log('-----------------------------');
-        });
+        }
       },
       logFilteredDeck: () => {
-        console.log('Filtered deck:');
-        console.log('\n');
-        const filteredDeck = filterCards(
-          get().deck,
-          get().history,
-          get().timesOfDay,
-        );
-        filteredDeck.forEach((item, index) => {
+        if (global.enableLogging) {
+          console.log('Filtered deck:');
           console.log('\n');
-          console.log('-----------------------------');
-          console.log('Index: ', index);
-          let mergedCard = _.flatMap(item);
-          Object.keys(mergedCard).forEach(item2 => {
-            console.log(mergedCard[item2]);
+          const filteredDeck = filterCards(
+            get().deck,
+            get().history,
+            get().timesOfDay,
+          );
+          filteredDeck.forEach((item, index) => {
+            console.log('\n');
+            console.log('-----------------------------');
+            console.log('Index: ', index);
+            let mergedCard = _.flatMap(item);
+            Object.keys(mergedCard).forEach(item2 => {
+              console.log(mergedCard[item2]);
+            });
+            console.log('-----------------------------');
           });
-          console.log('-----------------------------');
-        });
-        console.log('\n');
+          console.log('\n');
+        }
       },
     }),
     {
@@ -240,6 +246,8 @@ export const useNonPersistentStore = create((set, get) => ({
   // Logging
   //-------------------------------------------------------------------------------
   logCardUnderInspection: () => {
-    console.log(get().cardUnderInspection);
+    if (global.enableLogging) {
+      console.log(get().cardUnderInspection);
+    }
   },
 }));

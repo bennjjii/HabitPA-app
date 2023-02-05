@@ -18,8 +18,6 @@ const authReducer = (state, action) => {
 
 const signin = dispatch => {
   return ({email, password}) => {
-    // Do some API Request here
-    console.log('Signin');
     dispatch({
       type: 'SIGN_IN',
       token: 'some access token here',

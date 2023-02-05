@@ -3,7 +3,6 @@ import countCardsAfterDate from '../utilities/countCardsAfterDate';
 import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
 
 import PixelCheckbox from './PixelCheckbox';
-// import ProgressBarGraph from './ProgressBarGraph';
 import ProgressBarGraph from './ProgressBarGraph2';
 import React from 'react';
 import colours from '../assets/colours/colours';

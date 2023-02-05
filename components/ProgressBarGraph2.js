@@ -48,10 +48,7 @@ export default ProgressBarGraph2;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    // margin: 10,
     justifyContent: 'space-between',
-    // borderBottomWidth: 1,
-    // borderBottomColor: 'grey',
   },
   columnAndTextContainer: {
     flexDirection: 'row',
@@ -60,21 +57,10 @@ const styles = StyleSheet.create({
   },
   columnContainer: {
     flexDirection: 'row',
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 2,
-    //   height: 4,
-    // },
-    // shadowOpacity: 0.14,
-    // shadowRadius: 3.27,
-    // elevation: 2,
   },
   text: {
     marginRight: 10,
     color: 'grey',
-    // textShadowColor: '#ccc',
-    // textShadowOffset: {width: 2, height: 2},
-    // textShadowRadius: 2,
     fontFamily: 'PublicPixel',
   },
   columnUnfilled: {},

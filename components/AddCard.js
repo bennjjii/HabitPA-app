@@ -56,14 +56,7 @@ const TemplateCard = props => {
 
 const AddCard = () => {
   const navState = useNavigationState(state => state.index);
-  console.log('NavstateAdd', navState);
   const {modalVisibleAddCard, hideModalAddCard} = useNonPersistentStore();
-  // const renderCounterAddCard = useRef(0);
-  // useEffect(() => {
-  //   renderCounterAddCard.current = renderCounterAddCard.current + 1;
-  // });
-  // console.log('AddCard', renderCounterAddCard);
-  //console.log(Object.keys(cardDefinitions));
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground resizeMode={'cover'} source={AppBackground}>
