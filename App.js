@@ -19,7 +19,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {usePersistentStore} from './services/zustandContext';
 import Home from './components/Home';
-import OnboardingScreen from './components/OnboardingScreen';
+// import OnboardingScreen from './components/OnboardingScreen';
 import colours from './assets/colours/colours';
 import Icon from './assets/appiconoriginal.png';
 
@@ -71,7 +71,7 @@ const App = () => {
 
       <NavigationContainer>
         <Stack.Navigator screenOptions={{headerShown: true}}>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Onboarding"
             component={OnboardingScreen}
             options={{
@@ -84,7 +84,7 @@ const App = () => {
                 color: colours.pixelTextFg1,
               },
             }}
-          />
+          /> */}
           <Stack.Screen
             name="HabitMage"
             component={Home}

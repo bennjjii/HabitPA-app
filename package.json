@@ -13,9 +13,7 @@
   "dependencies": {
     "@davidgovea/react-native-wheel-datepicker": "^1.0.2",
     "@react-native-async-storage/async-storage": "^1.17.3",
-    "@react-native-community/checkbox": "^0.5.12",
     "@react-native-community/datetimepicker": "^6.1.2",
-    "@react-native-picker/picker": "^2.4.0",
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
@@ -38,7 +36,6 @@
     "react-native-tutorial-overlay": "^0.1.1",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.1.0",
-    "react-native-video": "^5.2.0",
     "zustand": "^3.7.1"
   },
   "devDependencies": {
