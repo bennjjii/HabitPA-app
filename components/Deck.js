@@ -141,6 +141,27 @@ const Deck = () => {
     })
     .onEnd(event => {
       switch (true) {
+        // case event.velocityY < -2500:
+        //             translationY.value = withSpring(
+        //     -1000,
+        //     {overshootClamping: true},
+        //     () => {
+        //       if (filteredDeck.length) {
+        //         tempCurrentCard.value = currentCard.value;
+        //         if (currentCard.value + 1 < filteredDeck.length) {
+        //           currentCard.value = currentCard.value + 1;
+        //         } else {
+        //           currentCard.value = 0;
+        //         }
+        //         runOnJS(updateCardIndex)(currentCard.value);
+        //         runOnJS(resetCardPosn)();
+        //         runOnJS(startCardInAction)([tempCurrentCard.value]);
+        //       } else {
+        //         runOnJS(resetCardPosn)();
+        //       }
+        //     },
+        //   );
+        //   break;
         case event.velocityX < -2500:
           translationX.value = withSpring(
             -1000,

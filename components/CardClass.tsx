@@ -64,8 +64,83 @@ const getAgeOfCardInYears = card => {
   return Math.max(yearsDifference, 0);
 };
 
-export default class Card {
-  constructor(newCard) {
+interface Parameters {
+  timeOfDay: {
+    Morning: boolean;
+    Afternoon: boolean;
+    Evening: boolean;
+    Bedtime: boolean;
+  };
+  dayOfWeek: {
+    Monday: boolean;
+    Tuesday: boolean;
+    Wednesday: boolean;
+    Thursday: boolean;
+    Friday: boolean;
+    Saturday: boolean;
+    Sunday: boolean;
+  };
+  dayOfMonth: {
+    1: boolean;
+    2: boolean;
+    3: boolean;
+    4: boolean;
+    5: boolean;
+    6: boolean;
+    7: boolean;
+    8: boolean;
+    9: boolean;
+    10: boolean;
+    11: boolean;
+    12: boolean;
+    13: boolean;
+    14: boolean;
+    15: boolean;
+    16: boolean;
+    17: boolean;
+    18: boolean;
+    19: boolean;
+    20: boolean;
+    21: boolean;
+    22: boolean;
+    23: boolean;
+    24: boolean;
+    25: boolean;
+    26: boolean;
+    27: boolean;
+    28: boolean;
+    29: boolean;
+    30: boolean;
+    31: boolean;
+  };
+  dayOfYear?: {
+    day: number;
+    month: number;
+  };
+  date?: Date;
+  numberOfTimes?: number;
+  periodInDays?: number;
+}
+
+interface CardClass {
+  uuid?: string;
+  created?: Date;
+  current: boolean;
+  backburner: boolean;
+  code?: string;
+  name: string;
+  parameters: Parameters;
+}
+
+export default class Card implements CardClass {
+  uuid;
+  created;
+  current;
+  backburner;
+  code;
+  name;
+  parameters;
+  constructor(newCard: CardClass) {
     //uuid
     this.uuid = newCard ? uuid.v4() : undefined;
     //metadata
@@ -75,8 +150,6 @@ export default class Card {
     this.backburner = newCard?.backburner || false;
     this.code = newCard?.code || undefined;
     this.name = newCard?.name || '';
-    // this.desc = newCard?.desc || ''; // remove
-    //parameters
     this.parameters = {
       timeOfDay: {
         Morning: newCard?.parameters.timeOfDay?.Morning || false,
@@ -305,7 +378,7 @@ export default class Card {
       },
       progressRenderFunction: (props, history, color) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 4);
-        tempArray = [];
+        const tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {
           const startOfDay = new Date(
             new Date(new Date().setDate(new Date().getDate() - i)).setHours(
@@ -421,7 +494,7 @@ export default class Card {
         return accString;
       },
       progressRenderFunction: (props, history, color) => {
-        tempArray = [];
+        const tempArray = [];
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
         for (let i = ageOfCardInDays; i >= 0; i--) {
           const middleOfDay = new Date(
@@ -782,7 +855,7 @@ export default class Card {
       },
       progressRenderFunction: (props, history, color) => {
         const ageOfCardInDays = getAgeOfCardInDays(props.card.created, 30);
-        tempArray = [];
+        const tempArray = [];
         for (let i = ageOfCardInDays; i >= 0; i--) {
           const middleOfDay = new Date(
             new Date(new Date().setDate(new Date().getDate() - i)).setHours(
@@ -1417,7 +1490,7 @@ export default class Card {
             new Date(new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)),
           );
           let accContractedThisYear =
-            numberOfTimes *
+            parameters.numberOfTimes *
             ((new Date().getTime() -
               new Date(
                 new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0),
@@ -1477,7 +1550,7 @@ export default class Card {
 
         const naiveYearsOld =
           new Date().getFullYear() - props.card.created.getFullYear();
-        const tempArray = [];
+        let tempArray = [];
         for (let i = naiveYearsOld; i >= 0; i--) {
           const startOfYearMinus1 = new Date(
             new Date(
@@ -1558,7 +1631,7 @@ export default class Card {
       progressRenderFunction: (props, history, color) => {
         //bar graph for each period
         const ageOfCardInYears = getAgeOfCardInYears(props.card);
-        const tempArray = [];
+        let tempArray = [];
         for (let i = ageOfCardInYears; i >= 0; i--) {
           const startOfYearMinus1 = new Date(
             new Date(

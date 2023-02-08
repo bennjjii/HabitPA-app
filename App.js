@@ -1,17 +1,27 @@
-global.enableLogging = false
-import {LogBox} from 'react-native';
+global.enableLogging = false;
+import {LogBox, TouchableOpacity} from 'react-native';
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
   `Modal with 'formSheet' presentation style and 'transparent' value is not supported.`,
 ]);
 
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, Image, View, Platform} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  Image,
+  View,
+  Platform,
+  ToastAndroid,
+} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {usePersistentStore} from './services/zustandContext';
+import {
+  usePersistentStore,
+  useNonPersistentStore,
+} from './services/zustandContext';
 import Home from './components/Home';
 // import OnboardingScreen from './components/OnboardingScreen';
 import colours from './assets/colours/colours';
@@ -20,6 +30,8 @@ import Icon from './assets/appiconoriginal.png';
 const Stack = createNativeStackNavigator();
 
 const Header = props => {
+  const {logPersistantVariables} = usePersistentStore();
+  const {logNonPersistantVariables} = useNonPersistentStore();
   return (
     <>
       {Platform.OS === 'ios' && (
@@ -46,7 +58,14 @@ const Header = props => {
           }}>
           HabitMage
         </Text>
-        <Image source={Icon} />
+        <TouchableOpacity
+          onPress={() => {
+            ToastAndroid.show('Thanks for the log!', ToastAndroid.SHORT);
+            logPersistantVariables();
+            logNonPersistantVariables();
+          }}>
+          <Image source={Icon} />
+        </TouchableOpacity>
       </View>
     </>
   );
