@@ -22,7 +22,6 @@ import Card from './CardClass';
 
 const {width, height} = Dimensions.get('screen');
 
-import CardBackgroundImg from './../assets/Sprite-0001.png';
 import TickGb from '../assets/tickgainsboro.png';
 import EditGb from '../assets/editgainsboro.png';
 import TrashGb from '../assets/trashgainsboro.png';
@@ -67,7 +66,13 @@ const BackOfCard = props => {
             : 'white',
         },
       ]}>
-      <Text style={styles.cardText}>{props.card?.name || '...'}</Text>
+      <Text style={styles.cardText}>
+        {(props.card?.name &&
+          (props.card.name.length < 33
+            ? props.card.name
+            : props.card.name.slice(0, 33) + '...')) ||
+          '...'}
+      </Text>
 
       <ProgressBox card={props.card} />
       <View style={styles.iconContainer}>

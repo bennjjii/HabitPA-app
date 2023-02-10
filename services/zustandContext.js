@@ -4,7 +4,13 @@ import starterCards from '../assets/data/starterCards';
 import filterCards from '../utilities/filterCards';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 var _ = require('lodash');
-//use immer
+import {Bugfender, LogLevel} from '@bugfender/rn-bugfender';
+const util = require('util');
+Bugfender.init({
+  appKey: 'yP8BkuIROGvMqT0cnsfWKgA24Y6V4FIE',
+  logUIEvents: true,
+  registerErrorHandler: true,
+});
 
 const dateReviver = (key, value) => {
   // If the value is a string and if it roughly looks like it could be a
@@ -147,6 +153,53 @@ export const usePersistentStore = create(
           console.log('\n');
         }
       },
+      logPersistantVariables: () => {
+        let emptyLog = [];
+        emptyLog.push('History:');
+        get().history.forEach(item => emptyLog.push(item));
+
+        emptyLog.push(new Date().toString());
+        emptyLog.push('-');
+        emptyLog.push('\n');
+        emptyLog.push('\n');
+        emptyLog.push('\n');
+        emptyLog.push('Deck:');
+        emptyLog.push('\n');
+        get().deck.forEach(item => {
+          emptyLog.push('\n');
+          emptyLog.push('-----------------------------');
+          let mergedCard = _.flatMap(item);
+          Object.keys(mergedCard).forEach((item2, index) => {
+            if (index !== 7) {
+              emptyLog.push(mergedCard[item2]);
+            }
+          });
+          emptyLog.push(util.inspect(item.parameters));
+          emptyLog.push('-----------------------------');
+        });
+        emptyLog.push('\n');
+        emptyLog.push('\n');
+        emptyLog.push('\n');
+        emptyLog.push('Filtered deck:');
+        emptyLog.push('\n');
+        const filteredDeck = filterCards(
+          get().deck,
+          get().history,
+          get().timesOfDay,
+        );
+        filteredDeck.forEach((item, index) => {
+          emptyLog.push('\n');
+          emptyLog.push('-----------------------------');
+          emptyLog.push('Index: ', index);
+          let mergedCard = _.flatMap(item);
+          Object.keys(mergedCard).forEach(item2 => {
+            emptyLog.push(mergedCard[item2]);
+          });
+          emptyLog.push('-----------------------------');
+        });
+        emptyLog.push('\n');
+        Bugfender.log(emptyLog.join('\n'));
+      },
     }),
     {
       name: 'appContext',
@@ -249,5 +302,9 @@ export const useNonPersistentStore = create((set, get) => ({
     if (global.enableLogging) {
       console.log(get().cardUnderInspection);
     }
+  },
+  logNonPersistantVariables: () => {
+    let emptyLog = [];
+    Bugfender.log(emptyLog);
   },
 }));
