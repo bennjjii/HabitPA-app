@@ -38,11 +38,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {
-  GestureDetector,
-  Gesture,
-  TouchableOpacity,
-} from 'react-native-gesture-handler';
+import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 //
 import colours from '../assets/colours/colours';
@@ -52,6 +48,7 @@ import NoCards from './NoCards';
 import BackOfCard from './BackOfCard';
 import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
+import Done from './Done';
 import {useNavigationState} from '@react-navigation/native';
 
 const AppBackground = require('./../assets/pixelBgLic1.png');
@@ -92,6 +89,9 @@ const Deck = () => {
 
   //convention - 0 is top card in stack, 1 is card underneath etc
   const [cardInAction, setCardInAction] = useState(undefined);
+  const [showDone, setShowDone] = useState(false);
+  const showDoneShared = useSharedValue(false);
+  const doneOpacity = useSharedValue(1);
   //TODO some bugs will occur here
   const [indexCardOffScreen, setIndexCardOffScreen] = useState(
     filteredDeck.length > 1 ? filteredDeck.length - 1 : 1,
@@ -214,27 +214,27 @@ const Deck = () => {
     })
     .onEnd(event => {
       switch (true) {
-        // case event.velocityY < -2500:
-        //             translationY.value = withSpring(
-        //     -1000,
-        //     {overshootClamping: true},
-        //     () => {
-        //       if (filteredDeck.length) {
-        //         tempCurrentCard.value = currentCard.value;
-        //         if (currentCard.value + 1 < filteredDeck.length) {
-        //           currentCard.value = currentCard.value + 1;
-        //         } else {
-        //           currentCard.value = 0;
-        //         }
-        //         runOnJS(updateCardIndex)(currentCard.value);
-        //         runOnJS(resetCardPosn)();
-        //         runOnJS(startCardInAction)([tempCurrentCard.value]);
-        //       } else {
-        //         runOnJS(resetCardPosn)();
-        //       }
-        //     },
-        //   );
-        //   break;
+        //done case
+        case event.velocityY < -2500:
+          onscreenCardTranslationY.value = withSpring(
+            -1000,
+            {overshootClamping: true},
+            () => {
+              if (filteredDeck.length) {
+                tempCurrentCard.value = currentCard.value;
+                if (currentCard.value + 1 < filteredDeck.length) {
+                  currentCard.value = currentCard.value + 1;
+                } else {
+                  currentCard.value = 0;
+                }
+                setShowDone(true);
+                runOnJS(updateCardIndex)(currentCard.value);
+                runOnJS(resetCardPosn)();
+                // runOnJS(startCardInAction)([tempCurrentCard.value]);
+              }
+            },
+          );
+          break;
         //onto pile - decrease index
         case event.velocityX < -2500 ||
           (event.translationX * 1.6 + offscreenCardRestingPosition.x <
@@ -253,6 +253,9 @@ const Deck = () => {
               runOnJS(resetCardPosn)();
             },
           );
+          offscreenCardTranslationY.value = withSpring(
+            onscreenCardRestingPosition.y + yOffset,
+          );
           break;
         //off of pile - increase index
         case event.velocityX > 2500 ||
@@ -270,6 +273,9 @@ const Deck = () => {
               runOnJS(updateCardIndex)(currentCard.value);
               runOnJS(resetCardPosn)();
             },
+          );
+          onscreenCardTranslationY.value = withSpring(
+            offscreenCardRestingPosition.y - yOffset,
           );
           break;
         default:
@@ -345,12 +351,26 @@ const Deck = () => {
       opacity: offscreenCardOpacity(),
     };
   });
+
+  const doneReanimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: doneOpacity.value,
+      display: 'flex',
+    };
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
         style={styles.imageBackground}
         resizeMode={'cover'}
         source={AppBackground}>
+        {true && (
+          <Animated.View
+            style={[doneReanimatedStyle, {zIndex: 400, position: 'absolute'}]}>
+            <Done style={{zIndex: 400}} />
+          </Animated.View>
+        )}
         <View style={styles.backgroundCard}>
           <Card name={filteredDeck[indexCardUnderneath]?.name} />
         </View>
@@ -358,36 +378,39 @@ const Deck = () => {
           <Card />
         </View>
         <GestureDetector gesture={gesture}>
-          <Animated.View style={onscreenCardReanimatedStyle}>
-            {filteredDeck.length > 0 ? (
-              <Pressable
-                onPress={() => {
-                  if (global.enableLogging) {
-                    console.log('cui', filteredDeck[indexCardOnScreen]);
-                  }
-                  // showModalBackOfCard(filteredDeck[indexCardOnScreen]);
-                }}>
-                <Card
-                  index={indexCardOnScreen}
-                  name={filteredDeck[indexCardOnScreen]?.name}
-                />
-              </Pressable>
-            ) : (
-              <NoCards />
-            )}
-          </Animated.View>
+          <>
+            <Animated.View style={onscreenCardReanimatedStyle}>
+              {filteredDeck.length > 0 ? (
+                <Pressable
+                  onPress={() => {
+                    if (global.enableLogging) {
+                      console.log('cui', filteredDeck[indexCardOnScreen]);
+                    }
+                    // showModalBackOfCard(filteredDeck[indexCardOnScreen]);
+                  }}>
+                  <Card
+                    index={indexCardOnScreen}
+                    name={filteredDeck[indexCardOnScreen]?.name}
+                  />
+                </Pressable>
+              ) : (
+                <NoCards />
+              )}
+            </Animated.View>
+            <Animated.View
+              style={[
+                offscreenCardReanimatedStyle,
+                styles.offscreenCardContainerView,
+              ]}>
+              <Card
+                index={indexCardOffScreen}
+                name={filteredDeck[indexCardOffScreen]?.name}
+              />
+            </Animated.View>
+          </>
         </GestureDetector>
+
         {/* <View style={styles.offscreenCardContainerView}> */}
-        <Animated.View
-          style={[
-            offscreenCardReanimatedStyle,
-            styles.offscreenCardContainerView,
-          ]}>
-          <Card
-            index={indexCardOffScreen}
-            name={filteredDeck[indexCardOffScreen]?.name}
-          />
-        </Animated.View>
         {/* </View> */}
         <Modal
           isVisible={modalVisibleBackOfCard && navState == 0}
@@ -436,7 +459,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
     width: '100%',
   },
   modalContainer: {
