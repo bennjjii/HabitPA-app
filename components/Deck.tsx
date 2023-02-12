@@ -78,6 +78,7 @@ const Deck = () => {
   }
 
   const {deck, history, getFilteredDeck} = usePersistentStore();
+  let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
   const {
     modalVisibleBackOfCard,
@@ -89,9 +90,14 @@ const Deck = () => {
     hideModalAddCard,
   } = useNonPersistentStore();
 
+  //convention - 0 is top card in stack, 1 is card underneath etc
   const [cardInAction, setCardInAction] = useState(undefined);
-  const [index, setIndex] = useState(0); //Top card in stack
-  const [index2, setIndex2] = useState(1); //Second from top card in stack
+  //TODO some bugs will occur here
+  const [indexCardOffScreen, setIndexCardOffScreen] = useState(
+    filteredDeck.length > 1 ? filteredDeck.length - 1 : 1,
+  );
+  const [indexCardOnScreen, setIndexCardOnScreen] = useState(0); //Top card in stack
+  const [indexCardUnderneath, setIndexCardUnderneath] = useState(1); //Second from top card in stack
   const onscreenCardRestingPosition = {
     x: 0 - xOffset,
     y: 0 - yOffset,
@@ -121,9 +127,9 @@ const Deck = () => {
   const swipingDirection = useSharedValue(SwipingDirection.Neutral);
   const swipingSessionStartX = useSharedValue(undefined);
   const swipingSessionStartY = useSharedValue(undefined);
+  //index of card being shown - 0 is bottom of deck
   const currentCard = useSharedValue(0);
   const tempCurrentCard = useSharedValue(0);
-  let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
   //TODO why async? Test without
   const startCardInAction = async args => {
@@ -137,16 +143,21 @@ const Deck = () => {
 
   const resetCardPosn = () => {
     setTimeout(() => {
-      onscreenCardTranslationX.value = -xOffset;
-      onscreenCardTranslationY.value = -yOffset;
-    }, 50);
+      onscreenCardTranslationX.value = onscreenCardRestingPosition.x;
+      onscreenCardTranslationY.value = onscreenCardRestingPosition.y;
+      offscreenCardTranslationX.value = offscreenCardRestingPosition.x;
+      offscreenCardTranslationY.value = offscreenCardRestingPosition.y;
+    }, 5);
   };
 
   const updateCardIndex = args => {
-    setIndex(args);
+    setIndexCardOnScreen(args);
+    console.log(args - 1, filteredDeck.length - 1);
+    //we have to change the card underneath before we reset the card positions...??
     setTimeout(() => {
-      setIndex2(filteredDeck.length > args + 1 ? args + 1 : 0);
-    }, 100);
+      setIndexCardUnderneath(filteredDeck.length > args + 1 ? args + 1 : 0);
+      setIndexCardOffScreen(args > 0 ? args - 1 : filteredDeck.length - 1);
+    }, 10);
   };
 
   useEffect(() => {
@@ -155,10 +166,10 @@ const Deck = () => {
 
   useEffect(() => {
     setFilteredDeck(getFilteredDeck());
-    if (index >= getFilteredDeck().length) {
+    if (indexCardOnScreen >= getFilteredDeck().length) {
       currentCard.value = 0;
-      setIndex(0);
-      setIndex2(1);
+      setIndexCardOnScreen(0);
+      setIndexCardUnderneath(1);
     }
   }, [deck]);
   // rules
@@ -171,13 +182,16 @@ const Deck = () => {
       swipingSessionStartY.value = event.translationY - yOffset;
     })
     .onUpdate(event => {
-      console.log(
-        event.translationX * 1.6 + offscreenCardRestingPosition.x,
-        event.absoluteX,
-        event.translationX,
-        swipingSessionStartX.value,
-        width,
-      );
+      if (filteredDeck.length <= 1) {
+        return;
+      }
+      // console.log(
+      //   event.translationX * 1.6 + offscreenCardRestingPosition.x,
+      //   event.absoluteX,
+      //   event.translationX,
+      //   swipingSessionStartX.value,
+      //   width,
+      // );
       if (event.absoluteX > swipingSessionStartX.value - 30) {
         swipingDirection.value = SwipingDirection.OffOfPile;
         onscreenCardTranslationX.value = event.translationX - xOffset;
@@ -221,7 +235,7 @@ const Deck = () => {
         //     },
         //   );
         //   break;
-        //onto pile
+        //onto pile - decrease index
         case event.velocityX < -2500 ||
           (event.translationX * 1.6 + offscreenCardRestingPosition.x <
             width / 10 &&
@@ -230,27 +244,17 @@ const Deck = () => {
             onscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
-              if (filteredDeck.length) {
-                tempCurrentCard.value = currentCard.value;
-                if (currentCard.value + 1 < filteredDeck.length) {
-                  currentCard.value = currentCard.value + 1;
-                } else {
-                  currentCard.value = 0;
-                }
-                runOnJS(updateCardIndex)(currentCard.value);
-                // runOnJS(resetCardPosn)();
-                runOnJS(startCardInAction)([tempCurrentCard.value]);
+              if (currentCard.value > 0) {
+                currentCard.value = currentCard.value - 1;
               } else {
-                // runOnJS(resetCardPosn)();
+                currentCard.value = filteredDeck.length - 1;
               }
-              onscreenCardTranslationX.value = onscreenCardRestingPosition.x;
-              onscreenCardTranslationY.value = onscreenCardRestingPosition.y;
-              offscreenCardTranslationX.value = offscreenCardRestingPosition.x;
-              offscreenCardTranslationY.value = offscreenCardRestingPosition.y;
+              runOnJS(updateCardIndex)(currentCard.value);
+              runOnJS(resetCardPosn)();
             },
           );
           break;
-        //off of pile
+        //off of pile - increase index
         case event.velocityX > 2500 ||
           (event.absoluteX > width - 70 &&
             swipingDirection.value == SwipingDirection.OffOfPile):
@@ -258,22 +262,13 @@ const Deck = () => {
             offscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
-              if (filteredDeck.length) {
-                if (currentCard.value + 1 < filteredDeck.length) {
-                  currentCard.value = currentCard.value + 1;
-                } else {
-                  currentCard.value = 0;
-                }
-                runOnJS(updateCardIndex)(currentCard.value);
-                // resetCardPosn();
-                // runOnJS(resetCardPosn)();
+              if (currentCard.value + 1 < filteredDeck.length) {
+                currentCard.value = currentCard.value + 1;
               } else {
-                // runOnJS(resetCardPosn)();
+                currentCard.value = 0;
               }
-              onscreenCardTranslationX.value = onscreenCardRestingPosition.x;
-              onscreenCardTranslationY.value = onscreenCardRestingPosition.y;
-              offscreenCardTranslationX.value = offscreenCardRestingPosition.x;
-              offscreenCardTranslationY.value = offscreenCardRestingPosition.y;
+              runOnJS(updateCardIndex)(currentCard.value);
+              runOnJS(resetCardPosn)();
             },
           );
           break;
@@ -357,7 +352,7 @@ const Deck = () => {
         resizeMode={'cover'}
         source={AppBackground}>
         <View style={styles.backgroundCard}>
-          <Card name={filteredDeck[index2]?.name} />
+          <Card name={filteredDeck[indexCardUnderneath]?.name} />
         </View>
         <View style={styles.backgroundCard2}>
           <Card />
@@ -368,11 +363,14 @@ const Deck = () => {
               <Pressable
                 onPress={() => {
                   if (global.enableLogging) {
-                    console.log('cui', filteredDeck[index]);
+                    console.log('cui', filteredDeck[indexCardOnScreen]);
                   }
-                  showModalBackOfCard(filteredDeck[index]);
+                  // showModalBackOfCard(filteredDeck[indexCardOnScreen]);
                 }}>
-                <Card index={index} name={filteredDeck[index]?.name} />
+                <Card
+                  index={indexCardOnScreen}
+                  name={filteredDeck[indexCardOnScreen]?.name}
+                />
               </Pressable>
             ) : (
               <NoCards />
@@ -385,7 +383,10 @@ const Deck = () => {
             offscreenCardReanimatedStyle,
             styles.offscreenCardContainerView,
           ]}>
-          <Card index={index} name={filteredDeck[index]?.name} />
+          <Card
+            index={indexCardOffScreen}
+            name={filteredDeck[indexCardOffScreen]?.name}
+          />
         </Animated.View>
         {/* </View> */}
         <Modal
@@ -397,7 +398,7 @@ const Deck = () => {
             hideModalBackOfCard();
           }}
           style={styles.modalContainer}>
-          <BackOfCard card={filteredDeck[index]} />
+          <BackOfCard card={filteredDeck[indexCardOnScreen]} />
         </Modal>
         <Modal isVisible={modalVisibleInAction && navState == 0}>
           <InAction />
