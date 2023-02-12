@@ -29,6 +29,7 @@ import {
   Pressable,
   View,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import Animated, {
@@ -53,7 +54,7 @@ import InAction from './InAction';
 import AddOrEditCardForm from './AddOrEditCardForm';
 import {useNavigationState} from '@react-navigation/native';
 
-import AppBackground from './../assets/pixelBgLic1.png';
+const AppBackground = require('./../assets/pixelBgLic1.png');
 
 import {
   usePersistentStore,
@@ -91,8 +92,35 @@ const Deck = () => {
   const [cardInAction, setCardInAction] = useState(undefined);
   const [index, setIndex] = useState(0); //Top card in stack
   const [index2, setIndex2] = useState(1); //Second from top card in stack
-  const translationX = useSharedValue(0 - xOffset);
-  const translationY = useSharedValue(0 - yOffset);
+  const onscreenCardRestingPosition = {
+    x: 0 - xOffset,
+    y: 0 - yOffset,
+  };
+  const offscreenCardRestingPosition = {
+    x: width * 0.7,
+    y: width * 0.1,
+  };
+  const onscreenCardTranslationX = useSharedValue(
+    onscreenCardRestingPosition.x,
+  );
+  const onscreenCardTranslationY = useSharedValue(
+    onscreenCardRestingPosition.y,
+  );
+  const offscreenCardTranslationX = useSharedValue(
+    offscreenCardRestingPosition.x,
+  );
+  const offscreenCardTranslationY = useSharedValue(
+    offscreenCardRestingPosition.y,
+  );
+  enum SwipingDirection {
+    OnToPile,
+    OffOfPile,
+    Active,
+    Neutral,
+  }
+  const swipingDirection = useSharedValue(SwipingDirection.Neutral);
+  const swipingSessionStartX = useSharedValue(undefined);
+  const swipingSessionStartY = useSharedValue(undefined);
   const currentCard = useSharedValue(0);
   const tempCurrentCard = useSharedValue(0);
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
@@ -109,8 +137,8 @@ const Deck = () => {
 
   const resetCardPosn = () => {
     setTimeout(() => {
-      translationX.value = -xOffset;
-      translationY.value = -yOffset;
+      onscreenCardTranslationX.value = -xOffset;
+      onscreenCardTranslationY.value = -yOffset;
     }, 50);
   };
 
@@ -133,11 +161,42 @@ const Deck = () => {
       setIndex2(1);
     }
   }, [deck]);
-
+  // rules
+  // if finger is moving right, record position, pick up card from pile, hold until we get back to pick up position and then put back and move card onto pile
+  //if finger is moving left, record position, put card back onto pile
   const gesture = Gesture.Pan()
+    .onBegin(event => {
+      swipingDirection.value = SwipingDirection.Active;
+      swipingSessionStartX.value = event.absoluteX;
+      swipingSessionStartY.value = event.translationY - yOffset;
+    })
     .onUpdate(event => {
-      translationX.value = event.translationX - xOffset;
-      translationY.value = event.translationY - yOffset;
+      console.log(
+        event.translationX * 1.6 + offscreenCardRestingPosition.x,
+        event.absoluteX,
+        event.translationX,
+        swipingSessionStartX.value,
+        width,
+      );
+      if (event.absoluteX > swipingSessionStartX.value - 30) {
+        swipingDirection.value = SwipingDirection.OffOfPile;
+        onscreenCardTranslationX.value = event.translationX - xOffset;
+        onscreenCardTranslationY.value = event.translationY - yOffset;
+        offscreenCardTranslationX.value = withSpring(
+          offscreenCardRestingPosition.x,
+        );
+        offscreenCardTranslationY.value = withSpring(
+          offscreenCardRestingPosition.y,
+        );
+      } else {
+        swipingDirection.value = SwipingDirection.OnToPile;
+        offscreenCardTranslationX.value =
+          event.translationX * 1.6 + offscreenCardRestingPosition.x;
+        offscreenCardTranslationY.value =
+          event.translationY + offscreenCardRestingPosition.y;
+        onscreenCardTranslationX.value = withSpring(0 - xOffset);
+        onscreenCardTranslationY.value = withSpring(0 - yOffset);
+      }
     })
     .onEnd(event => {
       switch (true) {
@@ -162,9 +221,13 @@ const Deck = () => {
         //     },
         //   );
         //   break;
-        case event.velocityX < -2500:
-          translationX.value = withSpring(
-            -1000,
+        //onto pile
+        case event.velocityX < -2500 ||
+          (event.translationX * 1.6 + offscreenCardRestingPosition.x <
+            width / 10 &&
+            swipingDirection.value == SwipingDirection.OnToPile):
+          offscreenCardTranslationX.value = withSpring(
+            onscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
@@ -175,17 +238,24 @@ const Deck = () => {
                   currentCard.value = 0;
                 }
                 runOnJS(updateCardIndex)(currentCard.value);
-                runOnJS(resetCardPosn)();
+                // runOnJS(resetCardPosn)();
                 runOnJS(startCardInAction)([tempCurrentCard.value]);
               } else {
-                runOnJS(resetCardPosn)();
+                // runOnJS(resetCardPosn)();
               }
+              onscreenCardTranslationX.value = onscreenCardRestingPosition.x;
+              onscreenCardTranslationY.value = onscreenCardRestingPosition.y;
+              offscreenCardTranslationX.value = offscreenCardRestingPosition.x;
+              offscreenCardTranslationY.value = offscreenCardRestingPosition.y;
             },
           );
           break;
-        case event.velocityX > 2500:
-          translationX.value = withSpring(
-            1000,
+        //off of pile
+        case event.velocityX > 2500 ||
+          (event.absoluteX > width - 70 &&
+            swipingDirection.value == SwipingDirection.OffOfPile):
+          onscreenCardTranslationX.value = withSpring(
+            offscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
@@ -196,42 +266,90 @@ const Deck = () => {
                 }
                 runOnJS(updateCardIndex)(currentCard.value);
                 // resetCardPosn();
-                runOnJS(resetCardPosn)();
+                // runOnJS(resetCardPosn)();
               } else {
-                runOnJS(resetCardPosn)();
+                // runOnJS(resetCardPosn)();
               }
+              onscreenCardTranslationX.value = onscreenCardRestingPosition.x;
+              onscreenCardTranslationY.value = onscreenCardRestingPosition.y;
+              offscreenCardTranslationX.value = offscreenCardRestingPosition.x;
+              offscreenCardTranslationY.value = offscreenCardRestingPosition.y;
             },
           );
           break;
         default:
-          translationX.value = withSpring(0 - xOffset);
-          translationY.value = withSpring(0 - yOffset);
+          onscreenCardTranslationX.value = withSpring(
+            onscreenCardRestingPosition.x,
+          );
+          onscreenCardTranslationY.value = withSpring(
+            onscreenCardRestingPosition.y,
+          );
+          offscreenCardTranslationX.value = withSpring(
+            offscreenCardRestingPosition.x,
+          );
+          offscreenCardTranslationY.value = withSpring(
+            offscreenCardRestingPosition.y,
+          );
       }
     })
-    .onFinalize(event => {});
+    .onFinalize(event => {
+      swipingDirection.value = SwipingDirection.Neutral;
+      swipingSessionStartX.value = undefined;
+      swipingSessionStartY.value = undefined;
+    });
 
-  const rotateZ = () => {
+  const onscreenCardRotateZ = () => {
     'worklet';
-    return (translationX.value + xOffset) / (width / 30) + 'deg';
+    return (onscreenCardTranslationX.value + xOffset) / (width / 30) + 'deg';
   };
 
-  const rStyle = useAnimatedStyle(() => {
+  const offscreenCardRotateZ = () => {
+    'worklet';
+    return (offscreenCardTranslationX.value + xOffset) / (width / 30) + 'deg';
+  };
+
+  const offscreenCardOpacity = () => {
+    'worklet';
+    return Math.min(
+      1.4 - offscreenCardTranslationX.value / offscreenCardRestingPosition.x,
+      1,
+    );
+  };
+
+  const onscreenCardReanimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          translateX: translationX.value,
+          translateX: onscreenCardTranslationX.value,
         },
         {
-          translateY: translationY.value,
+          translateY: onscreenCardTranslationY.value,
         },
         {
-          rotateZ: rotateZ(),
+          rotateZ: onscreenCardRotateZ(),
         },
       ],
       zIndex: 10,
     };
   });
 
+  const offscreenCardReanimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: offscreenCardTranslationX.value,
+        },
+        {
+          translateY: offscreenCardTranslationY.value,
+        },
+        {
+          rotateZ: offscreenCardRotateZ(),
+        },
+      ],
+      zIndex: 13,
+      opacity: offscreenCardOpacity(),
+    };
+  });
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
@@ -245,7 +363,7 @@ const Deck = () => {
           <Card />
         </View>
         <GestureDetector gesture={gesture}>
-          <Animated.View style={rStyle}>
+          <Animated.View style={onscreenCardReanimatedStyle}>
             {filteredDeck.length > 0 ? (
               <Pressable
                 onPress={() => {
@@ -261,6 +379,15 @@ const Deck = () => {
             )}
           </Animated.View>
         </GestureDetector>
+        {/* <View style={styles.offscreenCardContainerView}> */}
+        <Animated.View
+          style={[
+            offscreenCardReanimatedStyle,
+            styles.offscreenCardContainerView,
+          ]}>
+          <Card index={index} name={filteredDeck[index]?.name} />
+        </Animated.View>
+        {/* </View> */}
         <Modal
           isVisible={modalVisibleBackOfCard && navState == 0}
           onRequestClose={() => {
@@ -357,5 +484,9 @@ const styles = StyleSheet.create({
         rotateZ: '2deg',
       },
     ],
+  },
+  offscreenCardContainerView: {
+    position: 'absolute',
+    zIndex: 300,
   },
 });
