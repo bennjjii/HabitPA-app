@@ -130,6 +130,7 @@ interface CardClass {
   code?: string;
   name: string;
   parameters: Parameters;
+  tutorialCard?: boolean;
 }
 
 export default class Card implements CardClass {

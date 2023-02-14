@@ -100,7 +100,7 @@ const Deck = () => {
   const [indexCardUnderneath, setIndexCardUnderneath] = useState(1); //Second from top card in stack
   const onscreenCardRestingPosition = {
     x: 0 - xOffset,
-    y: 0 - yOffset,
+    y: 0,
   };
   const offscreenCardRestingPosition = {
     x: width * 0.7,
@@ -175,7 +175,15 @@ const Deck = () => {
   // rules
   // if finger is moving right, record position, pick up card from pile, hold until we get back to pick up position and then put back and move card onto pile
   //if finger is moving left, record position, put card back onto pile
-  const gesture = Gesture.Pan()
+  const openModalBackOfCard = () => {
+    showModalBackOfCard(filteredDeck[indexCardOnScreen]);
+  };
+  const tapGesture = Gesture.Tap()
+    .maxDistance(20)
+    .onStart(() => {
+      runOnJS(openModalBackOfCard)();
+    });
+  const panGesture = Gesture.Pan()
     .onBegin(event => {
       swipingDirection.value = SwipingDirection.Active;
       swipingSessionStartX.value = event.absoluteX;
@@ -185,17 +193,25 @@ const Deck = () => {
       if (filteredDeck.length <= 1) {
         return;
       }
-      // console.log(
-      //   event.translationX * 1.6 + offscreenCardRestingPosition.x,
-      //   event.absoluteX,
-      //   event.translationX,
-      //   swipingSessionStartX.value,
-      //   width,
-      // );
+      console.log(
+        // event.translationX * 1.6 + offscreenCardRestingPosition.x,
+        // event.absoluteX,
+        // event.translationX,
+        // swipingSessionStartX.value,
+        // width,
+        onscreenCardTranslationX.value,
+        onscreenCardRestingPosition.x,
+        width / 2 / onscreenCardTranslationX.value,
+        1 -
+          Math.min(
+            Math.max(onscreenCardTranslationX.value, 0) / (width / 2),
+            1,
+          ),
+      );
       if (event.absoluteX > swipingSessionStartX.value - 30) {
         swipingDirection.value = SwipingDirection.OffOfPile;
         onscreenCardTranslationX.value = event.translationX - xOffset;
-        onscreenCardTranslationY.value = event.translationY - yOffset;
+        onscreenCardTranslationY.value = event.translationY;
         offscreenCardTranslationX.value = withSpring(
           offscreenCardRestingPosition.x,
         );
@@ -209,7 +225,7 @@ const Deck = () => {
         offscreenCardTranslationY.value =
           event.translationY + offscreenCardRestingPosition.y;
         onscreenCardTranslationX.value = withSpring(0 - xOffset);
-        onscreenCardTranslationY.value = withSpring(0 - yOffset);
+        onscreenCardTranslationY.value = withSpring(0);
       }
     })
     .onEnd(event => {
@@ -254,7 +270,7 @@ const Deck = () => {
             },
           );
           offscreenCardTranslationY.value = withSpring(
-            onscreenCardRestingPosition.y + yOffset,
+            onscreenCardRestingPosition.y,
           );
           break;
         //off of pile - increase index
@@ -275,7 +291,7 @@ const Deck = () => {
             },
           );
           onscreenCardTranslationY.value = withSpring(
-            offscreenCardRestingPosition.y - yOffset,
+            offscreenCardRestingPosition.y,
           );
           break;
         default:
@@ -299,6 +315,10 @@ const Deck = () => {
       swipingSessionStartY.value = undefined;
     });
 
+  const gesture2 = Gesture.Pan().onUpdate(event => {
+    console.log(event);
+  });
+
   const onscreenCardRotateZ = () => {
     'worklet';
     return (onscreenCardTranslationX.value + xOffset) / (width / 30) + 'deg';
@@ -309,6 +329,16 @@ const Deck = () => {
     return (offscreenCardTranslationX.value + xOffset) / (width / 30) + 'deg';
   };
 
+  const onscreenCardOpacity = () => {
+    'worklet';
+    return (
+      1 -
+      Math.min(
+        Math.max(onscreenCardTranslationX.value, 0) / (width / 2) - 0.4,
+        1,
+      )
+    );
+  };
   const offscreenCardOpacity = () => {
     'worklet';
     return Math.min(
@@ -331,6 +361,7 @@ const Deck = () => {
         },
       ],
       zIndex: 10,
+      opacity: onscreenCardOpacity(),
     };
   });
 
@@ -365,38 +396,43 @@ const Deck = () => {
         style={styles.imageBackground}
         resizeMode={'cover'}
         source={AppBackground}>
-        {true && (
-          <Animated.View
-            style={[doneReanimatedStyle, {zIndex: 400, position: 'absolute'}]}>
-            <Done style={{zIndex: 400}} />
-          </Animated.View>
-        )}
-        <View style={styles.backgroundCard}>
-          <Card name={filteredDeck[indexCardUnderneath]?.name} />
-        </View>
-        <View style={styles.backgroundCard2}>
-          <Card />
-        </View>
-        <GestureDetector gesture={gesture}>
-          <>
-            <Animated.View style={onscreenCardReanimatedStyle}>
+        <GestureDetector gesture={Gesture.Simultaneous(panGesture, tapGesture)}>
+          <View styles={styles.deckContainer}>
+            {false && (
+              <Animated.View
+                style={[
+                  doneReanimatedStyle,
+                  {zIndex: 400, position: 'absolute'},
+                ]}>
+                <Done style={{zIndex: 400}} />
+              </Animated.View>
+            )}
+            <View style={styles.backgroundCard}>
+              <Card name={filteredDeck[indexCardUnderneath]?.name} />
+            </View>
+            <View style={styles.backgroundCard2}>
+              <Card />
+            </View>
+            {/* onscreen card */}
+            <Animated.View style={[onscreenCardReanimatedStyle]}>
               {filteredDeck.length > 0 ? (
-                <Pressable
-                  onPress={() => {
-                    if (global.enableLogging) {
-                      console.log('cui', filteredDeck[indexCardOnScreen]);
-                    }
-                    // showModalBackOfCard(filteredDeck[indexCardOnScreen]);
-                  }}>
-                  <Card
-                    index={indexCardOnScreen}
-                    name={filteredDeck[indexCardOnScreen]?.name}
-                  />
-                </Pressable>
+                // <Pressable
+                //   onPress={() => {
+                //     if (global.enableLogging) {
+                //       console.log('cui', filteredDeck[indexCardOnScreen]);
+                //     }
+                //     showModalBackOfCard(filteredDeck[indexCardOnScreen]);
+                //   }}>
+                <Card
+                  index={indexCardOnScreen}
+                  name={filteredDeck[indexCardOnScreen]?.name}
+                />
               ) : (
+                // </Pressable>
                 <NoCards />
               )}
             </Animated.View>
+            {/* offscreen card */}
             <Animated.View
               style={[
                 offscreenCardReanimatedStyle,
@@ -407,40 +443,38 @@ const Deck = () => {
                 name={filteredDeck[indexCardOffScreen]?.name}
               />
             </Animated.View>
-          </>
+            {/* offscreen stand in card */}
+            <Modal
+              isVisible={modalVisibleBackOfCard && navState == 0}
+              onRequestClose={() => {
+                hideModalBackOfCard();
+              }}
+              onBackdropPress={() => {
+                hideModalBackOfCard();
+              }}
+              style={styles.modalContainer}>
+              <BackOfCard card={filteredDeck[indexCardOnScreen]} />
+            </Modal>
+            <Modal isVisible={modalVisibleInAction && navState == 0}>
+              <InAction />
+            </Modal>
+            <Modal
+              isVisible={modalVisibleAddCard && navState == 0}
+              style={styles.modal}
+              onRequestClose={() => {
+                hideModalAddCard();
+              }}
+              onBackdropPress={() => {
+                hideModalAddCard();
+              }}>
+              <KeyboardAvoidingView
+                enabled
+                behavior={Platform.OS === 'android' ? undefined : 'position'}>
+                <AddOrEditCardForm sourceTab="Deck" />
+              </KeyboardAvoidingView>
+            </Modal>
+          </View>
         </GestureDetector>
-
-        {/* <View style={styles.offscreenCardContainerView}> */}
-        {/* </View> */}
-        <Modal
-          isVisible={modalVisibleBackOfCard && navState == 0}
-          onRequestClose={() => {
-            hideModalBackOfCard();
-          }}
-          onBackdropPress={() => {
-            hideModalBackOfCard();
-          }}
-          style={styles.modalContainer}>
-          <BackOfCard card={filteredDeck[indexCardOnScreen]} />
-        </Modal>
-        <Modal isVisible={modalVisibleInAction && navState == 0}>
-          <InAction />
-        </Modal>
-        <Modal
-          isVisible={modalVisibleAddCard && navState == 0}
-          style={styles.modal}
-          onRequestClose={() => {
-            hideModalAddCard();
-          }}
-          onBackdropPress={() => {
-            hideModalAddCard();
-          }}>
-          <KeyboardAvoidingView
-            enabled
-            behavior={Platform.OS === 'android' ? undefined : 'position'}>
-            <AddOrEditCardForm sourceTab="Deck" />
-          </KeyboardAvoidingView>
-        </Modal>
       </ImageBackground>
     </SafeAreaView>
   );
@@ -460,6 +494,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    height: '100%',
+  },
+  deckContainer: {
+    position: 'absolute',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
   modalContainer: {
     flex: 1,
@@ -483,13 +526,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backgroundCard: {
+    position: 'absolute',
     zIndex: 5,
     transform: [
       {
         translateX: xOffset,
       },
       {
-        translateY: yOffset,
+        translateY: 0,
       },
     ],
   },
@@ -507,6 +551,10 @@ const styles = StyleSheet.create({
         rotateZ: '2deg',
       },
     ],
+  },
+  onscreenCardContainerView: {
+    position: 'absolute',
+    zIndex: 200,
   },
   offscreenCardContainerView: {
     position: 'absolute',

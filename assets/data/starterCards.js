@@ -3,17 +3,17 @@ import Card from '../../components/CardClass';
 module.exports = [
   new Card({
     code: 'AsP',
-    name: 'Welcome to HabitMage! Swipe this card left to complete a habit!',
+    name: 'Welcome to HabitMage! Swipe this card right to learn more!',
     parameters: {},
   }),
   new Card({
     code: 'AsP',
-    name: 'Swipe this card right to skip it for now!',
+    name: 'HabitMage helps you learn, keep and track habits!\n (Swipe right again!)',
     parameters: {},
   }),
   new Card({
     code: 'AsP',
-    name: 'Press on a card to flip it over!',
+    name: 'This screen is your deck. You can flick through the deck to find which habits you should be doing now',
     parameters: {},
   }),
   new Card({
