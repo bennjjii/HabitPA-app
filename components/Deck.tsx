@@ -37,6 +37,10 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
+  Easing,
+  withSequence,
+  withRepeat,
 } from 'react-native-reanimated';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
@@ -61,6 +65,8 @@ import {
 const {width, height} = Dimensions.get('screen');
 const xOffset = 0;
 const yOffset = (width * 0.72) / 1.4;
+const SWIPE_SENSITIVITYX: number = 500;
+const SWIPE_SENSITIVITYY: number = 2000;
 
 const Deck = () => {
   const navState = useNavigationState(state => state.index);
@@ -90,8 +96,9 @@ const Deck = () => {
   //convention - 0 is top card in stack, 1 is card underneath etc
   const [cardInAction, setCardInAction] = useState(undefined);
   const [showDone, setShowDone] = useState(false);
+  const randomValue = useSharedValue(0);
   const showDoneShared = useSharedValue(false);
-  const doneOpacity = useSharedValue(1);
+  const doneOpacity = useSharedValue(0);
   //TODO some bugs will occur here
   const [indexCardOffScreen, setIndexCardOffScreen] = useState(
     filteredDeck.length > 1 ? filteredDeck.length - 1 : 1,
@@ -193,24 +200,14 @@ const Deck = () => {
       if (filteredDeck.length <= 1) {
         return;
       }
-      console.log(
-        // event.translationX * 1.6 + offscreenCardRestingPosition.x,
-        // event.absoluteX,
-        // event.translationX,
-        // swipingSessionStartX.value,
-        // width,
-        onscreenCardTranslationX.value,
-        onscreenCardRestingPosition.x,
-        width / 2 / onscreenCardTranslationX.value,
-        1 -
-          Math.min(
-            Math.max(onscreenCardTranslationX.value, 0) / (width / 2),
-            1,
-          ),
-      );
+      randomValue.value = Math.random();
+      console.log(offscreenCardTranslationX.value);
       if (event.absoluteX > swipingSessionStartX.value - 30) {
         swipingDirection.value = SwipingDirection.OffOfPile;
-        onscreenCardTranslationX.value = event.translationX - xOffset;
+        onscreenCardTranslationX.value = Math.min(
+          event.translationX - xOffset,
+          offscreenCardRestingPosition.x - 0,
+        );
         onscreenCardTranslationY.value = event.translationY;
         offscreenCardTranslationX.value = withSpring(
           offscreenCardRestingPosition.x,
@@ -220,8 +217,10 @@ const Deck = () => {
         );
       } else {
         swipingDirection.value = SwipingDirection.OnToPile;
-        offscreenCardTranslationX.value =
-          event.translationX * 1.6 + offscreenCardRestingPosition.x;
+        offscreenCardTranslationX.value = Math.max(
+          event.translationX * 1.6 + offscreenCardRestingPosition.x,
+          -20,
+        );
         offscreenCardTranslationY.value =
           event.translationY + offscreenCardRestingPosition.y;
         onscreenCardTranslationX.value = withSpring(0 - xOffset);
@@ -231,7 +230,7 @@ const Deck = () => {
     .onEnd(event => {
       switch (true) {
         //done case
-        case event.velocityY < -2500:
+        case event.velocityY < -SWIPE_SENSITIVITYY:
           onscreenCardTranslationY.value = withSpring(
             -1000,
             {overshootClamping: true},
@@ -243,7 +242,21 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
-                setShowDone(true);
+                // setShowDone(true);
+                showDoneShared.value = true;
+                doneOpacity.value = withRepeat(
+                  withSequence(
+                    withTiming(1, {
+                      duration: 200,
+                      easing: Easing.out(Easing.exp),
+                    }),
+                    withTiming(0, {
+                      duration: 200,
+                      easing: Easing.out(Easing.exp),
+                    }),
+                  ),
+                  10,
+                );
                 runOnJS(updateCardIndex)(currentCard.value);
                 runOnJS(resetCardPosn)();
                 // runOnJS(startCardInAction)([tempCurrentCard.value]);
@@ -252,7 +265,7 @@ const Deck = () => {
           );
           break;
         //onto pile - decrease index
-        case event.velocityX < -2500 ||
+        case event.velocityX < -SWIPE_SENSITIVITYX ||
           (event.translationX * 1.6 + offscreenCardRestingPosition.x <
             width / 10 &&
             swipingDirection.value == SwipingDirection.OnToPile):
@@ -274,7 +287,7 @@ const Deck = () => {
           );
           break;
         //off of pile - increase index
-        case event.velocityX > 2500 ||
+        case event.velocityX > SWIPE_SENSITIVITYX ||
           (event.absoluteX > width - 70 &&
             swipingDirection.value == SwipingDirection.OffOfPile):
           onscreenCardTranslationX.value = withSpring(
@@ -315,10 +328,6 @@ const Deck = () => {
       swipingSessionStartY.value = undefined;
     });
 
-  const gesture2 = Gesture.Pan().onUpdate(event => {
-    console.log(event);
-  });
-
   const onscreenCardRotateZ = () => {
     'worklet';
     return (onscreenCardTranslationX.value + xOffset) / (width / 30) + 'deg';
@@ -344,6 +353,18 @@ const Deck = () => {
     return Math.min(
       1.4 - offscreenCardTranslationX.value / offscreenCardRestingPosition.x,
       1,
+    );
+  };
+
+  const standInCardOpacity = () => {
+    'worklet';
+    return (
+      1 -
+      Math.min(
+        offscreenCardTranslationX.value / offscreenCardRestingPosition.x,
+        1,
+      ) -
+      0.6
     );
   };
 
@@ -378,15 +399,33 @@ const Deck = () => {
           rotateZ: offscreenCardRotateZ(),
         },
       ],
-      zIndex: 13,
+
       opacity: offscreenCardOpacity(),
     };
   });
 
+  const standInCardReanimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: offscreenCardRestingPosition.x,
+        },
+        {
+          translateY: offscreenCardRestingPosition.y,
+        },
+        {
+          rotateZ:
+            (offscreenCardRestingPosition.x + xOffset) / (width / 30) + 'deg',
+        },
+      ],
+      opacity: standInCardOpacity() + randomValue.value * 0.0000001,
+    };
+  }, []);
+
   const doneReanimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: doneOpacity.value,
-      display: 'flex',
+      display: showDoneShared.value ? 'flex' : 'none',
     };
   });
 
@@ -398,18 +437,20 @@ const Deck = () => {
         source={AppBackground}>
         <GestureDetector gesture={Gesture.Simultaneous(panGesture, tapGesture)}>
           <View styles={styles.deckContainer}>
-            {false && (
+            {true && (
               <Animated.View
                 style={[
                   doneReanimatedStyle,
-                  {zIndex: 400, position: 'absolute'},
+                  {zIndex: 600, position: 'absolute'},
                 ]}>
-                <Done style={{zIndex: 400}} />
+                <Done />
               </Animated.View>
             )}
+            {/* card underneath onscreen card */}
             <View style={styles.backgroundCard}>
               <Card name={filteredDeck[indexCardUnderneath]?.name} />
             </View>
+            {/* total bottom offset card */}
             <View style={styles.backgroundCard2}>
               <Card />
             </View>
@@ -443,7 +484,18 @@ const Deck = () => {
                 name={filteredDeck[indexCardOffScreen]?.name}
               />
             </Animated.View>
-            {/* offscreen stand in card */}
+            {/* stand in card */}
+            <Animated.View
+              style={[
+                standInCardReanimatedStyle,
+                styles.standInCardContainerView,
+              ]}>
+              <Card
+                index={indexCardOffScreen}
+                // name={filteredDeck[indexCardOffScreen]?.name}
+                name={'stand in'}
+              />
+            </Animated.View>
             <Modal
               isVisible={modalVisibleBackOfCard && navState == 0}
               onRequestClose={() => {
@@ -559,5 +611,9 @@ const styles = StyleSheet.create({
   offscreenCardContainerView: {
     position: 'absolute',
     zIndex: 300,
+  },
+  standInCardContainerView: {
+    position: 'absolute',
+    zIndex: 400,
   },
 });
