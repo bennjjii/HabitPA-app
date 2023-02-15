@@ -80,7 +80,8 @@ const Deck = () => {
     );
   }
 
-  const {deck, history, getFilteredDeck} = usePersistentStore();
+  const {deck, history, getFilteredDeck, pushCardToHistory} =
+    usePersistentStore();
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
   const {
@@ -139,13 +140,14 @@ const Deck = () => {
   const tempCurrentCard = useSharedValue(0);
 
   //TODO why async? Test without
-  const startCardInAction = async args => {
+  const startCardInAction = args => {
     if (global.enableLogging) {
       console.log('card sent to history', filteredDeck[args[0]]);
       console.log('card index', args[0]);
     }
-    setCardInAction(filteredDeck[args[0]]);
-    switchToInAction(filteredDeck[args[0]], true);
+    // setCardInAction(filteredDeck[args[0]]);
+    // switchToInAction(filteredDeck[args[0]], true);
+    pushCardToHistory(filteredDeck[args[0]]);
   };
 
   const resetCardPosn = () => {
@@ -179,12 +181,11 @@ const Deck = () => {
       setIndexCardUnderneath(1);
     }
   }, [deck]);
-  // rules
-  // if finger is moving right, record position, pick up card from pile, hold until we get back to pick up position and then put back and move card onto pile
-  //if finger is moving left, record position, put card back onto pile
+
   const openModalBackOfCard = () => {
     showModalBackOfCard(filteredDeck[indexCardOnScreen]);
   };
+
   const tapGesture = Gesture.Tap()
     .maxDistance(20)
     .onStart(() => {
@@ -242,24 +243,32 @@ const Deck = () => {
                 } else {
                   currentCard.value = 0;
                 }
-                // setShowDone(true);
-                showDoneShared.value = true;
-                doneOpacity.value = withRepeat(
-                  withSequence(
-                    withTiming(1, {
-                      duration: 200,
-                      easing: Easing.out(Easing.exp),
-                    }),
-                    withTiming(0, {
-                      duration: 200,
-                      easing: Easing.out(Easing.exp),
-                    }),
+                doneOpacity.value = withSequence(
+                  withRepeat(
+                    withSequence(
+                      withTiming(1, {
+                        duration: 70,
+                        easing: Easing.out(Easing.exp),
+                      }),
+                      withTiming(0, {
+                        duration: 70,
+                        easing: Easing.out(Easing.exp),
+                      }),
+                    ),
+                    7,
                   ),
-                  10,
+                  withTiming(1, {
+                    duration: 70,
+                    easing: Easing.out(Easing.exp),
+                  }),
+                  withTiming(0, {
+                    duration: 1000,
+                    easing: Easing.out(Easing.exp),
+                  }),
                 );
                 runOnJS(updateCardIndex)(currentCard.value);
                 runOnJS(resetCardPosn)();
-                // runOnJS(startCardInAction)([tempCurrentCard.value]);
+                runOnJS(startCardInAction)([tempCurrentCard.value]);
               }
             },
           );
@@ -364,7 +373,7 @@ const Deck = () => {
         offscreenCardTranslationX.value / offscreenCardRestingPosition.x,
         1,
       ) -
-      0.6
+      0.4
     );
   };
 
@@ -425,7 +434,7 @@ const Deck = () => {
   const doneReanimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: doneOpacity.value,
-      display: showDoneShared.value ? 'flex' : 'none',
+      // display: showDoneShared.value ? 'flex' : 'none',
     };
   });
 
@@ -437,15 +446,19 @@ const Deck = () => {
         source={AppBackground}>
         <GestureDetector gesture={Gesture.Simultaneous(panGesture, tapGesture)}>
           <View styles={styles.deckContainer}>
-            {true && (
-              <Animated.View
-                style={[
-                  doneReanimatedStyle,
-                  {zIndex: 600, position: 'absolute'},
-                ]}>
-                <Done />
-              </Animated.View>
-            )}
+            <Animated.View
+              style={[
+                doneReanimatedStyle,
+                {
+                  zIndex: 600,
+                  position: 'absolute',
+                  transform: [{translateX: xOffset}, {translateY: yOffset}],
+                  // backgroundColor: 'white',
+                },
+              ]}>
+              <Done />
+            </Animated.View>
+
             {/* card underneath onscreen card */}
             <View style={styles.backgroundCard}>
               <Card name={filteredDeck[indexCardUnderneath]?.name} />
@@ -457,19 +470,11 @@ const Deck = () => {
             {/* onscreen card */}
             <Animated.View style={[onscreenCardReanimatedStyle]}>
               {filteredDeck.length > 0 ? (
-                // <Pressable
-                //   onPress={() => {
-                //     if (global.enableLogging) {
-                //       console.log('cui', filteredDeck[indexCardOnScreen]);
-                //     }
-                //     showModalBackOfCard(filteredDeck[indexCardOnScreen]);
-                //   }}>
                 <Card
                   index={indexCardOnScreen}
                   name={filteredDeck[indexCardOnScreen]?.name}
                 />
               ) : (
-                // </Pressable>
                 <NoCards />
               )}
             </Animated.View>
@@ -507,9 +512,9 @@ const Deck = () => {
               style={styles.modalContainer}>
               <BackOfCard card={filteredDeck[indexCardOnScreen]} />
             </Modal>
-            <Modal isVisible={modalVisibleInAction && navState == 0}>
+            {/* <Modal isVisible={modalVisibleInAction && navState == 0}>
               <InAction />
-            </Modal>
+            </Modal> */}
             <Modal
               isVisible={modalVisibleAddCard && navState == 0}
               style={styles.modal}
@@ -553,8 +558,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    width: width,
+    height: height,
   },
   modalContainer: {
     flex: 1,
