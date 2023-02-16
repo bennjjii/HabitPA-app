@@ -42,10 +42,24 @@ const cardHeight = cardWidth * cardAspect;
 
 const Piles = () => {
   const navState = useNavigationState(state => state.index);
-  const {deck} = usePersistentStore();
+  const {deck, history} = usePersistentStore();
   const {modalVisibleAddCard, modalVisibleInAction, hideModalAddCard} =
     useNonPersistentStore();
   const [pileType, setPileType] = useState(undefined);
+  const [mDeck, setmDeck] = useState([]);
+  const [pileComponent, setPileComponent] = useState([
+    ...deck.map(card => {
+      return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
+    }),
+  ]);
+
+  useEffect(() => {
+    setPileComponent([
+      ...deck.map(card => {
+        return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
+      }),
+    ]);
+  }, [deck, history]);
 
   return (
     <ImageBackground
@@ -57,9 +71,7 @@ const Piles = () => {
           style={styles.styleBOCScrollview}
           contentContainerStyle={styles.BOCScrollview}>
           <Text>{''}</Text>
-          {deck.map(card => {
-            return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
-          })}
+          {pileComponent}
         </ScrollView>
 
         <Modal

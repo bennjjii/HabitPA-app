@@ -122,7 +122,7 @@ interface Parameters {
   periodInDays?: number;
 }
 
-interface CardClass {
+export interface CardClass {
   uuid?: string;
   created?: Date;
   current: boolean;

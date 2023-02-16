@@ -33,7 +33,6 @@ const Home = () => {
           tabBarShowLabel: false,
           showLabel: false,
           tabBarStyle: [{height: 85}, {backgroundColor: colours.mainUiBrown}],
-
           tabBarLabelStyle:
             Platform.OS === 'android'
               ? {
