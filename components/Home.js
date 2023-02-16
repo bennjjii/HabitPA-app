@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, Platform, Image} from 'react-native';
 import React, {useEffect, useRef} from 'react';
 import Deck from './Deck';
-
+import Modal from 'react-native-modal';
 // import Piles from './Piles';
 import Piles2 from './Piles2';
 // import ToolingPage from './ToolingPage';
@@ -11,7 +11,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import AddCard from './AddCard';
 import colours from '../assets/colours/colours';
-
+import InAction from './InAction';
 import DeckIcon from '../assets/deckXL.png';
 import AddCardIcon from '../assets/addcardXL.png';
 import ProgressIcon from '../assets/progressXL.png';

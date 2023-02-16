@@ -64,6 +64,24 @@ const getAgeOfCardInYears = card => {
   return Math.max(yearsDifference, 0);
 };
 
+export type ModalCode =
+  | 'ED'
+  | 'XpD'
+  | 'EW'
+  | 'XpW'
+  | 'RxW'
+  | 'EM'
+  | 'XpM'
+  | 'RxM'
+  | 'XiY'
+  | 'XiT'
+  | 'SpT'
+  | 'DL'
+  | 'EY'
+  | 'XpY'
+  | 'RxY'
+  | 'AsP';
+
 interface Parameters {
   timeOfDay: {
     Morning: boolean;
@@ -127,7 +145,7 @@ export interface CardClass {
   created?: Date;
   current: boolean;
   backburner: boolean;
-  code?: string;
+  code?: ModalCode;
   name: string;
   parameters: Parameters;
   tutorialCard?: boolean;

@@ -3,6 +3,7 @@ import {persist} from 'zustand/middleware';
 import starterCards from '../assets/data/starterCards';
 import filterCards from '../utilities/filterCards';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CardClass, ModalCode} from '../components/CardClass';
 var _ = require('lodash');
 import {Bugfender, LogLevel} from '@bugfender/rn-bugfender';
 const util = require('util');
@@ -31,8 +32,36 @@ const dateReviver = (key, value) => {
 
 //this is where the magic happens
 //tried to abstract most of the logic up here
+interface HistoryItem {
+  uuid: string;
+  timestamp: Date;
+}
 
-export const usePersistentStore = create(
+interface PersistentStore {
+  deck: CardClass[];
+  history: HistoryItem[];
+  addCardToDeck: (card: CardClass) => void;
+  editCard: (updatedCard: CardClass) => void;
+  deleteCardFromDeck: (cardToDelete: CardClass) => void;
+  pushCardToHistory: (card: CardClass) => void;
+  getFullDeck: () => CardClass[];
+  getFilteredDeck: () => CardClass[];
+  getComingUpDeck: () => CardClass[];
+  getInactiveDeck: () => CardClass[];
+  getBackburnerDeck: () => CardClass[];
+  timesOfDay: {
+    Morning: [number, number];
+    Afternoon: [number, number];
+    Evening: [number, number];
+    Bedtime: [number, number];
+  };
+  logHistory: () => void;
+  logDeck: () => void;
+  logFilteredDeck: () => void;
+  logPersistantVariables: () => void;
+}
+
+export const usePersistentStore = create<PersistentStore>(
   persist(
     (set, get) => ({
       deck: [...starterCards],
@@ -48,16 +77,23 @@ export const usePersistentStore = create(
           };
         }),
       editCard: updatedCard => {
-        let tempDeck = get().deck;
-        tempDeck[
-          tempDeck
-            .map((x, i) => [i, x])
-            .filter(x => x[1].uuid == updatedCard.uuid)[0][0]
-        ] = updatedCard;
+        let oldDeck = get().deck;
+        let newDeck = oldDeck.map(card => {
+          if (card.uuid === updatedCard.uuid) {
+            return updatedCard;
+          } else {
+            return card;
+          }
+        });
+        // tempDeck[
+        //   tempDeck
+        //     .map((x, i) => [i, x])
+        //     .filter(x => x[1].uuid == updatedCard.uuid)[0][0]
+        // ] = updatedCard;
         //because we splice, and zustand only shallow evaluates the object for changes, this doesn't trigger an update
         //bodgy workaround...
         set(state => ({deck: []}));
-        set(state => ({deck: tempDeck}));
+        set(state => ({deck: newDeck}));
       },
       deleteCardFromDeck: cardToDelete => {
         set(state => {
@@ -212,7 +248,28 @@ export const usePersistentStore = create(
   ),
 );
 
-export const useNonPersistentStore = create((set, get) => ({
+interface NonPersistentStore {
+  modalCode: ModalCode | undefined;
+  modalVisibleAddCard: boolean;
+  modalVisibleBackOfCard: boolean;
+  modalVisiblePiles: boolean;
+  modalVisibleInAction: boolean;
+  cardUnderInspection: CardClass | undefined;
+  cardInAction: CardClass;
+  showModalAddCard: (code: ModalCode) => void;
+  hideModalAddCard: () => void;
+  showModalBackOfCard: () => void;
+  hideModalBackOfCard: () => void;
+  switchToEditCard: (cardToEdit: CardClass) => void;
+  switchToInAction: (card: CardClass, ignoreTimeout: boolean) => void;
+  hideModalInAction: () => void;
+  showModalPiles: () => void;
+  hideModalPiles: () => void;
+  logCardUnderInspection: () => void;
+  logNonPersistantVariables: () => void;
+}
+
+export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
   //-------------------------------------------------------------------------------
   // Modals
   //-------------------------------------------------------------------------------
@@ -240,7 +297,6 @@ export const useNonPersistentStore = create((set, get) => ({
     }));
   },
   switchToEditCard: cardToEdit => {
-    console.log('Switch to edit card');
     set(() => ({
       cardUnderInspection: cardToEdit,
       modalCode: cardToEdit.code,
