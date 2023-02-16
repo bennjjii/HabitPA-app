@@ -83,6 +83,9 @@ export const usePersistentStore = create(
         });
       },
       //get piles
+      getFullDeck: () => {
+        return get().deck;
+      },
       getFilteredDeck: () => {
         return filterCards(get().deck, get().history, get().timesOfDay);
       },
