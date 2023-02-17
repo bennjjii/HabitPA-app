@@ -9,6 +9,7 @@ import {
 import React, {useEffect, useRef} from 'react';
 import Deck from './Deck';
 import Modal from 'react-native-modal';
+import Done from './Done';
 // import Piles from './Piles';
 import Piles2 from './Piles2';
 // import ToolingPage from './ToolingPage';
@@ -38,7 +39,7 @@ Entypo.loadFont();
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
-  const {modalMode, hideModal, modalCode, cardInFocus} =
+  const {modalMode, hideModal, modalCode, cardInFocus, triggerDoneAnimation} =
     useNonPersistentStore();
 
   const {history} = usePersistentStore();
@@ -141,9 +142,14 @@ const Home = () => {
           </KeyboardAvoidingView>
         )}
         {modalMode === 'BACK_OF_CARD' && (
-          <BackOfCard cardInFocus={cardInFocus} history={history} />
+          <BackOfCard
+            cardInFocus={cardInFocus}
+            history={history}
+            insideModal={true}
+          />
         )}
       </Modal>
+      <Done />
     </>
   );
 };

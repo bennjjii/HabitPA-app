@@ -31,16 +31,22 @@ const EditDg = require('../assets/editdimgrey.png');
 const TrashDg = require('../assets/trashdimgrey.png');
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Done from './Done';
 FontAwesome.loadFont();
 
 interface BackOfCardProps {
   cardInFocus: CardClass;
   history: HistoryItem[];
+  insideModal?: boolean;
 }
 
-const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus, history}) => {
-  const {deleteCardFromDeck} = usePersistentStore();
-  const {hideModal, switchFromBackOfCardModalToAddOrEdit} =
+const BackOfCard: React.FC<BackOfCardProps> = ({
+  cardInFocus,
+  history,
+  insideModal,
+}) => {
+  const {deleteCardFromDeck, pushCardToHistory} = usePersistentStore();
+  const {hideModal, switchFromBackOfCardModalToAddOrEdit, runDoneAnimation} =
     useNonPersistentStore();
 
   const [cardTheme, setCardTheme] = useState(undefined);
@@ -82,6 +88,8 @@ const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus, history}) => {
         <TouchableOpacity
           onPress={() => {
             //TODO implement inaction from here
+            // pushCardToHistory(cardInFocus);
+            runDoneAnimation();
           }}>
           <Image
             source={cardTheme === 'dark' ? TickGb : TickDg}
@@ -108,6 +116,7 @@ const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus, history}) => {
           />
         </TouchableOpacity>
       </View>
+      {insideModal && <Done />}
     </View>
   );
 };

@@ -261,6 +261,8 @@ interface NonPersistentStore {
   //
   logCardUnderInspection: () => void;
   logNonPersistantVariables: () => void;
+  runDoneAnimation: () => void;
+  setDoneAnimation: (animation: () => void) => void;
 }
 
 export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
@@ -296,6 +298,12 @@ export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
       modalCode: cardInFocus.code,
       cardInFocus: cardInFocus,
     }));
+  },
+  runDoneAnimation: () => {},
+  setDoneAnimation: animation => {
+    set({
+      runDoneAnimation: animation,
+    });
   },
   //
   //-------------------------------------------------------------------------------

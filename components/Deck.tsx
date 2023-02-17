@@ -31,7 +31,6 @@ import {
   ImageBackground,
   Platform,
 } from 'react-native';
-import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -80,7 +79,8 @@ const Deck = () => {
     usePersistentStore();
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
-  const {showBackOfCardModal} = useNonPersistentStore();
+  const {showBackOfCardModal, setDoneAnimation, runDoneAnimation} =
+    useNonPersistentStore();
 
   //convention - 0 is top card in stack, 1 is card underneath etc
 
@@ -170,6 +170,7 @@ const Deck = () => {
 
   const openModalBackOfCard = () => {
     showBackOfCardModal(filteredDeck[indexCardOnScreen]);
+    runDoneAnimation();
   };
 
   const tapGesture = Gesture.Tap()
@@ -432,19 +433,6 @@ const Deck = () => {
         source={AppBackground}>
         <GestureDetector gesture={Gesture.Simultaneous(panGesture, tapGesture)}>
           <View styles={styles.deckContainer}>
-            <Animated.View
-              style={[
-                doneReanimatedStyle,
-                {
-                  zIndex: 600,
-                  position: 'absolute',
-                  transform: [{translateX: xOffset}, {translateY: yOffset}],
-                  // backgroundColor: 'white',
-                },
-              ]}>
-              <Done />
-            </Animated.View>
-
             {/* card underneath onscreen card */}
             <View style={styles.backgroundCard}>
               <Card name={filteredDeck[indexCardUnderneath]?.name} />
