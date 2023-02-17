@@ -10,8 +10,6 @@ import {
   KeyboardAvoidingView,
   ImageBackground,
 } from 'react-native';
-import Modal from 'react-native-modal';
-import {useNavigationState} from '@react-navigation/native';
 
 import colours from '../assets/colours/colours';
 const AppBackground = require('./../assets/pixelBgLic1.png');
@@ -39,14 +37,26 @@ const Piles = () => {
 
   const [pileComponent, setPileComponent] = useState([
     ...getFullDeck().map(card => {
-      return <BackOfCard cardInFocus={card} key={`backOfCard${card.uuid}`} />;
+      return (
+        <BackOfCard
+          cardInFocus={card}
+          key={`backOfCard${card.uuid}`}
+          history={history}
+        />
+      );
     }),
   ]);
 
   useEffect(() => {
     setPileComponent([
       ...getFullDeck().map(card => {
-        return <BackOfCard cardInFocus={card} key={`backOfCard${card.uuid}`} />;
+        return (
+          <BackOfCard
+            cardInFocus={card}
+            key={`backOfCard${card.uuid}`}
+            history={history}
+          />
+        );
       }),
     ]);
   }, [deck, history]);

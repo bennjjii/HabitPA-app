@@ -28,7 +28,10 @@ import ProgressIcon from '../assets/progressXL.png';
 import DeckIconDim from '../assets/deckDimmed.png';
 import AddCardIconDim from '../assets/addcardDimmed.png';
 import ProgressIconDim from '../assets/progressDimmed.png';
-import {useNonPersistentStore} from '../services/zustandContext';
+import {
+  useNonPersistentStore,
+  usePersistentStore,
+} from '../services/zustandContext';
 
 Entypo.loadFont();
 
@@ -37,6 +40,8 @@ const Tab = createBottomTabNavigator();
 const Home = () => {
   const {modalMode, hideModal, modalCode, cardInFocus} =
     useNonPersistentStore();
+
+  const {history} = usePersistentStore();
 
   return (
     <>
@@ -136,7 +141,7 @@ const Home = () => {
           </KeyboardAvoidingView>
         )}
         {modalMode === 'BACK_OF_CARD' && (
-          <BackOfCard cardInFocus={cardInFocus} />
+          <BackOfCard cardInFocus={cardInFocus} history={history} />
         )}
       </Modal>
     </>

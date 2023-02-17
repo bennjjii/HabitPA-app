@@ -1,52 +1,61 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {usePersistentStore} from '../services/zustandContext';
-import Card from './CardClass';
+import Card, {CardClass} from './CardClass';
 import chroma from 'chroma-js';
+import {HistoryItem} from '../services/zustandContext';
 
-const ProgressBox = props => {
-  const {history} = usePersistentStore();
+interface ProgressBoxProps {
+  cardInFocus: CardClass;
+  history: HistoryItem[];
+}
 
+const ProgressBox: React.FC<ProgressBoxProps> = ({cardInFocus, history}) => {
   const [contractText, setContractText] = useState('');
   const [dataToRender, setDataToRender] = useState(null);
   const [habitCoefficient, setHabitCoefficient] = useState(undefined);
 
+  //terrible bodge because the card functions were designed so badly
   useEffect(() => {
     const textColor =
-      chroma(Card.cardDefinitions[props.card.code]?.backOfCardColour).get(
+      chroma(Card.cardDefinitions[cardInFocus.code]?.backOfCardColour).get(
         'lab.l',
       ) < 70
         ? 'gainsboro'
         : 'dimgrey';
     setContractText(
-      Card.cardDefinitions[props.card.code].contractRenderFunction(props),
+      //props{card}
+      Card.cardDefinitions[cardInFocus.code].contractRenderFunction({
+        card: cardInFocus,
+      }),
     );
     setDataToRender(
-      Card.cardDefinitions[props.card.code].progressRenderFunction(
-        props,
+      //props, history, color
+      Card.cardDefinitions[cardInFocus.code].progressRenderFunction(
+        {card: cardInFocus, history: history},
         history,
         textColor,
       ),
     );
     setHabitCoefficient(
-      Card.cardDefinitions[props.card.code].progressCoeffFunction(
-        props.card,
+      //card, history, parameters
+      Card.cardDefinitions[cardInFocus.code].progressCoeffFunction(
+        cardInFocus,
         history,
-        props.card.parameters,
+        cardInFocus.parameters,
       ),
     );
-  }, []);
+  }, [cardInFocus, history]);
 
   return (
     <>
       <Text
         style={[
           styles.contractText,
-          props.card?.code
+          cardInFocus?.code
             ? {
                 color:
                   chroma(
-                    Card.cardDefinitions[props.card.code]?.backOfCardColour,
+                    Card.cardDefinitions[cardInFocus.code]?.backOfCardColour,
                   ).get('lab.l') < 70
                     ? 'gainsboro'
                     : 'dimgrey',
@@ -58,11 +67,11 @@ const ProgressBox = props => {
       <Text
         style={[
           styles.progressText,
-          props.card?.code
+          cardInFocus?.code
             ? {
                 color:
                   chroma(
-                    Card.cardDefinitions[props.card.code]?.backOfCardColour,
+                    Card.cardDefinitions[cardInFocus.code]?.backOfCardColour,
                   ).get('lab.l') < 70
                     ? 'gainsboro'
                     : 'dimgrey',
@@ -75,11 +84,11 @@ const ProgressBox = props => {
       <Text
         style={[
           styles.levelText,
-          props.card?.code
+          cardInFocus?.code
             ? {
                 color:
                   chroma(
-                    Card.cardDefinitions[props.card.code]?.backOfCardColour,
+                    Card.cardDefinitions[cardInFocus.code]?.backOfCardColour,
                   ).get('lab.l') < 70
                     ? 'gainsboro'
                     : 'dimgrey',

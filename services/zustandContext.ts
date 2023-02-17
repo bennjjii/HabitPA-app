@@ -34,7 +34,7 @@ const dateReviver = (key, value) => {
 //tried to abstract most of the logic up here
 type ModalModes = 'EDIT_CARD' | 'BACK_OF_CARD' | undefined;
 
-interface HistoryItem {
+export interface HistoryItem {
   uuid: string;
   timestamp: Date;
 }

@@ -11,6 +11,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import {
   usePersistentStore,
   useNonPersistentStore,
+  HistoryItem,
 } from '../services/zustandContext';
 
 import ProgressBox from './ProgressBox';
@@ -34,9 +35,10 @@ FontAwesome.loadFont();
 
 interface BackOfCardProps {
   cardInFocus: CardClass;
+  history: HistoryItem[];
 }
 
-const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus}) => {
+const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus, history}) => {
   const {deleteCardFromDeck} = usePersistentStore();
   const {hideModal, switchFromBackOfCardModalToAddOrEdit} =
     useNonPersistentStore();
@@ -75,7 +77,7 @@ const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus}) => {
           '...'}
       </Text>
 
-      <ProgressBox card={cardInFocus} />
+      <ProgressBox cardInFocus={cardInFocus} history={history} />
       <View style={styles.iconContainer}>
         <TouchableOpacity
           onPress={() => {
