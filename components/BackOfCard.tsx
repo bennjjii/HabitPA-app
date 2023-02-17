@@ -88,8 +88,8 @@ const BackOfCard: React.FC<BackOfCardProps> = ({
         <TouchableOpacity
           onPress={() => {
             //TODO implement inaction from here
-            // pushCardToHistory(cardInFocus);
-            runDoneAnimation();
+            pushCardToHistory(cardInFocus);
+            // runDoneAnimation();
           }}>
           <Image
             source={cardTheme === 'dark' ? TickGb : TickDg}
