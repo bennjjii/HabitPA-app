@@ -10,7 +10,6 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
-import Modal from 'react-native-modal';
 import {Button} from 'react-native-paper';
 
 import colours from '../assets/colours/colours';
@@ -56,7 +55,7 @@ const ToolingPage = () => {
         <Button onPress={logCardUnderInspection}>
           log Card Under Inspection
         </Button>
-        <Button onPress={resetTutorialStep}>Reset tutorial</Button>
+        {/* <Button onPress={resetTutorialStep}>Reset tutorial</Button> */}
       </ScrollView>
     </SafeAreaView>
   );

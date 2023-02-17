@@ -159,7 +159,7 @@ export default class Card implements CardClass {
   code;
   name;
   parameters;
-  constructor(newCard: CardClass) {
+  constructor(newCard?: CardClass) {
     //uuid
     this.uuid = newCard ? uuid.v4() : undefined;
     //metadata

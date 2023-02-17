@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     width: width * 0.72,
     height: (width * 0.72) / 0.7,
-    // backgroundColor: '#222222',
+    // backgroundColor: '#22222200',
     // backgroundColor: colours.foreground,
     justifyContent: 'center',
     alignItems: 'center',

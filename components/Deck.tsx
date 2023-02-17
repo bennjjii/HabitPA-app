@@ -43,15 +43,11 @@ import Animated, {
   withRepeat,
 } from 'react-native-reanimated';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
-import Modal from 'react-native-modal';
 //
 import colours from '../assets/colours/colours';
 import {Context as AuthContext} from '../services/Auth';
 import Card from './Card';
 import NoCards from './NoCards';
-import BackOfCard from './BackOfCard';
-import InAction from './InAction';
-import AddOrEditCardForm from './AddOrEditCardForm';
 import Done from './Done';
 import {useNavigationState} from '@react-navigation/native';
 
@@ -84,21 +80,11 @@ const Deck = () => {
     usePersistentStore();
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
-  const {
-    modalVisibleBackOfCard,
-    showModalBackOfCard,
-    hideModalBackOfCard,
-    switchToInAction,
-    modalVisibleInAction,
-    modalVisibleAddCard,
-    hideModalAddCard,
-  } = useNonPersistentStore();
+  const {showBackOfCardModal} = useNonPersistentStore();
 
   //convention - 0 is top card in stack, 1 is card underneath etc
-  const [cardInAction, setCardInAction] = useState(undefined);
-  const [showDone, setShowDone] = useState(false);
+
   const randomValue = useSharedValue(0);
-  const showDoneShared = useSharedValue(false);
   const doneOpacity = useSharedValue(0);
   //TODO some bugs will occur here
   const [indexCardOffScreen, setIndexCardOffScreen] = useState(
@@ -183,7 +169,7 @@ const Deck = () => {
   }, [deck]);
 
   const openModalBackOfCard = () => {
-    showModalBackOfCard(filteredDeck[indexCardOnScreen]);
+    showBackOfCardModal(filteredDeck[indexCardOnScreen]);
   };
 
   const tapGesture = Gesture.Tap()
@@ -501,35 +487,6 @@ const Deck = () => {
                 name={'stand in'}
               />
             </Animated.View>
-            <Modal
-              isVisible={modalVisibleBackOfCard && navState == 0}
-              onRequestClose={() => {
-                hideModalBackOfCard();
-              }}
-              onBackdropPress={() => {
-                hideModalBackOfCard();
-              }}
-              style={styles.modalContainer}>
-              <BackOfCard card={filteredDeck[indexCardOnScreen]} />
-            </Modal>
-            {/* <Modal isVisible={modalVisibleInAction && navState == 0}>
-              <InAction />
-            </Modal> */}
-            <Modal
-              isVisible={modalVisibleAddCard && navState == 0}
-              style={styles.modal}
-              onRequestClose={() => {
-                hideModalAddCard();
-              }}
-              onBackdropPress={() => {
-                hideModalAddCard();
-              }}>
-              <KeyboardAvoidingView
-                enabled
-                behavior={Platform.OS === 'android' ? undefined : 'position'}>
-                <AddOrEditCardForm sourceTab="Deck" />
-              </KeyboardAvoidingView>
-            </Modal>
           </View>
         </GestureDetector>
       </ImageBackground>

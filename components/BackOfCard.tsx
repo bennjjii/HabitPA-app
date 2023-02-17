@@ -18,34 +18,35 @@ import ProgressBox from './ProgressBox';
 import colours from '../assets/colours/colours';
 import chroma from 'chroma-js';
 
-import Card from './CardClass';
+import Card, {CardClass} from './CardClass';
 
 const {width, height} = Dimensions.get('screen');
 
-import TickGb from '../assets/tickgainsboro.png';
-import EditGb from '../assets/editgainsboro.png';
-import TrashGb from '../assets/trashgainsboro.png';
-import TickDg from '../assets/tickdimgrey.png';
-import EditDg from '../assets/editdimgrey.png';
-import TrashDg from '../assets/trashdimgrey.png';
+const TickGb = require('../assets/tickgainsboro.png');
+const EditGb = require('../assets/editgainsboro.png');
+const TrashGb = require('../assets/trashgainsboro.png');
+const TickDg = require('../assets/tickdimgrey.png');
+const EditDg = require('../assets/editdimgrey.png');
+const TrashDg = require('../assets/trashdimgrey.png');
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 FontAwesome.loadFont();
 
-const BackOfCard = props => {
+interface BackOfCardProps {
+  cardInFocus: CardClass;
+}
+
+const BackOfCard: React.FC<BackOfCardProps> = ({cardInFocus}) => {
   const {deleteCardFromDeck} = usePersistentStore();
-  const {
-    cardUnderInspection,
-    hideModalBackOfCard,
-    switchToEditCard,
-    switchToInAction,
-  } = useNonPersistentStore();
+  const {hideModal, switchFromBackOfCardModalToAddOrEdit} =
+    useNonPersistentStore();
 
   const [cardTheme, setCardTheme] = useState(undefined);
 
   useEffect(() => {
-    if (props.card?.code) {
+    if (cardInFocus.code) {
       if (
-        chroma(Card.cardDefinitions[props.card.code].backOfCardColour).get(
+        chroma(Card.cardDefinitions[cardInFocus.code].backOfCardColour).get(
           'lab.l',
         ) < 70
       ) {
@@ -54,31 +55,31 @@ const BackOfCard = props => {
         setCardTheme('light');
       }
     }
-  }, [props.card]);
+  }, [cardInFocus]);
 
   return (
     <View
       style={[
         styles.container,
         {
-          backgroundColor: props.card
-            ? Card.cardDefinitions[props.card.code].backOfCardColour
+          backgroundColor: cardInFocus
+            ? Card.cardDefinitions[cardInFocus.code].backOfCardColour
             : 'white',
         },
       ]}>
       <Text style={styles.cardText}>
-        {(props.card?.name &&
-          (props.card.name.length < 33
-            ? props.card.name
-            : props.card.name.slice(0, 33) + '...')) ||
+        {(cardInFocus.name &&
+          (cardInFocus.name.length < 33
+            ? cardInFocus.name
+            : cardInFocus.name.slice(0, 33) + '...')) ||
           '...'}
       </Text>
 
-      <ProgressBox card={props.card} />
+      <ProgressBox card={cardInFocus} />
       <View style={styles.iconContainer}>
         <TouchableOpacity
           onPress={() => {
-            switchToInAction(props.card);
+            //TODO implement inaction from here
           }}>
           <Image
             source={cardTheme === 'dark' ? TickGb : TickDg}
@@ -87,7 +88,7 @@ const BackOfCard = props => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            switchToEditCard(props.card);
+            switchFromBackOfCardModalToAddOrEdit(cardInFocus);
           }}>
           <Image
             source={cardTheme === 'dark' ? EditGb : EditDg}
@@ -96,8 +97,8 @@ const BackOfCard = props => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            deleteCardFromDeck(props.card);
-            hideModalBackOfCard();
+            deleteCardFromDeck(cardInFocus);
+            hideModal();
           }}>
           <Image
             source={cardTheme === 'dark' ? TrashGb : TrashDg}

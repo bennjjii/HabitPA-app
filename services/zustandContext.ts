@@ -32,6 +32,8 @@ const dateReviver = (key, value) => {
 
 //this is where the magic happens
 //tried to abstract most of the logic up here
+type ModalModes = 'EDIT_CARD' | 'BACK_OF_CARD' | undefined;
+
 interface HistoryItem {
   uuid: string;
   timestamp: Date;
@@ -250,21 +252,13 @@ export const usePersistentStore = create<PersistentStore>(
 
 interface NonPersistentStore {
   modalCode: ModalCode | undefined;
-  modalVisibleAddCard: boolean;
-  modalVisibleBackOfCard: boolean;
-  modalVisiblePiles: boolean;
-  modalVisibleInAction: boolean;
-  cardUnderInspection: CardClass | undefined;
-  cardInAction: CardClass;
-  showModalAddCard: (code: ModalCode) => void;
-  hideModalAddCard: () => void;
-  showModalBackOfCard: () => void;
-  hideModalBackOfCard: () => void;
-  switchToEditCard: (cardToEdit: CardClass) => void;
-  switchToInAction: (card: CardClass, ignoreTimeout: boolean) => void;
-  hideModalInAction: () => void;
-  showModalPiles: () => void;
-  hideModalPiles: () => void;
+  modalMode: ModalModes;
+  cardInFocus: CardClass | undefined;
+  hideModal: () => void;
+  showAddOrEditModal: (modalCode: ModalCode, cardInFocus?: CardClass) => void;
+  showBackOfCardModal: (cardInFocus: CardClass) => void;
+  switchFromBackOfCardModalToAddOrEdit: (cardInFocus: CardClass) => void;
+  //
   logCardUnderInspection: () => void;
   logNonPersistantVariables: () => void;
 }
@@ -274,92 +268,42 @@ export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
   // Modals
   //-------------------------------------------------------------------------------
   modalCode: undefined,
-  modalVisibleAddCard: false,
-  showModalAddCard: code => {
+  modalMode: undefined,
+  cardInFocus: undefined,
+  hideModal: () => {
     set(() => ({
-      modalVisibleAddCard: true,
-      modalCode: code,
-    }));
-  },
-  hideModalAddCard: () => {
-    set(() => ({
-      modalVisibleAddCard: false,
+      modalMode: undefined,
       modalCode: undefined,
-      cardUnderInspection: undefined,
     }));
   },
-  modalVisibleBackOfCard: false,
-  cardUnderInspection: undefined,
-  showModalBackOfCard: () => {
+  showAddOrEditModal: (modalCode, cardInFocus) => {
     set(() => ({
-      modalVisibleBackOfCard: true,
-      //modalVisibleAddCard: true,
+      modalMode: 'EDIT_CARD',
+      modalCode: modalCode,
+      cardInFocus: cardInFocus,
     }));
   },
-  switchToEditCard: cardToEdit => {
+  showBackOfCardModal: cardInFocus => {
     set(() => ({
-      cardUnderInspection: cardToEdit,
-      modalCode: cardToEdit.code,
-      modalVisiblePiles: false,
-      modalVisibleBackOfCard: false,
-    }));
-    setTimeout(() => {
-      set(() => ({
-        modalVisibleAddCard: true,
-      }));
-    }, 400);
-  },
-  hideModalBackOfCard: () => {
-    set(() => ({
-      cardUnderInspection: undefined,
+      modalMode: 'BACK_OF_CARD',
       modalCode: undefined,
-      modalVisibleBackOfCard: false,
-      modalVisiblePiles: false,
+      cardInFocus: cardInFocus,
     }));
   },
-  modalVisibleInAction: false,
-  cardInAction: undefined,
-  switchToInAction: (card, ignoreTimeout) => {
+  switchFromBackOfCardModalToAddOrEdit: cardInFocus => {
     set(() => ({
-      modalVisiblePiles: false,
-      modalVisibleBackOfCard: false,
-      cardInAction: card,
-    }));
-    if (ignoreTimeout) {
-      set(() => ({
-        modalVisibleInAction: true,
-      }));
-    } else {
-      setTimeout(() => {
-        set(() => ({
-          modalVisibleInAction: true,
-        }));
-      }, 400);
-    }
-  },
-  hideModalInAction: () => {
-    set(() => ({
-      modalVisibleInAction: false,
-      cardInAction: undefined,
+      modalMode: 'EDIT_CARD',
+      modalCode: cardInFocus.code,
+      cardInFocus: cardInFocus,
     }));
   },
-  modalVisiblePiles: false,
-  showModalPiles: () => {
-    set(() => ({
-      modalVisiblePiles: true,
-    }));
-  },
-  hideModalPiles: () => {
-    set(() => ({
-      modalVisiblePiles: false,
-    }));
-  },
+  //
   //-------------------------------------------------------------------------------
   // Logging
   //-------------------------------------------------------------------------------
   logCardUnderInspection: () => {
     if (global.enableLogging) {
-      console.log(get().cardUnderInspection);
+      console.log(get().cardInFocus);
     }
   },
   logNonPersistantVariables: () => {

@@ -13,15 +13,6 @@ const Done = props => {
 export default Done;
 
 const styles = StyleSheet.create({
-  container: {
-    // position: 'absolute',
-    // width: width,
-    // height: height,
-    // display: 'flex',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // backgroundColor: '#00EE00',
-  },
   cardText: {
     fontFamily: 'PublicPixel',
     fontSize: 60,

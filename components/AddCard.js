@@ -9,15 +9,11 @@ import {
   Dimensions,
   ImageBackground,
 } from 'react-native';
-import Modal from 'react-native-modal';
-import {useNavigationState} from '@react-navigation/native';
 
-import KeyboardAvoidingView from 'react-native/Libraries/Components/Keyboard/KeyboardAvoidingView';
 import colours from '../assets/colours/colours';
 // import AppBackground from './../assets/ElvinWood.jpeg';
 import AppBackground from './../assets/pixelBgLic1.png';
 
-import AddOrEditCardForm from './AddOrEditCardForm';
 import CardClass from './CardClass';
 
 import {useNonPersistentStore} from '../services/zustandContext';
@@ -28,12 +24,12 @@ const cardDefinitions = CardClass.cardDefinitions;
 const {width, height} = Dimensions.get('screen');
 
 const TemplateCard = props => {
-  const {showModalAddCard} = useNonPersistentStore();
+  const {showAddOrEditModal} = useNonPersistentStore();
 
   return (
     <Pressable
       onPress={() => {
-        showModalAddCard(props.code);
+        showAddOrEditModal(props.code);
       }}>
       <View
         style={[
@@ -55,8 +51,6 @@ const TemplateCard = props => {
 };
 
 const AddCard = () => {
-  const navState = useNavigationState(state => state.index);
-  const {modalVisibleAddCard, hideModalAddCard} = useNonPersistentStore();
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground resizeMode={'cover'} source={AppBackground}>
@@ -82,23 +76,6 @@ const AddCard = () => {
           </View>
         </ScrollView>
       </ImageBackground>
-      <Modal
-        isVisible={modalVisibleAddCard && navState == 1}
-        style={styles.modal}
-        onRequestClose={() => {
-          hideModalAddCard();
-        }}
-        onBackdropPress={() => {
-          hideModalAddCard();
-        }}
-        presentationStyle={'formSheet'}
-        transparent={true}>
-        <KeyboardAvoidingView
-          enabled
-          behavior={Platform.OS === 'android' ? undefined : 'position'}>
-          <AddOrEditCardForm sourceTab="AddCard" />
-        </KeyboardAvoidingView>
-      </Modal>
     </SafeAreaView>
   );
 };

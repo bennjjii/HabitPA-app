@@ -12,23 +12,23 @@ import chroma from 'chroma-js';
 
 const InAction = props => {
   const {pushCardToHistory} = usePersistentStore();
-  const {hideModalInAction, cardInAction} = useNonPersistentStore();
+  const {hideModal, cardInFocus} = useNonPersistentStore();
   return (
     <View
       style={[
         styles.container,
         {
           backgroundColor:
-            Card.cardDefinitions[cardInAction?.code]?.backOfCardColour,
+            Card.cardDefinitions[cardInFocus?.code]?.backOfCardColour,
         },
       ]}>
       <Text style={styles.letsGoText}>Let's Go!</Text>
-      <Text style={styles.cardNameText}>{cardInAction?.name}</Text>
+      <Text style={styles.cardNameText}>{cardInFocus?.name}</Text>
       <View styles={styles.buttonsView}>
         <Button
           onPress={() => {
-            pushCardToHistory(cardInAction);
-            hideModalInAction();
+            pushCardToHistory(cardInFocus);
+            hideModal();
           }}
           labelStyle={styles.completeButton}>
           Complete!

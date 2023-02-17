@@ -4,7 +4,7 @@
 //could toss state up from here via callbacks
 //react native date pciker looks nice
 
-//need to convert between cardUnderInspection (.parameters)
+//need to convert between cardInFocus (.parameters)
 //and formData/defaultValues == flat list
 
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -32,7 +32,8 @@ import {
 } from '../services/zustandContext';
 import colours from '../assets/colours/colours';
 import chroma from 'chroma-js';
-import Card from './CardClass';
+import Card, {CardClass, ModalCode} from './CardClass';
+
 const {width, height} = Dimensions.get('screen');
 const cardDefinitions = Card.cardDefinitions;
 const checkForParam = (modalCode, paramName) => {
@@ -62,19 +63,18 @@ const shortNames = {
   Bedtime: 'Bed',
 };
 
-// const wheelPickerGenerator = count => {
-//   const t = [];
-//   for (let i = 1; i < count + 1; i++) {
-//     t.push({label: i.toString(), value: i.toString()});
-//   }
-//   return t;
-// };
+interface AddOrEditCardFormProps {
+  modalCode: ModalCode;
+  cardInFocus?: CardClass;
+}
 
-const AddOrEditCardForm = props => {
+const AddOrEditCardForm: React.FC<AddOrEditCardFormProps> = ({
+  modalCode,
+  cardInFocus,
+}) => {
   const {addCardToDeck, editCard} = usePersistentStore();
 
-  const {hideModalAddCard, modalCode, cardUnderInspection} =
-    useNonPersistentStore();
+  const {hideModal} = useNonPersistentStore();
 
   const [textColourStyle, setTextColourStyle] = useState({});
   const [textColour, setTextColour] = useState('white');
@@ -100,21 +100,19 @@ const AddOrEditCardForm = props => {
 
   const {
     handleSubmit,
-    formState,
     formState: {errors},
     control,
-    setValue,
     getValues,
   } = useForm({
-    defaultValues: cardUnderInspection
-      ? {...cardUnderInspection} //need to convert types here for this to work
+    defaultValues: cardInFocus
+      ? {...cardInFocus} //need to convert types here for this to work
       : new Card(),
   });
 
   const [date, setDate] = useState(
     checkForParam(modalCode, 'date')
-      ? cardUnderInspection
-        ? cardUnderInspection.parameters.date
+      ? cardInFocus
+        ? cardInFocus.parameters.date
         : new Date()
       : undefined,
   );
@@ -126,8 +124,8 @@ const AddOrEditCardForm = props => {
 
   //set up year date spinner
   const [dayOfYearDay, setDayOfYearDay] = useState(
-    cardUnderInspection?.parameters.dayOfYear.day
-      ? cardUnderInspection.parameters.dayOfYear.day
+    cardInFocus?.parameters.dayOfYear.day
+      ? cardInFocus.parameters.dayOfYear.day
       : 1,
   );
   const [dayOfYearDayComponent, setDayOfYearDayComponent] = useState(
@@ -165,17 +163,17 @@ const AddOrEditCardForm = props => {
     />,
   );
   const [dayOfYearMonth, setDayOfYearMonth] = useState(
-    cardUnderInspection?.parameters.dayOfYear.month
-      ? cardUnderInspection.parameters.dayOfYear.month
+    cardInFocus?.parameters.dayOfYear.month
+      ? cardInFocus.parameters.dayOfYear.month
       : 1,
   );
 
   //set up other spinners
 
   const [numberOfTimes, setNumberOfTimes] = useState(
-    cardUnderInspection
-      ? cardUnderInspection.parameters.numberOfTimes
-        ? cardUnderInspection.parameters.numberOfTimes
+    cardInFocus
+      ? cardInFocus.parameters.numberOfTimes
+        ? cardInFocus.parameters.numberOfTimes
         : undefined
       : 1,
   );
@@ -185,9 +183,9 @@ const AddOrEditCardForm = props => {
   }, []);
 
   const [periodInDays, setPeriodInDays] = useState(
-    cardUnderInspection
-      ? cardUnderInspection.parameters.periodInDays
-        ? cardUnderInspection.parameters.periodInDays
+    cardInFocus
+      ? cardInFocus.parameters.periodInDays
+        ? cardInFocus.parameters.periodInDays
         : undefined
       : 1,
   );
@@ -204,9 +202,9 @@ const AddOrEditCardForm = props => {
       setDateError(true);
       return;
     }
-    if (cardUnderInspection) {
+    if (cardInFocus) {
       let cardToSubmit = {
-        ...cardUnderInspection,
+        ...cardInFocus,
         name: formData.name,
         // desc: formData.desc,
         parameters: {
@@ -279,7 +277,7 @@ const AddOrEditCardForm = props => {
         }),
       );
     }
-    hideModalAddCard();
+    hideModal();
   };
 
   return (
@@ -768,7 +766,7 @@ const AddOrEditCardForm = props => {
         <Button
           labelStyle={styles.submitButton}
           onPress={handleSubmit(onSubmit)}>
-          {cardUnderInspection ? 'SAVE' : 'ADD NEW CARD'}
+          {cardInFocus ? 'SAVE' : 'ADD NEW CARD'}
         </Button>
       </View>
     </Pressable>

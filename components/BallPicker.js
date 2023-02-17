@@ -24,7 +24,6 @@ const BallPicker = ({
           <PixelCheckbox
             label={altLabels ? altLabels[key].toString() : key.toString()}
             key={'MonthPickerKey:' + key}
-            // value={intValues[key]}
             value={values[key]}
             onValueChange={setValueWithIndex}
             index={key}

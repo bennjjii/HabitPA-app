@@ -14,15 +14,9 @@ import Modal from 'react-native-modal';
 import {useNavigationState} from '@react-navigation/native';
 
 import colours from '../assets/colours/colours';
-// import AppBackground from './../assets/ElvinWood.jpeg';
-import AppBackground from './../assets/pixelBgLic1.png';
-import {
-  usePersistentStore,
-  useNonPersistentStore,
-} from '../services/zustandContext';
+const AppBackground = require('./../assets/pixelBgLic1.png');
+import {usePersistentStore} from '../services/zustandContext';
 import BackOfCard from './BackOfCard';
-import AddOrEditCardForm from './AddOrEditCardForm';
-import InAction from './InAction';
 
 //TODO delete this
 const piles = [
@@ -41,22 +35,18 @@ const cardWidth = Dimensions.get('window').width / 2 - 50;
 const cardHeight = cardWidth * cardAspect;
 
 const Piles = () => {
-  const navState = useNavigationState(state => state.index);
   const {deck, history, getFullDeck} = usePersistentStore();
-  const {modalVisibleAddCard, modalVisibleInAction, hideModalAddCard} =
-    useNonPersistentStore();
-  const [pileType, setPileType] = useState(undefined);
-  const [mDeck, setmDeck] = useState([]);
+
   const [pileComponent, setPileComponent] = useState([
     ...getFullDeck().map(card => {
-      return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
+      return <BackOfCard cardInFocus={card} key={`backOfCard${card.uuid}`} />;
     }),
   ]);
 
   useEffect(() => {
     setPileComponent([
       ...getFullDeck().map(card => {
-        return <BackOfCard card={card} key={`backOfCard${card.uuid}`} />;
+        return <BackOfCard cardInFocus={card} key={`backOfCard${card.uuid}`} />;
       }),
     ]);
   }, [deck, history]);
@@ -73,27 +63,6 @@ const Piles = () => {
           <Text>{''}</Text>
           {pileComponent}
         </ScrollView>
-
-        <Modal
-          isVisible={modalVisibleAddCard && navState == 2}
-          style={styles.modal}
-          onRequestClose={() => {
-            hideModalAddCard();
-          }}
-          onBackdropPress={() => {
-            hideModalAddCard();
-          }}
-          presentationStyle={'formSheet'}
-          transparent={true}>
-          <KeyboardAvoidingView
-            enabled
-            behavior={Platform.OS === 'android' ? undefined : 'position'}>
-            <AddOrEditCardForm sourceTab="Piles" />
-          </KeyboardAvoidingView>
-        </Modal>
-        <Modal isVisible={modalVisibleInAction && navState == 2}>
-          <InAction />
-        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );

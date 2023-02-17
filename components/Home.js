@@ -1,4 +1,11 @@
-import {StyleSheet, Text, View, Platform, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  Image,
+  KeyboardAvoidingView,
+} from 'react-native';
 import React, {useEffect, useRef} from 'react';
 import Deck from './Deck';
 import Modal from 'react-native-modal';
@@ -11,19 +18,26 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import AddCard from './AddCard';
 import colours from '../assets/colours/colours';
-import InAction from './InAction';
+
+import AddOrEditCardForm from './AddOrEditCardForm';
+import BackOfCard from './BackOfCard';
+import ToolingPage from './ToolingPage';
 import DeckIcon from '../assets/deckXL.png';
 import AddCardIcon from '../assets/addcardXL.png';
 import ProgressIcon from '../assets/progressXL.png';
 import DeckIconDim from '../assets/deckDimmed.png';
 import AddCardIconDim from '../assets/addcardDimmed.png';
 import ProgressIconDim from '../assets/progressDimmed.png';
+import {useNonPersistentStore} from '../services/zustandContext';
 
 Entypo.loadFont();
 
 const Tab = createBottomTabNavigator();
 
 const Home = () => {
+  const {modalMode, hideModal, modalCode, cardInFocus} =
+    useNonPersistentStore();
+
   return (
     <>
       {/* <Tutorial navigationCtx={navigation} /> */}
@@ -86,15 +100,45 @@ const Home = () => {
               ),
           }}
         />
-        {/* <Tab.Screen
-          name="Tooling"
-          component={ToolingPage}
-          options={{
-            headerShown: false,
-            tabBarIcon: () => <Entypo name="code" size={32} />,
-          }}
-        /> */}
+        {global.enableTooling && (
+          <Tab.Screen
+            name="Tooling"
+            component={ToolingPage}
+            options={{
+              headerShown: false,
+              tabBarIcon: () => <Entypo name="code" size={32} />,
+            }}
+          />
+        )}
       </Tab.Navigator>
+      <Modal
+        isVisible={!!modalMode}
+        style={styles.modal}
+        onRequestClose={() => {
+          hideModal();
+        }}
+        onBackdropPress={() => {
+          hideModal();
+        }}
+        presentationStyle={'formSheet'}
+        transparent={true}
+        useNativeDriver={true}
+        useNativeDriverForBackdrop={true}>
+        {modalMode === 'EDIT_CARD' && (
+          <KeyboardAvoidingView
+            enabled
+            behavior={Platform.OS === 'android' ? undefined : 'position'}>
+            <AddOrEditCardForm
+              sourceTab="Deck"
+              modalCode={modalCode}
+              cardInFocus={cardInFocus}
+            />
+          </KeyboardAvoidingView>
+        )}
+        {modalMode === 'BACK_OF_CARD' && (
+          <BackOfCard cardInFocus={cardInFocus} />
+        )}
+      </Modal>
     </>
   );
 };
@@ -103,4 +147,9 @@ export default Home;
 
 const styles = StyleSheet.create({
   icon: {},
+  modal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
