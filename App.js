@@ -1,5 +1,5 @@
-global.enableLogging = false;
-global.enableTooling = false;
+global.enableLogging = true;
+global.enableTooling = true;
 import {LogBox, TouchableOpacity} from 'react-native';
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",

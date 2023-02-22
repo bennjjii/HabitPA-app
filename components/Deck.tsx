@@ -79,8 +79,7 @@ const Deck = ({doneAnimationRefHome}) => {
     usePersistentStore();
   let [filteredDeck, setFilteredDeck] = useState(getFilteredDeck());
 
-  const {showBackOfCardModal, setDoneAnimation, runDoneAnimation} =
-    useNonPersistentStore();
+  const {showBackOfCardModal} = useNonPersistentStore();
 
   //convention - 0 is top card in stack, 1 is card underneath etc
 
@@ -133,7 +132,7 @@ const Deck = ({doneAnimationRefHome}) => {
     }
     // setCardInAction(filteredDeck[args[0]]);
     // switchToInAction(filteredDeck[args[0]], true);
-    // pushCardToHistory(filteredDeck[args[0]]);
+    pushCardToHistory(filteredDeck[args[0]]);
     doneAnimationRefHome.current.triggerDoneAnimation();
   };
 

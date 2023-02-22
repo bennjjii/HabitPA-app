@@ -33,9 +33,6 @@ const Done = forwardRef<any, DoneProps>((props, ref) => {
     ref,
     () => {
       return {
-        log: () => {
-          console.log('test');
-        },
         triggerDoneAnimation: () => {
           doneOpacity.value = withSequence(
             withRepeat(
@@ -80,56 +77,6 @@ const Done = forwardRef<any, DoneProps>((props, ref) => {
     </Animated.View>
   );
 });
-
-// const Done: React.FC<DoneProps> = ({source}) => {
-//   const doneOpacity = useSharedValue(0);
-//   const doneVisible = useSharedValue(false);
-//   const {setDoneAnimation} = useNonPersistentStore();
-
-//   useEffect(() => {
-//     setDoneAnimation(triggerDoneAnimation, source);
-//   }, []);
-
-//   const triggerDoneAnimation = () => {
-//     doneOpacity.value = withSequence(
-//       withRepeat(
-//         withSequence(
-//           withTiming(1, {
-//             duration: 70,
-//             easing: Easing.out(Easing.exp),
-//           }),
-//           withTiming(0, {
-//             duration: 70,
-//             easing: Easing.out(Easing.exp),
-//           }),
-//         ),
-//         7,
-//       ),
-//       withTiming(1, {
-//         duration: 70,
-//         easing: Easing.out(Easing.exp),
-//       }),
-//       withTiming(0, {
-//         duration: 1000,
-//         easing: Easing.out(Easing.exp),
-//       }),
-//     );
-//   };
-
-//   const doneReanimatedStyle = useAnimatedStyle(() => {
-//     return {
-//       opacity: doneOpacity.value,
-//     };
-//   }, [doneOpacity]);
-
-//   return (
-//     <Animated.View
-//       style={[doneReanimatedStyle, styles.container]}
-//       pointerEvents="none">
-//       <Text style={styles.cardText}>Done!</Text>
-//     </Animated.View>
-//   );
-// };
 
 export default Done;
 

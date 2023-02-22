@@ -46,12 +46,8 @@ const BackOfCard: React.FC<BackOfCardProps> = ({
   doneAnimationRefHome,
 }) => {
   const {deleteCardFromDeck, pushCardToHistory} = usePersistentStore();
-  const {
-    hideModal,
-    switchFromBackOfCardModalToAddOrEdit,
-    runDoneAnimation,
-    modalMode,
-  } = useNonPersistentStore();
+  const {hideModal, switchFromBackOfCardModalToAddOrEdit, modalMode} =
+    useNonPersistentStore();
   const doneRefModal = useRef(null);
 
   const [cardTheme, setCardTheme] = useState(undefined);
@@ -93,13 +89,14 @@ const BackOfCard: React.FC<BackOfCardProps> = ({
         <View style={styles.iconContainer}>
           <TouchableOpacity
             onPress={() => {
-              //TODO implement inaction from here
-              // pushCardToHistory(cardInFocus);
-              // runDoneAnimation();
               if (modalMode === 'BACK_OF_CARD') {
-                doneRefModal.current.log();
+                pushCardToHistory(cardInFocus);
+                setTimeout(() => {
+                  hideModal();
+                }, 800);
                 doneRefModal.current.triggerDoneAnimation();
               } else {
+                pushCardToHistory(cardInFocus);
                 doneAnimationRefHome.current.triggerDoneAnimation();
               }
             }}>

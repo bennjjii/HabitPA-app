@@ -87,13 +87,6 @@ export const usePersistentStore = create<PersistentStore>(
             return card;
           }
         });
-        // tempDeck[
-        //   tempDeck
-        //     .map((x, i) => [i, x])
-        //     .filter(x => x[1].uuid == updatedCard.uuid)[0][0]
-        // ] = updatedCard;
-        //because we splice, and zustand only shallow evaluates the object for changes, this doesn't trigger an update
-        //bodgy workaround...
         set(state => ({deck: []}));
         set(state => ({deck: newDeck}));
       },
@@ -176,11 +169,7 @@ export const usePersistentStore = create<PersistentStore>(
         if (global.enableLogging) {
           console.log('Filtered deck:');
           console.log('\n');
-          const filteredDeck = filterCards(
-            get().deck,
-            get().history,
-            get().timesOfDay,
-          );
+          const filteredDeck = get().getFilteredDeck();
           filteredDeck.forEach((item, index) => {
             console.log('\n');
             console.log('-----------------------------');
@@ -261,11 +250,6 @@ interface NonPersistentStore {
   //
   logCardUnderInspection: () => void;
   logNonPersistantVariables: () => void;
-  runDoneAnimation: {
-    HOME?: () => void;
-    BACK_OF_CARD?: () => void;
-  };
-  setDoneAnimation: (animation: () => void, parent: string) => void;
 }
 
 export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
@@ -301,18 +285,6 @@ export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
       modalCode: cardInFocus.code,
       cardInFocus: cardInFocus,
     }));
-  },
-  runDoneAnimation: {
-    HOME: undefined,
-    BACK_OF_CARD: undefined,
-  },
-  setDoneAnimation: (animation, parent) => {
-    set({
-      runDoneAnimation: {
-        ...get().runDoneAnimation,
-        [parent]: animation,
-      },
-    });
   },
   //
   //-------------------------------------------------------------------------------

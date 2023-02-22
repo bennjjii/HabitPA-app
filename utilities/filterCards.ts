@@ -1,4 +1,6 @@
 import countCardsAfterDate from './countCardsAfterDate';
+import {CardClass} from '../components/CardClass';
+import {HistoryItem} from '../services/zustandContext';
 
 const Day = {
   Monday: 'Monday',
@@ -66,7 +68,11 @@ const getTimeOfDay = timesOfDay => {
 //   );
 // };
 
-export default (deck, history, timesOfDay) => {
+export default (
+  deck: Array<CardClass>,
+  history: Array<HistoryItem>,
+  timesOfDay,
+): Array<CardClass> => {
   const currentTimeOfDay = getTimeOfDay(timesOfDay);
   const today = new Date(new Date()).toLocaleString('en-us', {weekday: 'long'});
   return deck.filter(card => {
@@ -147,7 +153,7 @@ export default (deck, history, timesOfDay) => {
           countCardsAfterDate(
             history,
             card,
-            new Date(new Date() - 86400000 * 7),
+            new Date(new Date().getTime() - 86400000 * 7),
           );
         break;
       case 'EM':
@@ -182,7 +188,7 @@ export default (deck, history, timesOfDay) => {
           countCardsAfterDate(
             history,
             card,
-            new Date(new Date() - 86400000 * 30),
+            new Date(new Date().getTime() - 86400000 * 30),
           );
         break;
       case 'XiY':
@@ -192,7 +198,9 @@ export default (deck, history, timesOfDay) => {
           countCardsAfterDate(
             history,
             card,
-            new Date(new Date() - 86400000 * card.parameters.periodInDays),
+            new Date(
+              new Date().getTime() - 86400000 * card.parameters.periodInDays,
+            ),
           );
         break;
       case 'XiT':
@@ -245,7 +253,7 @@ export default (deck, history, timesOfDay) => {
         //if we are on date return true, else return false
         isReturned =
           new Date().getDate() === card.parameters.dayOfYear.day &&
-          new Date().getMonth + 1 === card.parameters.dayOfYear.month;
+          new Date().getMonth() + 1 === card.parameters.dayOfYear.month;
         break;
       case 'XpY':
         //if we count X times in the past year, return true, else return false
@@ -259,11 +267,15 @@ export default (deck, history, timesOfDay) => {
           countCardsAfterDate(
             history,
             card,
-            new Date(new Date() - 86400000 * 365),
+            new Date(new Date().getTime() - 86400000 * 365),
           );
         break;
       case 'AsP':
-        isReturned = true;
+        if (countCardsAfterDate(history, card, new Date(0))) {
+          isReturned = false;
+        } else {
+          isReturned = true;
+        }
         break;
     }
     return isReturned;
