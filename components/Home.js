@@ -43,6 +43,7 @@ const Home = () => {
     useNonPersistentStore();
 
   const {history} = usePersistentStore();
+  const doneAnimationRefHome = useRef(null);
 
   return (
     <>
@@ -66,7 +67,7 @@ const Home = () => {
       >
         <Tab.Screen
           name="Deck"
-          component={Deck}
+          children={() => <Deck doneAnimationRefHome={doneAnimationRefHome} />}
           options={{
             headerShown: false,
             // tabBarIcon: () => <Entypo name="documents" size={32} />,
@@ -80,7 +81,7 @@ const Home = () => {
         />
         <Tab.Screen
           name="Add Card"
-          component={AddCard}
+          children={() => <AddCard />}
           options={{
             headerShown: false,
             // tabBarIcon: () => <Entypo name="hour-glass" size={32} />,
@@ -94,7 +95,9 @@ const Home = () => {
         />
         <Tab.Screen
           name="Piles"
-          component={Piles2}
+          children={() => (
+            <Piles2 doneAnimationRefHome={doneAnimationRefHome} />
+          )}
           options={{
             headerShown: false,
             // tabBarIcon: () => <Entypo name="gauge" size={32} />,
@@ -142,14 +145,10 @@ const Home = () => {
           </KeyboardAvoidingView>
         )}
         {modalMode === 'BACK_OF_CARD' && (
-          <BackOfCard
-            cardInFocus={cardInFocus}
-            history={history}
-            insideModal={true}
-          />
+          <BackOfCard cardInFocus={cardInFocus} history={history} />
         )}
       </Modal>
-      <Done />
+      <Done source="HOME" ref={doneAnimationRefHome} />
     </>
   );
 };

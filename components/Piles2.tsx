@@ -32,7 +32,7 @@ const cardAspect = 400 / 280;
 const cardWidth = Dimensions.get('window').width / 2 - 50;
 const cardHeight = cardWidth * cardAspect;
 
-const Piles = () => {
+const Piles = ({doneAnimationRefHome}) => {
   const {deck, history, getFullDeck} = usePersistentStore();
 
   const [pileComponent, setPileComponent] = useState([
@@ -42,6 +42,7 @@ const Piles = () => {
           cardInFocus={card}
           key={`backOfCard${card.uuid}`}
           history={history}
+          doneAnimationRefHome={doneAnimationRefHome}
         />
       );
     }),
@@ -55,6 +56,7 @@ const Piles = () => {
             cardInFocus={card}
             key={`backOfCard${card.uuid}`}
             history={history}
+            doneAnimationRefHome={doneAnimationRefHome}
           />
         );
       }),

@@ -261,8 +261,11 @@ interface NonPersistentStore {
   //
   logCardUnderInspection: () => void;
   logNonPersistantVariables: () => void;
-  runDoneAnimation: () => void;
-  setDoneAnimation: (animation: () => void) => void;
+  runDoneAnimation: {
+    HOME?: () => void;
+    BACK_OF_CARD?: () => void;
+  };
+  setDoneAnimation: (animation: () => void, parent: string) => void;
 }
 
 export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
@@ -299,10 +302,16 @@ export const useNonPersistentStore = create<NonPersistentStore>((set, get) => ({
       cardInFocus: cardInFocus,
     }));
   },
-  runDoneAnimation: () => {},
-  setDoneAnimation: animation => {
+  runDoneAnimation: {
+    HOME: undefined,
+    BACK_OF_CARD: undefined,
+  },
+  setDoneAnimation: (animation, parent) => {
     set({
-      runDoneAnimation: animation,
+      runDoneAnimation: {
+        ...get().runDoneAnimation,
+        [parent]: animation,
+      },
     });
   },
   //

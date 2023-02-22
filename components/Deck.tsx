@@ -63,7 +63,7 @@ const yOffset = (width * 0.72) / 1.4;
 const SWIPE_SENSITIVITYX: number = 500;
 const SWIPE_SENSITIVITYY: number = 2000;
 
-const Deck = () => {
+const Deck = ({doneAnimationRefHome}) => {
   const navState = useNavigationState(state => state.index);
   if (global.enableLogging) {
     console.log('NavstateDeck', navState);
@@ -133,7 +133,8 @@ const Deck = () => {
     }
     // setCardInAction(filteredDeck[args[0]]);
     // switchToInAction(filteredDeck[args[0]], true);
-    pushCardToHistory(filteredDeck[args[0]]);
+    // pushCardToHistory(filteredDeck[args[0]]);
+    doneAnimationRefHome.current.triggerDoneAnimation();
   };
 
   const resetCardPosn = () => {
@@ -170,7 +171,6 @@ const Deck = () => {
 
   const openModalBackOfCard = () => {
     showBackOfCardModal(filteredDeck[indexCardOnScreen]);
-    runDoneAnimation();
   };
 
   const tapGesture = Gesture.Tap()
