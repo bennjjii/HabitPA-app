@@ -1,7 +1,7 @@
 import uuid from 'react-native-uuid';
 import countCardsAfterDate from '../utilities/countCardsAfterDate';
 import getAgeOfCardInDays from '../utilities/getAgeOfCardInDays';
-
+import {HistoryItem} from '../services/zustandContext';
 import PixelCheckbox from './PixelCheckbox';
 import ProgressBarGraph from './ProgressBarGraph2';
 import React from 'react';
@@ -243,7 +243,11 @@ export default class Card implements CardClass {
       },
       //we pass parameters, when it is already passed as part of card
       //not a problem, but redundant
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start
         //what percentage of last 7 days has habit been observed
         let contractedCardsPerDay = Object.keys(
@@ -271,8 +275,8 @@ export default class Card implements CardClass {
             ).setHours(0, 0, 0, 0),
           );
           const numCardsInThisDay = countCardsAfterDate(
-            history,
             card,
+            history,
             startOfDay,
             endOfDay,
           );
@@ -339,7 +343,7 @@ export default class Card implements CardClass {
           );
           startOfDay.setHours(0, 0, 0, 0);
           const cardCompletedToday =
-            countCardsAfterDate(history, props.card, startOfDay, endOfDay) >=
+            countCardsAfterDate(props.card, history, startOfDay, endOfDay) >=
             contractedCardsPerDay;
           tempArray.push({
             day: middleOfDay.toString()[0],
@@ -372,13 +376,17 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 7);
         return convertToLevel(
           countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(
               new Date(
                 new Date().setDate(new Date().getDate() - ageOfCardInDays),
@@ -424,8 +432,8 @@ export default class Card implements CardClass {
             ),
           );
           const numCompletedThisDay = countCardsAfterDate(
-            history,
             props.card,
+            history,
             startOfDay,
             endOfDay,
           );
@@ -456,7 +464,11 @@ export default class Card implements CardClass {
         //default this to all selected vv
         timeOfDay: [],
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start
         //for every time you contracted you would in the past month, how many did you do?
         let filteredHistory = history.filter(instance => {
@@ -547,8 +559,8 @@ export default class Card implements CardClass {
               ).setHours(0, 0, 0, 0),
             );
             const numCompletedThisDay = countCardsAfterDate(
-              history,
               props.card,
+              history,
               startOfDay,
               endOfDay,
             );
@@ -581,7 +593,11 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //TODO refine this function
         //soft start
         //cond 1 - if card created after this Monday, pro rata times contracted vs times actual
@@ -609,8 +625,8 @@ export default class Card implements CardClass {
           const accContractedThisWeek =
             parameters.numberOfTimes * (Math.min(ageOfCardInDays + 1, 7) / 7);
           const accActualThisWeek = countCardsAfterDate(
-            history,
             card,
+            history,
             card.created,
           );
           return convertToLevel(accActualThisWeek / accContractedThisWeek);
@@ -621,16 +637,16 @@ export default class Card implements CardClass {
             parameters.numberOfTimes *
             (Math.min(daysSinceThisLastMonday + 1, 7) / 7);
           const accActualThisWeek = countCardsAfterDate(
-            history,
             card,
+            history,
             lastMonday,
           );
           const accContractedFirstWeek =
             parameters.numberOfTimes *
             (Math.min(ageOfCardInDays - daysSinceThisLastMonday + 1, 7) / 7);
           const accActualFirstWeek = countCardsAfterDate(
-            history,
             card,
+            history,
             card.created,
             lastMonday,
           );
@@ -645,14 +661,14 @@ export default class Card implements CardClass {
             parameters.numberOfTimes *
             (Math.min(daysSinceThisLastMonday + 1, 7) / 7);
           const accActualThisWeek = countCardsAfterDate(
-            history,
             card,
+            history,
             lastMonday,
           );
           const accContractedLastWeek = parameters.numberOfTimes;
           const accActualLastWeek = countCardsAfterDate(
-            history,
             card,
+            history,
             lastMonday,
             lastMondayMinus1,
           );
@@ -690,14 +706,14 @@ export default class Card implements CardClass {
           let numberOfCardsInWeek;
           if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               lastMondayMinus1,
             );
           } else {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               lastMondayMinus1,
               lastMonday,
             );
@@ -727,12 +743,16 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
         const accActual = countCardsAfterDate(
-          history,
           card,
+          history,
           new Date(
             new Date(
               new Date().setDate(new Date().getDate() - ageOfCardInDays),
@@ -767,14 +787,14 @@ export default class Card implements CardClass {
           let numberOfCardsInWeek;
           if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               fourteenDaysAgo,
             );
           } else {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               fourteenDaysAgo,
               sevenDaysAgo,
             );
@@ -804,7 +824,11 @@ export default class Card implements CardClass {
       parameters: {
         dayOfMonth: [],
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 14);
         let filteredHistory = history.filter(instance => {
@@ -907,8 +931,8 @@ export default class Card implements CardClass {
               ).setHours(0, 0, 0, 0),
             );
             const numCompletedThisDay = countCardsAfterDate(
-              history,
               props.card,
+              history,
               startOfDay,
               endOfDay,
             );
@@ -938,7 +962,11 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start, if card newer than start of previous month, don't count prev month
         //three conditions
         //cond 1 - card newer than start of this month - pro rata days so far
@@ -959,8 +987,8 @@ export default class Card implements CardClass {
         );
         if (ageOfCardInDays <= daysSinceFirstOfMonth) {
           const accActualThisMonth = countCardsAfterDate(
-            history,
             card,
+            history,
             card.created,
           );
           const accContractedThisMonth =
@@ -968,15 +996,15 @@ export default class Card implements CardClass {
           return convertToLevel(accActualThisMonth / accContractedThisMonth);
         } else if (ageOfCardInDays <= daysSinceFirstOfMonth + 30) {
           const accActualThisMonth = countCardsAfterDate(
-            history,
             card,
+            history,
             firstOfThisMonth,
           );
           const accContractedThisMonth =
             parameters.numberOfTimes * (daysSinceFirstOfMonth / 30);
           const accActualLastMonth = countCardsAfterDate(
-            history,
             card,
+            history,
             card.created,
             firstOfThisMonth,
           );
@@ -990,15 +1018,15 @@ export default class Card implements CardClass {
           );
         } else {
           const accActualThisMonth = countCardsAfterDate(
-            history,
             card,
+            history,
             firstOfThisMonth,
           );
           const accContractedThisMonth =
             parameters.numberOfTimes * (daysSinceFirstOfMonth / 30);
           const accActualLastMonth = countCardsAfterDate(
-            history,
             card,
+            history,
             firstOfMonthMinus1,
             firstOfThisMonth,
           );
@@ -1036,14 +1064,14 @@ export default class Card implements CardClass {
           let numberOfCardsInMonth;
           if (i == 0) {
             numberOfCardsInMonth = countCardsAfterDate(
-              history,
               props.card,
+              history,
               beginningOfMonthMinus1,
             );
           } else {
             numberOfCardsInMonth = countCardsAfterDate(
-              history,
               props.card,
+              history,
               beginningOfMonthMinus1,
               beginningOfMonth,
             );
@@ -1073,12 +1101,16 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start if card newer than 30 days calculate fraction
         const ageOfCardInDays = getAgeOfCardInDays(card.created, 30);
         let accActual = countCardsAfterDate(
-          history,
           card,
+          history,
           new Date(
             new Date(
               new Date().setDate(new Date().getDate() - ageOfCardInDays),
@@ -1109,14 +1141,14 @@ export default class Card implements CardClass {
           let numberOfCardsInWeek;
           if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               monthAgoMinus1,
             );
           } else {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               monthAgoMinus1,
               monthAgo,
             );
@@ -1147,7 +1179,11 @@ export default class Card implements CardClass {
         numberOfTimes: undefined,
         periodInDays: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //soft start*, if card has been created recently not fair to calculate against whole period
         //should be either since the creation of the card, or rolling function of some kind
 
@@ -1158,7 +1194,7 @@ export default class Card implements CardClass {
         const dateStartOfPeriod = new Date(
           new Date().setDate(new Date().getDate() - ageOfCardInDays),
         );
-        const accActual = countCardsAfterDate(history, card, dateStartOfPeriod);
+        const accActual = countCardsAfterDate(card, history, dateStartOfPeriod);
         const accContracted =
           parameters.numberOfTimes *
           (ageOfCardInDays / parameters.periodInDays);
@@ -1193,14 +1229,14 @@ export default class Card implements CardClass {
           let numberOfCardsInWeek;
           if (i == 0) {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               periodAgoMinus1,
             );
           } else {
             numberOfCardsInWeek = countCardsAfterDate(
-              history,
               props.card,
+              history,
               periodAgoMinus1,
               periodAgo,
             );
@@ -1233,8 +1269,12 @@ export default class Card implements CardClass {
         //to use this need to record a creation time
         periodInDays: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
-        const accActual = countCardsAfterDate(history, card, card.created);
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
+        const accActual = countCardsAfterDate(card, history, card.created);
         return convertToLevel(accActual / parameters.numberOfTimes);
       },
       contractRenderFunction: props => {
@@ -1243,8 +1283,8 @@ export default class Card implements CardClass {
       progressRenderFunction: (props, history, color) => {
         //sideways graph would be better here
         const accActual = countCardsAfterDate(
-          history,
           props.card,
+          history,
           props.card.created,
         );
         const tempArray = [
@@ -1274,8 +1314,12 @@ export default class Card implements CardClass {
         //seems like would be easy to miss to have at a specific time here
         // timeOfDay: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
-        if (countCardsAfterDate(history, card, card.created) > 0) {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
+        if (countCardsAfterDate(card, history, card.created) > 0) {
           return 99;
         } else {
           return 1;
@@ -1289,7 +1333,7 @@ export default class Card implements CardClass {
       },
       progressRenderFunction: (props, history, color) => {
         const completed =
-          countCardsAfterDate(history, props.card, props.card.created) > 0;
+          countCardsAfterDate(props.card, history, props.card.created) > 0;
         let componentToRender;
         if (!completed) {
           componentToRender = (
@@ -1324,8 +1368,12 @@ export default class Card implements CardClass {
       parameters: {
         date: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
-        if (countCardsAfterDate(history, card, card.created) > 0) {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
+        if (countCardsAfterDate(card, history, card.created) > 0) {
           return 99;
         } else {
           return 1;
@@ -1339,7 +1387,7 @@ export default class Card implements CardClass {
       },
       progressRenderFunction: (props, history, color) => {
         const completed =
-          countCardsAfterDate(history, props.card, props.card.created) > 0;
+          countCardsAfterDate(props.card, history, props.card.created) > 0;
         let componentToRender;
         if (!completed) {
           componentToRender = (
@@ -1377,7 +1425,11 @@ export default class Card implements CardClass {
           month: undefined,
         },
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         const filteredHistory = history.filter(instance => {
           return instance.uuid == card.uuid;
         });
@@ -1490,7 +1542,11 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         //three possible cases
         //card created this year
         if (card.created.getFullYear() === new Date().getFullYear()) {
@@ -1498,14 +1554,14 @@ export default class Card implements CardClass {
             parameters.numberOfTimes *
             ((new Date().getTime() - card.created.getTime()) /
               YEAR_IN_MILLISECONDS);
-          let accActual = countCardsAfterDate(history, card, card.created);
+          let accActual = countCardsAfterDate(card, history, card.created);
           return convertToLevel(accActual / accContracted);
         }
         //card created last year
         if (card.created.getFullYear() === new Date().getFullYear() - 1) {
           let accActualThisYear = countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)),
           );
           let accContractedThisYear =
@@ -1516,10 +1572,10 @@ export default class Card implements CardClass {
               ).getTime()) /
               YEAR_IN_MILLISECONDS);
           let accActualLastYear = countCardsAfterDate(
-            history,
             card,
+            history,
             card.created,
-            new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0),
+            new Date(new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)),
           );
           let accContractedLastYear =
             parameters.numberOfTimes *
@@ -1536,8 +1592,8 @@ export default class Card implements CardClass {
         }
         //default case - card created before last year
         let accActualThisYear = countCardsAfterDate(
-          history,
           card,
+          history,
           new Date(new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)),
         );
         let accContractedThisYear =
@@ -1548,8 +1604,8 @@ export default class Card implements CardClass {
             ).getTime()) /
             YEAR_IN_MILLISECONDS);
         let accActualLastYear = countCardsAfterDate(
-          history,
           card,
+          history,
           new Date(new Date(new Date().setMonth(-12, 1)).setHours(0, 0, 0, 0)),
           new Date(new Date(new Date().setMonth(0, 1)).setHours(0, 0, 0, 0)),
         );
@@ -1588,14 +1644,14 @@ export default class Card implements CardClass {
           let numCardsThisYear;
           if (i == 0) {
             numCardsThisYear = countCardsAfterDate(
-              history,
               props.card,
+              history,
               startOfYearMinus1,
             );
           } else {
             numCardsThisYear = countCardsAfterDate(
-              history,
               props.card,
+              history,
               startOfYearMinus1,
               startOfYear,
             );
@@ -1626,19 +1682,23 @@ export default class Card implements CardClass {
       parameters: {
         numberOfTimes: undefined,
       },
-      progressCoeffFunction: (card, history, parameters) => {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
         let msNow = new Date().getTime();
         let msCreated = card.created.getTime();
         let softStartCoeff = (msNow - msCreated) / YEAR_IN_MILLISECONDS;
         if (softStartCoeff < 1) {
           let accContracted = parameters.numberOfTimes * softStartCoeff;
-          let accActual = countCardsAfterDate(history, card, card.created);
+          let accActual = countCardsAfterDate(card, history, card.created);
           return Math.min(accActual / accContracted, 1);
         } else {
           let accContracted = parameters.numberOfTimes;
           let accActual = countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(new Date().getTime() - YEAR_IN_MILLISECONDS),
           );
           return convertToLevel(accActual / accContracted);
@@ -1669,14 +1729,14 @@ export default class Card implements CardClass {
           let numCardsThisYear;
           if (i == 0) {
             numCardsThisYear = countCardsAfterDate(
-              history,
               props.card,
+              history,
               startOfYearMinus1,
             );
           } else {
             numCardsThisYear = countCardsAfterDate(
-              history,
               props.card,
+              history,
               startOfYearMinus1,
               startOfYear,
             );
@@ -1704,8 +1764,12 @@ export default class Card implements CardClass {
       name: 'At some point',
       explanation: 'Something to be completed at some point.',
       parameters: {},
-      progressCoeffFunction: (card, history, parameters) => {
-        if (countCardsAfterDate(history, card, card.created) > 0) {
+      progressCoeffFunction: (
+        card: CardClass,
+        history: Array<HistoryItem>,
+        parameters,
+      ) => {
+        if (countCardsAfterDate(card, history, card.created) > 0) {
           return 99;
         } else {
           return 1;
@@ -1716,7 +1780,7 @@ export default class Card implements CardClass {
       },
       progressRenderFunction: (props, history, color) => {
         const completed =
-          countCardsAfterDate(history, props.card, props.card.created) > 0;
+          countCardsAfterDate(props.card, history, props.card.created) > 0;
         let componentToRender;
         if (!completed) {
           componentToRender = (

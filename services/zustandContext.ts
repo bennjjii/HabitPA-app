@@ -39,6 +39,13 @@ export interface HistoryItem {
   timestamp: Date;
 }
 
+export interface TimesOfDay {
+  Morning: [number, number];
+  Afternoon: [number, number];
+  Evening: [number, number];
+  Bedtime: [number, number];
+}
+
 interface PersistentStore {
   deck: CardClass[];
   history: HistoryItem[];
@@ -51,12 +58,7 @@ interface PersistentStore {
   getComingUpDeck: () => CardClass[];
   getInactiveDeck: () => CardClass[];
   getBackburnerDeck: () => CardClass[];
-  timesOfDay: {
-    Morning: [number, number];
-    Afternoon: [number, number];
-    Evening: [number, number];
-    Bedtime: [number, number];
-  };
+  timesOfDay: TimesOfDay;
   logHistory: () => void;
   logDeck: () => void;
   logFilteredDeck: () => void;

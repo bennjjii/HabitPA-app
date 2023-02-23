@@ -1,5 +1,6 @@
 import countCardsAfterDate from './countCardsAfterDate';
 import {CardClass} from '../components/CardClass';
+import {TimesOfDay} from '../services/zustandContext';
 import {HistoryItem} from '../services/zustandContext';
 
 const Day = {
@@ -71,7 +72,7 @@ const getTimeOfDay = timesOfDay => {
 export default (
   deck: Array<CardClass>,
   history: Array<HistoryItem>,
-  timesOfDay,
+  timesOfDay: TimesOfDay,
 ): Array<CardClass> => {
   const currentTimeOfDay = getTimeOfDay(timesOfDay);
   const today = new Date(new Date()).toLocaleString('en-us', {weekday: 'long'});
@@ -121,8 +122,8 @@ export default (
         isReturned =
           card.parameters.numberOfTimes >
           countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(new Date().setHours(0, 0, 0, 0)),
           );
         break;
@@ -144,15 +145,15 @@ export default (
         //if we count x or more cards since Monday 00hrs return false
         isReturned =
           card.parameters.numberOfTimes >
-          countCardsAfterDate(history, card, getLastMonday());
+          countCardsAfterDate(card, history, getLastMonday());
         break;
       case 'RxW':
         //if we count X cards or more in last y days return false
         isReturned =
           card.parameters.numberOfTimes >
           countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(new Date().getTime() - 86400000 * 7),
           );
         break;
@@ -179,15 +180,15 @@ export default (
         //if we count x or more cards since the start of the month return false, else return true
         isReturned =
           card.parameters.numberOfTimes >
-          countCardsAfterDate(history, card, getFirstDayOfMonth());
+          countCardsAfterDate(card, history, getFirstDayOfMonth());
         break;
       case 'RxM':
         //if we count x or more cards in the past 30 days return false, else return true
         isReturned =
           card.parameters.numberOfTimes >
           countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(new Date().getTime() - 86400000 * 30),
           );
         break;
@@ -196,8 +197,8 @@ export default (
         isReturned =
           card.parameters.numberOfTimes >
           countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(
               new Date().getTime() - 86400000 * card.parameters.periodInDays,
             ),
@@ -259,19 +260,19 @@ export default (
         //if we count X times in the past year, return true, else return false
         isReturned =
           card.parameters.numberOfTimes >
-          countCardsAfterDate(history, card, getFirstDayOfYear());
+          countCardsAfterDate(card, history, getFirstDayOfYear());
         break;
       case 'RxY':
         isReturned =
           card.parameters.numberOfTimes >
           countCardsAfterDate(
-            history,
             card,
+            history,
             new Date(new Date().getTime() - 86400000 * 365),
           );
         break;
       case 'AsP':
-        if (countCardsAfterDate(history, card, new Date(0))) {
+        if (countCardsAfterDate(card, history, new Date(0))) {
           isReturned = false;
         } else {
           isReturned = true;

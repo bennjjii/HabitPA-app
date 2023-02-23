@@ -1,10 +1,12 @@
+import {CardClass} from '../components/CardClass';
+import {HistoryItem} from '../services/zustandContext';
+
 const countCardsAfterDate = (
-  history,
-  card,
-  inTimestamp,
-  optionalOutTimestamp,
-  enableLogging,
-) => {
+  card: CardClass,
+  history: Array<HistoryItem>,
+  inTimestamp: Date,
+  optionalOutTimestamp?: Date,
+): number => {
   if (global.enableLogging) {
     console.log('history', history);
     console.log('card', card);

@@ -56,6 +56,7 @@ import {
   usePersistentStore,
   useNonPersistentStore,
 } from '../services/zustandContext';
+import {CardClass} from './CardClass';
 
 const {width, height} = Dimensions.get('screen');
 const xOffset = 0;
@@ -82,9 +83,84 @@ const Deck = ({doneAnimationRefHome}) => {
   const {showBackOfCardModal} = useNonPersistentStore();
 
   //convention - 0 is top card in stack, 1 is card underneath etc
+  // say 10 cards
+  //base offset card 2
+  //underneath card 1
+  //onscreen card 0
+  //offscreen card 9  == length -1
+  //stand in card 8 == length -2
+  //states
+  //0 cards in deck - NoCards only shown - swiping disabled
+  //1 cards in deck - onscreen card only shown
+  //2 cards in deck - onscreen, offscreen card, underneath and stand in shown
+  //3 cards in deck - 2 + base card
+
+  enum CARD_ROLE {
+    BASE = 'BASE',
+    UNDERNEATH = 'UNDERNEATH',
+    ONSCREEN = 'ONSCREEN',
+    OFFSCREEN = 'OFFSCREEN',
+    STANDIN = 'STANDIN',
+  }
+
+  interface CardPositions {
+    BASE: number;
+    UNDERNEATH: number;
+    ONSCREEN: number;
+    OFFSCREEN: number;
+    STANDIN: number;
+  }
+
+  const getIndexOfCard = (
+    currentOnScreenCardIndex: number,
+    filteredDeck: Array<CardClass>,
+    role: CARD_ROLE,
+  ): number | undefined => {
+    const CARD_POSITIONS: CardPositions = {
+      BASE: 2,
+      UNDERNEATH: 1,
+      ONSCREEN: 0,
+      OFFSCREEN: -1,
+      STANDIN: -2,
+    };
+    let deckLength = filteredDeck.length;
+
+    switch (role) {
+      case CARD_ROLE.ONSCREEN:
+        if (deckLength < 1) {
+          return undefined;
+        }
+      case CARD_ROLE.OFFSCREEN:
+        if (deckLength < 2) {
+          return undefined;
+        }
+      case CARD_ROLE.STANDIN:
+        if (deckLength < 2) {
+          return undefined;
+        }
+      case CARD_ROLE.UNDERNEATH:
+        if (deckLength < 2) {
+          return undefined;
+        }
+      case CARD_ROLE.BASE:
+        if (deckLength < 3) {
+          return undefined;
+        }
+    }
+
+    if (currentOnScreenCardIndex + CARD_POSITIONS[role] < 0) {
+      return deckLength + (currentOnScreenCardIndex + CARD_POSITIONS[role]);
+    }
+    if (
+      currentOnScreenCardIndex + CARD_POSITIONS[role] >
+      filteredDeck.length - 1
+    ) {
+      return currentOnScreenCardIndex + CARD_POSITIONS[role] - 1;
+    }
+    return currentOnScreenCardIndex + CARD_POSITIONS[role];
+  };
 
   const randomValue = useSharedValue(0);
-  const doneOpacity = useSharedValue(0);
   //TODO some bugs will occur here
   const [indexCardOffScreen, setIndexCardOffScreen] = useState(
     filteredDeck.length > 1 ? filteredDeck.length - 1 : 1,
@@ -124,7 +200,6 @@ const Deck = ({doneAnimationRefHome}) => {
   const currentCard = useSharedValue(0);
   const tempCurrentCard = useSharedValue(0);
 
-  //TODO why async? Test without
   const startCardInAction = args => {
     if (global.enableLogging) {
       console.log('card sent to history', filteredDeck[args[0]]);
@@ -229,29 +304,7 @@ const Deck = ({doneAnimationRefHome}) => {
                 } else {
                   currentCard.value = 0;
                 }
-                doneOpacity.value = withSequence(
-                  withRepeat(
-                    withSequence(
-                      withTiming(1, {
-                        duration: 70,
-                        easing: Easing.out(Easing.exp),
-                      }),
-                      withTiming(0, {
-                        duration: 70,
-                        easing: Easing.out(Easing.exp),
-                      }),
-                    ),
-                    7,
-                  ),
-                  withTiming(1, {
-                    duration: 70,
-                    easing: Easing.out(Easing.exp),
-                  }),
-                  withTiming(0, {
-                    duration: 1000,
-                    easing: Easing.out(Easing.exp),
-                  }),
-                );
+
                 runOnJS(updateCardIndex)(currentCard.value);
                 runOnJS(resetCardPosn)();
                 runOnJS(startCardInAction)([tempCurrentCard.value]);
@@ -413,16 +466,10 @@ const Deck = ({doneAnimationRefHome}) => {
             (offscreenCardRestingPosition.x + xOffset) / (width / 30) + 'deg',
         },
       ],
+      //could use useDerivedValue or useAnimatedReaction
       opacity: standInCardOpacity() + randomValue.value * 0.0000001,
     };
   }, []);
-
-  const doneReanimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: doneOpacity.value,
-      // display: showDoneShared.value ? 'flex' : 'none',
-    };
-  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -432,14 +479,18 @@ const Deck = ({doneAnimationRefHome}) => {
         source={AppBackground}>
         <GestureDetector gesture={Gesture.Simultaneous(panGesture, tapGesture)}>
           <View styles={styles.deckContainer}>
-            {/* card underneath onscreen card */}
-            <View style={styles.backgroundCard}>
-              <Card name={filteredDeck[indexCardUnderneath]?.name} />
-            </View>
-            {/* total bottom offset card */}
-            <View style={styles.backgroundCard2}>
+            {/* base card */}
+
+            <View style={styles.baseCard}>
               <Card />
             </View>
+
+            {/* underneath card */}
+
+            <View style={styles.underneathCard}>
+              <Card name={filteredDeck[indexCardUnderneath]?.name} />
+            </View>
+
             {/* onscreen card */}
             <Animated.View style={[onscreenCardReanimatedStyle]}>
               {filteredDeck.length > 0 ? (
@@ -526,7 +577,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  backgroundCard: {
+  underneathCard: {
     position: 'absolute',
     zIndex: 5,
     transform: [
@@ -538,7 +589,7 @@ const styles = StyleSheet.create({
       },
     ],
   },
-  backgroundCard2: {
+  baseCard: {
     position: 'absolute',
     zIndex: 1,
     transform: [

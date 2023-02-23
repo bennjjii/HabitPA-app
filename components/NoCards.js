@@ -1,11 +1,13 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React from 'react';
 import colours from '../assets/colours/colours';
+
+const {width, height} = Dimensions.get('window');
 
 const NoCards = props => {
   return (
     <View style={styles.container}>
-      <Text style={styles.cardText}>Add a card to get started!</Text>
+      <Text style={styles.cardText}>There's nothing here...</Text>
     </View>
   );
 };
@@ -14,23 +16,15 @@ const styles = StyleSheet.create({
   container: {
     width: 280,
     height: 400,
-    backgroundColor: '#222222',
-    backgroundColor: colours.foreground,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
   },
   cardText: {
-    color: '#ffffff',
-    color: colours.text,
+    width: width * 0.5,
+    fontFamily: 'PublicPixel',
+    textAlign: 'center',
+    color: '#dbb760',
   },
 });
 
