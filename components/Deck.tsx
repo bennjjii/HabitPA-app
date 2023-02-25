@@ -21,6 +21,10 @@ need persist option for a card to persist once drawn
 HabitMage is an app designed to facilitate incremental learning
 */
 
+/* -------------------------------------------------------------------------- */
+/*                                   Imports                                  */
+/* -------------------------------------------------------------------------- */
+
 import React, {useContext, useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
@@ -40,6 +44,8 @@ import Animated, {
   Easing,
   withSequence,
   withRepeat,
+  useDerivedValue,
+  clockRunning,
 } from 'react-native-reanimated';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 //
@@ -58,6 +64,10 @@ import {
 } from '../services/zustandContext';
 import {CardClass} from './CardClass';
 
+/* -------------------------------------------------------------------------- */
+/*                            Application constants                           */
+/* -------------------------------------------------------------------------- */
+
 const {width, height} = Dimensions.get('screen');
 const xOffset = 0;
 const yOffset = (width * 0.72) / 1.4;
@@ -75,6 +85,10 @@ const Deck = ({doneAnimationRefHome}) => {
       height,
     );
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Context                                  */
+  /* -------------------------------------------------------------------------- */
 
   const {deck, history, getFilteredDeck, pushCardToHistory} =
     usePersistentStore();
@@ -111,11 +125,16 @@ const Deck = ({doneAnimationRefHome}) => {
     STANDIN: number;
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                          Get index of card worklet                         */
+  /* -------------------------------------------------------------------------- */
+
   const getIndexOfCard = (
     currentOnScreenCardIndex: number,
     filteredDeck: Array<CardClass>,
     role: CARD_ROLE,
   ): number | undefined => {
+    'worklet';
     const CARD_POSITIONS: CardPositions = {
       BASE: 2,
       UNDERNEATH: 1,
@@ -147,7 +166,6 @@ const Deck = ({doneAnimationRefHome}) => {
           return undefined;
         }
     }
-
     if (currentOnScreenCardIndex + CARD_POSITIONS[role] < 0) {
       return deckLength + (currentOnScreenCardIndex + CARD_POSITIONS[role]);
     }
@@ -160,13 +178,51 @@ const Deck = ({doneAnimationRefHome}) => {
     return currentOnScreenCardIndex + CARD_POSITIONS[role];
   };
 
-  const randomValue = useSharedValue(0);
+  /* -------------------------------------------------------------------------- */
+  /*                                Card indices                                */
+  /* -------------------------------------------------------------------------- */
+
+  //index of card being shown - 0 is bottom of deck
+  const onscreenCardIndex = useSharedValue(0);
+  const offscreenCardIndex = useDerivedValue(() => {
+    return getIndexOfCard(
+      onscreenCardIndex.value,
+      filteredDeck,
+      CARD_ROLE.OFFSCREEN,
+    );
+  });
+  const standinCardIndex = useDerivedValue(() => {
+    return getIndexOfCard(
+      onscreenCardIndex.value,
+      filteredDeck,
+      CARD_ROLE.STANDIN,
+    );
+  });
+  const underneathCardIndex = useDerivedValue(() => {
+    return getIndexOfCard(
+      onscreenCardIndex.value,
+      filteredDeck,
+      CARD_ROLE.UNDERNEATH,
+    );
+  });
+  const baseCardIndex = useDerivedValue(() => {
+    return getIndexOfCard(
+      onscreenCardIndex.value,
+      filteredDeck,
+      CARD_ROLE.BASE,
+    );
+  });
   //TODO some bugs will occur here
   const [indexCardOffScreen, setIndexCardOffScreen] = useState(
     filteredDeck.length > 1 ? filteredDeck.length - 1 : 1,
   );
   const [indexCardOnScreen, setIndexCardOnScreen] = useState(0); //Top card in stack
   const [indexCardUnderneath, setIndexCardUnderneath] = useState(1); //Second from top card in stack
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 Coordinates                                */
+  /* -------------------------------------------------------------------------- */
+
   const onscreenCardRestingPosition = {
     x: 0 - xOffset,
     y: 0,
@@ -187,6 +243,11 @@ const Deck = ({doneAnimationRefHome}) => {
   const offscreenCardTranslationY = useSharedValue(
     offscreenCardRestingPosition.y,
   );
+
+  /* -------------------------------------------------------------------------- */
+  /*                        State to manage swiping logic                       */
+  /* -------------------------------------------------------------------------- */
+
   enum SwipingDirection {
     OnToPile,
     OffOfPile,
@@ -196,9 +257,10 @@ const Deck = ({doneAnimationRefHome}) => {
   const swipingDirection = useSharedValue(SwipingDirection.Neutral);
   const swipingSessionStartX = useSharedValue(undefined);
   const swipingSessionStartY = useSharedValue(undefined);
-  //index of card being shown - 0 is bottom of deck
-  const currentCard = useSharedValue(0);
-  const tempCurrentCard = useSharedValue(0);
+
+  /* -------------------------------------------------------------------------- */
+  /*                 When we 'do' the card from the deck screen                 */
+  /* -------------------------------------------------------------------------- */
 
   const startCardInAction = args => {
     if (global.enableLogging) {
@@ -210,6 +272,10 @@ const Deck = ({doneAnimationRefHome}) => {
     pushCardToHistory(filteredDeck[args[0]]);
     doneAnimationRefHome.current.triggerDoneAnimation();
   };
+
+  /* -------------------------------------------------------------------------- */
+  /*                           Double buffering logic                           */
+  /* -------------------------------------------------------------------------- */
 
   const resetCardPosn = () => {
     setTimeout(() => {
@@ -236,8 +302,9 @@ const Deck = ({doneAnimationRefHome}) => {
 
   useEffect(() => {
     setFilteredDeck(getFilteredDeck());
+    //if we remove a card what happens?
     if (indexCardOnScreen >= getFilteredDeck().length) {
-      currentCard.value = 0;
+      onscreenCardIndex.value = 0;
       setIndexCardOnScreen(0);
       setIndexCardUnderneath(1);
     }
@@ -246,6 +313,10 @@ const Deck = ({doneAnimationRefHome}) => {
   const openModalBackOfCard = () => {
     showBackOfCardModal(filteredDeck[indexCardOnScreen]);
   };
+
+  /* -------------------------------------------------------------------------- */
+  /*                              Gesture handlers                              */
+  /* -------------------------------------------------------------------------- */
 
   const tapGesture = Gesture.Tap()
     .maxDistance(20)
@@ -262,7 +333,6 @@ const Deck = ({doneAnimationRefHome}) => {
       if (filteredDeck.length <= 1) {
         return;
       }
-      randomValue.value = Math.random();
       console.log(offscreenCardTranslationX.value);
       if (event.absoluteX > swipingSessionStartX.value - 30) {
         swipingDirection.value = SwipingDirection.OffOfPile;
@@ -298,16 +368,14 @@ const Deck = ({doneAnimationRefHome}) => {
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
-                tempCurrentCard.value = currentCard.value;
-                if (currentCard.value + 1 < filteredDeck.length) {
-                  currentCard.value = currentCard.value + 1;
+                runOnJS(startCardInAction)([onscreenCardIndex.value]);
+                if (onscreenCardIndex.value + 1 < filteredDeck.length) {
+                  onscreenCardIndex.value = onscreenCardIndex.value + 1;
                 } else {
-                  currentCard.value = 0;
+                  onscreenCardIndex.value = 0;
                 }
-
-                runOnJS(updateCardIndex)(currentCard.value);
+                runOnJS(updateCardIndex)(onscreenCardIndex.value);
                 runOnJS(resetCardPosn)();
-                runOnJS(startCardInAction)([tempCurrentCard.value]);
               }
             },
           );
@@ -321,12 +389,12 @@ const Deck = ({doneAnimationRefHome}) => {
             onscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
-              if (currentCard.value > 0) {
-                currentCard.value = currentCard.value - 1;
+              if (onscreenCardIndex.value > 0) {
+                onscreenCardIndex.value = onscreenCardIndex.value - 1;
               } else {
-                currentCard.value = filteredDeck.length - 1;
+                onscreenCardIndex.value = filteredDeck.length - 1;
               }
-              runOnJS(updateCardIndex)(currentCard.value);
+              runOnJS(updateCardIndex)(onscreenCardIndex.value);
               runOnJS(resetCardPosn)();
             },
           );
@@ -342,12 +410,12 @@ const Deck = ({doneAnimationRefHome}) => {
             offscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
-              if (currentCard.value + 1 < filteredDeck.length) {
-                currentCard.value = currentCard.value + 1;
+              if (onscreenCardIndex.value + 1 < filteredDeck.length) {
+                onscreenCardIndex.value = onscreenCardIndex.value + 1;
               } else {
-                currentCard.value = 0;
+                onscreenCardIndex.value = 0;
               }
-              runOnJS(updateCardIndex)(currentCard.value);
+              runOnJS(updateCardIndex)(onscreenCardIndex.value);
               runOnJS(resetCardPosn)();
             },
           );
@@ -375,6 +443,10 @@ const Deck = ({doneAnimationRefHome}) => {
       swipingSessionStartX.value = undefined;
       swipingSessionStartY.value = undefined;
     });
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Worklets                                  */
+  /* -------------------------------------------------------------------------- */
 
   const onscreenCardRotateZ = () => {
     'worklet';
@@ -404,7 +476,7 @@ const Deck = ({doneAnimationRefHome}) => {
     );
   };
 
-  const standInCardOpacity = () => {
+  const standInCardOpacity = useDerivedValue(() => {
     'worklet';
     return (
       1 -
@@ -412,9 +484,13 @@ const Deck = ({doneAnimationRefHome}) => {
         offscreenCardTranslationX.value / offscreenCardRestingPosition.x,
         1,
       ) -
-      0.4
+      0.6
     );
-  };
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*                              Reanimated styles                             */
+  /* -------------------------------------------------------------------------- */
 
   const onscreenCardReanimatedStyle = useAnimatedStyle(() => {
     return {
@@ -467,9 +543,13 @@ const Deck = ({doneAnimationRefHome}) => {
         },
       ],
       //could use useDerivedValue or useAnimatedReaction
-      opacity: standInCardOpacity() + randomValue.value * 0.0000001,
+      opacity: standInCardOpacity.value,
     };
   }, []);
+
+  /* -------------------------------------------------------------------------- */
+  /*                              React components                              */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <SafeAreaView style={styles.container}>
