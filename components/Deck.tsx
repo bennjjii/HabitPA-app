@@ -670,7 +670,7 @@ const Deck = ({doneAnimationRefHome}) => {
               )}
             </Animated.View>
             {/* offscreen card */}
-            {filteredDeck.length > 0 && (
+            {filteredDeck.length > 1 && (
               <Animated.View
                 style={[
                   offscreenCardReanimatedStyle,
