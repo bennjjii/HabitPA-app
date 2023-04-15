@@ -1,4 +1,4 @@
-global.enableLogging = true;
+global.enableLogging = false;
 global.enableTooling = true;
 import {LogBox, TouchableOpacity} from 'react-native';
 LogBox.ignoreLogs([

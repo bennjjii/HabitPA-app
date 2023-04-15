@@ -46,6 +46,7 @@ import Animated, {
   withRepeat,
   useDerivedValue,
   clockRunning,
+  useAnimatedReaction,
 } from 'react-native-reanimated';
 import {GestureDetector, Gesture} from 'react-native-gesture-handler';
 //
@@ -63,6 +64,7 @@ import {
   useNonPersistentStore,
 } from '../services/zustandContext';
 import {CardClass} from './CardClass';
+import {Text} from 'react-native-paper';
 
 /* -------------------------------------------------------------------------- */
 /*                            Application constants                           */
@@ -133,8 +135,15 @@ const Deck = ({doneAnimationRefHome}) => {
     currentOnScreenCardIndex: number,
     filteredDeck: Array<CardClass>,
     role: CARD_ROLE,
+    log?: boolean,
   ): number | undefined => {
     'worklet';
+    if (log) {
+      console.log(
+        'entered function',
+        `getCardIndexRan, currentOnScreenCardIndex: ${currentOnScreenCardIndex}, deck length: ${filteredDeck.length}, role: ${role}`,
+      );
+    }
     const CARD_POSITIONS: CardPositions = {
       BASE: 2,
       UNDERNEATH: 1,
@@ -144,17 +153,20 @@ const Deck = ({doneAnimationRefHome}) => {
     };
     let deckLength = filteredDeck.length;
 
+    console.log('got here');
     switch (role) {
       case CARD_ROLE.ONSCREEN:
         if (deckLength < 1) {
           return undefined;
         }
       case CARD_ROLE.OFFSCREEN:
+        console.log('test1');
         if (deckLength < 2) {
           return undefined;
         }
       case CARD_ROLE.STANDIN:
         if (deckLength < 2) {
+          console.log('skipped');
           return undefined;
         }
       case CARD_ROLE.UNDERNEATH:
@@ -167,13 +179,36 @@ const Deck = ({doneAnimationRefHome}) => {
         }
     }
     if (currentOnScreenCardIndex + CARD_POSITIONS[role] < 0) {
+      if (log) {
+        console.log(
+          'func1st',
+          deckLength + (currentOnScreenCardIndex + CARD_POSITIONS[role]),
+        );
+      }
       return deckLength + (currentOnScreenCardIndex + CARD_POSITIONS[role]);
     }
     if (
       currentOnScreenCardIndex + CARD_POSITIONS[role] >
       filteredDeck.length - 1
     ) {
-      return currentOnScreenCardIndex + CARD_POSITIONS[role] - 1;
+      if (log) {
+        console.log(
+          'func2nd',
+          filteredDeck.length,
+          currentOnScreenCardIndex,
+          role,
+          CARD_POSITIONS[role],
+        );
+      }
+      return CARD_POSITIONS[role] - 1;
+    }
+    if (log) {
+      console.log(
+        'func3rd',
+        currentOnScreenCardIndex,
+        role,
+        CARD_POSITIONS[role],
+      );
     }
     return currentOnScreenCardIndex + CARD_POSITIONS[role];
   };
@@ -183,41 +218,82 @@ const Deck = ({doneAnimationRefHome}) => {
   /* -------------------------------------------------------------------------- */
 
   //index of card being shown - 0 is bottom of deck
-  const onscreenCardIndex = useSharedValue(0);
-  const offscreenCardIndex = useDerivedValue(() => {
-    return getIndexOfCard(
-      onscreenCardIndex.value,
+  const onscreenCardIndexSharedVal = useSharedValue(0);
+  const [onscreenCardIndex, setOnscreenCardIndex] = useState(
+    onscreenCardIndexSharedVal.value,
+  );
+  const [offscreenCardIndex, setOffscreenCardIndex] = useState(
+    getIndexOfCard(
+      onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.OFFSCREEN,
-    );
-  });
-  const standinCardIndex = useDerivedValue(() => {
-    return getIndexOfCard(
-      onscreenCardIndex.value,
+    ),
+  );
+  const [standinCardIndex, setStandinCardIndex] = useState(
+    getIndexOfCard(
+      onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.STANDIN,
-    );
-  });
-  const underneathCardIndex = useDerivedValue(() => {
-    return getIndexOfCard(
-      onscreenCardIndex.value,
+    ),
+  );
+  const [underneathCardIndex, setUnderneathCardIndex] = useState(
+    getIndexOfCard(
+      onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.UNDERNEATH,
-    );
-  });
-  const baseCardIndex = useDerivedValue(() => {
-    return getIndexOfCard(
-      onscreenCardIndex.value,
+    ),
+  );
+  const [baseCardIndex, setBaseCardIndex] = useState(
+    getIndexOfCard(
+      onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.BASE,
-    );
-  });
-  //TODO some bugs will occur here
-  const [indexCardOffScreen, setIndexCardOffScreen] = useState(
-    filteredDeck.length > 1 ? filteredDeck.length - 1 : 1,
+    ),
   );
-  const [indexCardOnScreen, setIndexCardOnScreen] = useState(0); //Top card in stack
-  const [indexCardUnderneath, setIndexCardUnderneath] = useState(1); //Second from top card in stack
+
+  const updateOffScreenCardWithDelay = args => {
+    // setTimeout(() => {
+    setOffscreenCardIndex(args);
+    // }, 500);
+  };
+  useAnimatedReaction(
+    () => onscreenCardIndexSharedVal.value,
+    (result, prev) => {
+      if (result !== prev) {
+        // setOnscreenCardIndex(result);
+        runOnJS(setOnscreenCardIndex)(result);
+        runOnJS(setOffscreenCardIndex)(
+          getIndexOfCard(
+            onscreenCardIndexSharedVal.value,
+            filteredDeck,
+            CARD_ROLE.OFFSCREEN,
+            true,
+          ),
+        );
+        runOnJS(setStandinCardIndex)(
+          getIndexOfCard(
+            onscreenCardIndexSharedVal.value,
+            filteredDeck,
+            CARD_ROLE.STANDIN,
+          ),
+        );
+        runOnJS(setUnderneathCardIndex)(
+          getIndexOfCard(
+            onscreenCardIndexSharedVal.value,
+            filteredDeck,
+            CARD_ROLE.UNDERNEATH,
+          ),
+        );
+        runOnJS(setBaseCardIndex)(
+          getIndexOfCard(
+            onscreenCardIndexSharedVal.value,
+            filteredDeck,
+            CARD_ROLE.BASE,
+          ),
+        );
+      }
+    },
+  );
 
   /* -------------------------------------------------------------------------- */
   /*                                 Coordinates                                */
@@ -277,23 +353,20 @@ const Deck = ({doneAnimationRefHome}) => {
   /*                           Double buffering logic                           */
   /* -------------------------------------------------------------------------- */
 
+  //If we swipe off the pile
+  //Update cardonscreenindex
+  //Then reset position of card
+  //If we swipe onto the pile
+  //Update cardonscreen index
+  //Then reset position of card
+
   const resetCardPosn = () => {
     setTimeout(() => {
       onscreenCardTranslationX.value = onscreenCardRestingPosition.x;
       onscreenCardTranslationY.value = onscreenCardRestingPosition.y;
       offscreenCardTranslationX.value = offscreenCardRestingPosition.x;
       offscreenCardTranslationY.value = offscreenCardRestingPosition.y;
-    }, 5);
-  };
-
-  const updateCardIndex = args => {
-    setIndexCardOnScreen(args);
-    console.log(args - 1, filteredDeck.length - 1);
-    //we have to change the card underneath before we reset the card positions...??
-    setTimeout(() => {
-      setIndexCardUnderneath(filteredDeck.length > args + 1 ? args + 1 : 0);
-      setIndexCardOffScreen(args > 0 ? args - 1 : filteredDeck.length - 1);
-    }, 10);
+    }, 0);
   };
 
   useEffect(() => {
@@ -303,15 +376,13 @@ const Deck = ({doneAnimationRefHome}) => {
   useEffect(() => {
     setFilteredDeck(getFilteredDeck());
     //if we remove a card what happens?
-    if (indexCardOnScreen >= getFilteredDeck().length) {
-      onscreenCardIndex.value = 0;
-      setIndexCardOnScreen(0);
-      setIndexCardUnderneath(1);
+    if (onscreenCardIndexSharedVal.value >= getFilteredDeck().length) {
+      onscreenCardIndexSharedVal.value = 0;
     }
   }, [deck]);
 
   const openModalBackOfCard = () => {
-    showBackOfCardModal(filteredDeck[indexCardOnScreen]);
+    showBackOfCardModal(filteredDeck[onscreenCardIndexSharedVal.value]);
   };
 
   /* -------------------------------------------------------------------------- */
@@ -368,13 +439,17 @@ const Deck = ({doneAnimationRefHome}) => {
             {overshootClamping: true},
             () => {
               if (filteredDeck.length) {
-                runOnJS(startCardInAction)([onscreenCardIndex.value]);
-                if (onscreenCardIndex.value + 1 < filteredDeck.length) {
-                  onscreenCardIndex.value = onscreenCardIndex.value + 1;
+                runOnJS(startCardInAction)([onscreenCardIndexSharedVal.value]);
+                if (
+                  onscreenCardIndexSharedVal.value + 1 <
+                  filteredDeck.length
+                ) {
+                  onscreenCardIndexSharedVal.value =
+                    onscreenCardIndexSharedVal.value + 1;
                 } else {
-                  onscreenCardIndex.value = 0;
+                  onscreenCardIndexSharedVal.value = 0;
                 }
-                runOnJS(updateCardIndex)(onscreenCardIndex.value);
+                // runOnJS(updateCardIndex)(onscreenCardIndex.value);
                 runOnJS(resetCardPosn)();
               }
             },
@@ -389,12 +464,13 @@ const Deck = ({doneAnimationRefHome}) => {
             onscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
-              if (onscreenCardIndex.value > 0) {
-                onscreenCardIndex.value = onscreenCardIndex.value - 1;
+              if (onscreenCardIndexSharedVal.value > 0) {
+                onscreenCardIndexSharedVal.value =
+                  onscreenCardIndexSharedVal.value - 1;
               } else {
-                onscreenCardIndex.value = filteredDeck.length - 1;
+                onscreenCardIndexSharedVal.value = filteredDeck.length - 1;
               }
-              runOnJS(updateCardIndex)(onscreenCardIndex.value);
+              // runOnJS(updateCardIndex)(onscreenCardIndex.value);
               runOnJS(resetCardPosn)();
             },
           );
@@ -410,12 +486,14 @@ const Deck = ({doneAnimationRefHome}) => {
             offscreenCardRestingPosition.x,
             {overshootClamping: true},
             () => {
-              if (onscreenCardIndex.value + 1 < filteredDeck.length) {
-                onscreenCardIndex.value = onscreenCardIndex.value + 1;
+              if (onscreenCardIndexSharedVal.value + 1 < filteredDeck.length) {
+                onscreenCardIndexSharedVal.value =
+                  onscreenCardIndexSharedVal.value + 1;
               } else {
-                onscreenCardIndex.value = 0;
+                onscreenCardIndexSharedVal.value = 0;
               }
-              runOnJS(updateCardIndex)(onscreenCardIndex.value);
+              console.log(onscreenCardIndexSharedVal.value);
+              // runOnJS(updateCardIndex)(onscreenCardIndex.value);
               runOnJS(resetCardPosn)();
             },
           );
@@ -561,38 +639,44 @@ const Deck = ({doneAnimationRefHome}) => {
           <View styles={styles.deckContainer}>
             {/* base card */}
 
-            <View style={styles.baseCard}>
-              <Card />
-            </View>
+            {baseCardIndex !== undefined && (
+              <View style={styles.baseCard}>
+                <Card />
+              </View>
+            )}
 
             {/* underneath card */}
 
-            <View style={styles.underneathCard}>
-              <Card name={filteredDeck[indexCardUnderneath]?.name} />
-            </View>
+            {underneathCardIndex !== undefined && (
+              <View style={styles.underneathCard}>
+                <Card name={filteredDeck[underneathCardIndex]?.name} />
+              </View>
+            )}
 
             {/* onscreen card */}
             <Animated.View style={[onscreenCardReanimatedStyle]}>
               {filteredDeck.length > 0 ? (
                 <Card
-                  index={indexCardOnScreen}
-                  name={filteredDeck[indexCardOnScreen]?.name}
+                  index={onscreenCardIndexSharedVal.value}
+                  name={filteredDeck[onscreenCardIndex]?.name}
                 />
               ) : (
                 <NoCards />
               )}
             </Animated.View>
             {/* offscreen card */}
-            <Animated.View
-              style={[
-                offscreenCardReanimatedStyle,
-                styles.offscreenCardContainerView,
-              ]}>
-              <Card
-                index={indexCardOffScreen}
-                name={filteredDeck[indexCardOffScreen]?.name}
-              />
-            </Animated.View>
+            {filteredDeck.length > 0 && (
+              <Animated.View
+                style={[
+                  offscreenCardReanimatedStyle,
+                  styles.offscreenCardContainerView,
+                ]}>
+                <Card
+                  index={offscreenCardIndex}
+                  name={filteredDeck[offscreenCardIndex]?.name}
+                />
+              </Animated.View>
+            )}
             {/* stand in card */}
             <Animated.View
               style={[
@@ -600,7 +684,7 @@ const Deck = ({doneAnimationRefHome}) => {
                 styles.standInCardContainerView,
               ]}>
               <Card
-                index={indexCardOffScreen}
+                index={standinCardIndex}
                 // name={filteredDeck[indexCardOffScreen]?.name}
                 name={'stand in'}
               />
@@ -608,6 +692,12 @@ const Deck = ({doneAnimationRefHome}) => {
           </View>
         </GestureDetector>
       </ImageBackground>
+      <Text>{`Base card: ${baseCardIndex}`}</Text>
+      <Text>{`Underneath card: ${underneathCardIndex}`}</Text>
+      <Text>{`Onscreen card: ${onscreenCardIndex}`}</Text>
+      <Text>{`Offscreen card: ${offscreenCardIndex}`}</Text>
+      <Text>{`Standin card: ${standinCardIndex}`}</Text>
+      <Text>{`Deck length: ${filteredDeck.length}`}</Text>
     </SafeAreaView>
   );
 };

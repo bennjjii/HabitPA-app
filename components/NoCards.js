@@ -25,6 +25,14 @@ const styles = StyleSheet.create({
     fontFamily: 'PublicPixel',
     textAlign: 'center',
     color: '#dbb760',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 1.27,
+    elevation: 20,
   },
 });
 
