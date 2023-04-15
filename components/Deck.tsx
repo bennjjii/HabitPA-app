@@ -159,24 +159,29 @@ const Deck = ({doneAnimationRefHome}) => {
         if (deckLength < 1) {
           return undefined;
         }
+        break;
       case CARD_ROLE.OFFSCREEN:
         console.log('test1');
         if (deckLength < 2) {
           return undefined;
         }
+        break;
       case CARD_ROLE.STANDIN:
         if (deckLength < 2) {
           console.log('skipped');
           return undefined;
         }
+        break;
       case CARD_ROLE.UNDERNEATH:
         if (deckLength < 2) {
           return undefined;
         }
+        break;
       case CARD_ROLE.BASE:
         if (deckLength < 3) {
           return undefined;
         }
+        break;
     }
     if (currentOnScreenCardIndex + CARD_POSITIONS[role] < 0) {
       if (log) {
