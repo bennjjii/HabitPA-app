@@ -64,7 +64,7 @@ import {
   useNonPersistentStore,
 } from '../services/zustandContext';
 import {CardClass} from './CardClass';
-import {Text} from 'react-native-paper';
+import {Button, Text} from 'react-native-paper';
 
 /* -------------------------------------------------------------------------- */
 /*                            Application constants                           */
@@ -136,12 +136,13 @@ const Deck = ({doneAnimationRefHome}) => {
     filteredDeck: Array<CardClass>,
     role: CARD_ROLE,
     log?: boolean,
+    whereCalledFrom?: string,
   ): number | undefined => {
     'worklet';
     if (log) {
       console.log(
         'entered function',
-        `getCardIndexRan, currentOnScreenCardIndex: ${currentOnScreenCardIndex}, deck length: ${filteredDeck.length}, role: ${role}`,
+        `getCardIndexRan, currentOnScreenCardIndex: ${currentOnScreenCardIndex}, deck length: ${filteredDeck.length}, role: ${role}, called from ${whereCalledFrom}`,
       );
     }
     const CARD_POSITIONS: CardPositions = {
@@ -152,6 +153,7 @@ const Deck = ({doneAnimationRefHome}) => {
       STANDIN: -2,
     };
     let deckLength = filteredDeck.length;
+    if (deckLength == 0) return undefined;
 
     console.log('got here');
     switch (role) {
@@ -182,6 +184,8 @@ const Deck = ({doneAnimationRefHome}) => {
           return undefined;
         }
         break;
+      default:
+        return undefined;
     }
     if (currentOnScreenCardIndex + CARD_POSITIONS[role] < 0) {
       if (log) {
@@ -218,6 +222,33 @@ const Deck = ({doneAnimationRefHome}) => {
     return currentOnScreenCardIndex + CARD_POSITIONS[role];
   };
 
+  enum CARD_ROLE_2 {
+    BASE = 2,
+    UNDERNEATH = 1,
+    ONSCREEN = 0,
+    OFFSCREEN = -1,
+    STANDIN = -2,
+  }
+
+  const getIndexOfCardx = (
+    currentOnScreenCardIndex: number,
+    filteredDeck: CardClass[],
+    role: CARD_ROLE_2,
+    log = false,
+  ): number | undefined => {
+    'worklet';
+    if (filteredDeck.length < role + 1) {
+      return undefined;
+    }
+
+    const cardIndex = currentOnScreenCardIndex + role;
+    if (cardIndex < 0 || cardIndex >= filteredDeck.length) {
+      return role === CARD_ROLE_2.OFFSCREEN ? undefined : role - 1;
+    }
+
+    return cardIndex;
+  };
+
   /* -------------------------------------------------------------------------- */
   /*                                Card indices                                */
   /* -------------------------------------------------------------------------- */
@@ -227,18 +258,24 @@ const Deck = ({doneAnimationRefHome}) => {
   const [onscreenCardIndex, setOnscreenCardIndex] = useState(
     onscreenCardIndexSharedVal.value,
   );
+
   const [offscreenCardIndex, setOffscreenCardIndex] = useState(
     getIndexOfCard(
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.OFFSCREEN,
+      true,
+      'initial set offscreen',
     ),
   );
+
   const [standinCardIndex, setStandinCardIndex] = useState(
     getIndexOfCard(
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.STANDIN,
+      true,
+      'initial set standin',
     ),
   );
   const [underneathCardIndex, setUnderneathCardIndex] = useState(
@@ -246,6 +283,8 @@ const Deck = ({doneAnimationRefHome}) => {
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.UNDERNEATH,
+      true,
+      'initial set underneath',
     ),
   );
   const [baseCardIndex, setBaseCardIndex] = useState(
@@ -253,6 +292,8 @@ const Deck = ({doneAnimationRefHome}) => {
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.BASE,
+      true,
+      'initial set base',
     ),
   );
 
@@ -264,7 +305,7 @@ const Deck = ({doneAnimationRefHome}) => {
   useAnimatedReaction(
     () => onscreenCardIndexSharedVal.value,
     (result, prev) => {
-      if (result !== prev) {
+      if (true) {
         // setOnscreenCardIndex(result);
         runOnJS(setOnscreenCardIndex)(result);
         runOnJS(setOffscreenCardIndex)(
@@ -387,7 +428,9 @@ const Deck = ({doneAnimationRefHome}) => {
   }, [deck]);
 
   const openModalBackOfCard = () => {
-    showBackOfCardModal(filteredDeck[onscreenCardIndexSharedVal.value]);
+    if (filteredDeck.length > 0) {
+      showBackOfCardModal(filteredDeck[onscreenCardIndexSharedVal.value]);
+    }
   };
 
   /* -------------------------------------------------------------------------- */
@@ -401,6 +444,9 @@ const Deck = ({doneAnimationRefHome}) => {
     });
   const panGesture = Gesture.Pan()
     .onBegin(event => {
+      if (filteredDeck.length <= 1) {
+        return;
+      }
       swipingDirection.value = SwipingDirection.Active;
       swipingSessionStartX.value = event.absoluteX;
       swipingSessionStartY.value = event.translationY - yOffset;
@@ -436,6 +482,9 @@ const Deck = ({doneAnimationRefHome}) => {
       }
     })
     .onEnd(event => {
+      if (filteredDeck.length <= 1) {
+        return;
+      }
       switch (true) {
         //done case
         case event.velocityY < -SWIPE_SENSITIVITYY:
@@ -522,6 +571,9 @@ const Deck = ({doneAnimationRefHome}) => {
       }
     })
     .onFinalize(event => {
+      if (filteredDeck.length <= 1) {
+        return;
+      }
       swipingDirection.value = SwipingDirection.Neutral;
       swipingSessionStartX.value = undefined;
       swipingSessionStartY.value = undefined;
@@ -663,7 +715,7 @@ const Deck = ({doneAnimationRefHome}) => {
               {filteredDeck.length > 0 ? (
                 <Card
                   index={onscreenCardIndexSharedVal.value}
-                  name={filteredDeck[onscreenCardIndex]?.name}
+                  name={filteredDeck[onscreenCardIndexSharedVal.value]?.name}
                 />
               ) : (
                 <NoCards />
@@ -697,12 +749,21 @@ const Deck = ({doneAnimationRefHome}) => {
           </View>
         </GestureDetector>
       </ImageBackground>
-      <Text>{`Base card: ${baseCardIndex}`}</Text>
+      {/* <Text>{`Base card: ${baseCardIndex}`}</Text>
       <Text>{`Underneath card: ${underneathCardIndex}`}</Text>
       <Text>{`Onscreen card: ${onscreenCardIndex}`}</Text>
       <Text>{`Offscreen card: ${offscreenCardIndex}`}</Text>
       <Text>{`Standin card: ${standinCardIndex}`}</Text>
       <Text>{`Deck length: ${filteredDeck.length}`}</Text>
+      <Text>{`Onscreencardindex: ${onscreenCardIndexSharedVal.value}`}</Text>
+      <Button
+        onPress={() => {
+          console.log('pressed');
+          onscreenCardIndexSharedVal.value = 1;
+          // onscreenCardIndexSharedVal.value = 0;
+        }}>
+        sauyewu
+      </Button> */}
     </SafeAreaView>
   );
 };
