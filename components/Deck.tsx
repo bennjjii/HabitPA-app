@@ -444,17 +444,11 @@ const Deck = ({doneAnimationRefHome}) => {
     });
   const panGesture = Gesture.Pan()
     .onBegin(event => {
-      if (filteredDeck.length <= 1) {
-        return;
-      }
       swipingDirection.value = SwipingDirection.Active;
       swipingSessionStartX.value = event.absoluteX;
       swipingSessionStartY.value = event.translationY - yOffset;
     })
     .onUpdate(event => {
-      if (filteredDeck.length <= 1) {
-        return;
-      }
       console.log(offscreenCardTranslationX.value);
       if (event.absoluteX > swipingSessionStartX.value - 30) {
         swipingDirection.value = SwipingDirection.OffOfPile;
@@ -482,9 +476,6 @@ const Deck = ({doneAnimationRefHome}) => {
       }
     })
     .onEnd(event => {
-      if (filteredDeck.length <= 1) {
-        return;
-      }
       switch (true) {
         //done case
         case event.velocityY < -SWIPE_SENSITIVITYY:
