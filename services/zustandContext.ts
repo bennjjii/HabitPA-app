@@ -202,6 +202,10 @@ export const usePersistentStore = create<PersistentStore>(
           emptyLog.push('-----------------------------');
           let mergedCard = _.flatMap(item);
           Object.keys(mergedCard).forEach((item2, index) => {
+            if (item2 === 'name') {
+              emptyLog.push('Anonymised card');
+              return;
+            }
             if (index !== 7) {
               emptyLog.push(mergedCard[item2]);
             }
@@ -225,6 +229,10 @@ export const usePersistentStore = create<PersistentStore>(
           emptyLog.push('Index: ', index);
           let mergedCard = _.flatMap(item);
           Object.keys(mergedCard).forEach(item2 => {
+            if (item2 === 'name') {
+              emptyLog.push('Anonymised card');
+              return;
+            }
             emptyLog.push(mergedCard[item2]);
           });
           emptyLog.push('-----------------------------');

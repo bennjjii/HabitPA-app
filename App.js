@@ -1,5 +1,5 @@
-global.enableLogging = false;
-global.enableTooling = true;
+global.enableLogging = true;
+global.enableTooling = false;
 import {LogBox, TouchableOpacity} from 'react-native';
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
@@ -61,9 +61,11 @@ const Header = props => {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            ToastAndroid.show('Thanks for the log!', ToastAndroid.SHORT);
-            logPersistantVariables();
-            logNonPersistantVariables();
+            // ToastAndroid.show('Thanks for the log!', ToastAndroid.SHORT);
+            if (enableLogging) {
+              logPersistantVariables();
+              logNonPersistantVariables();
+            }
           }}>
           <Image source={Icon} />
         </TouchableOpacity>
