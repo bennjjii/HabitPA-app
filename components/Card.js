@@ -1,16 +1,8 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  ImageBackground,
-} from 'react-native';
+import {StyleSheet, Text, Dimensions, ImageBackground} from 'react-native';
 import React, {useRef, useEffect, memo} from 'react';
-import colours from '../assets/colours/colours';
-import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CardBackgroundImg from './../assets/Sprite-0001.png';
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 FontAwesome.loadFont();
 
 const Card = props => {
@@ -28,8 +20,8 @@ const styles = StyleSheet.create({
     // position: 'absolute',
     width: width * 0.72,
     height: (width * 0.72) / 0.7,
-    // backgroundColor: '#22222200',
     // backgroundColor: colours.foreground,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,

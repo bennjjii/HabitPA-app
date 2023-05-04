@@ -155,7 +155,6 @@ const Deck = ({doneAnimationRefHome}) => {
     let deckLength = filteredDeck.length;
     if (deckLength == 0) return undefined;
 
-    console.log('got here');
     switch (role) {
       case CARD_ROLE.ONSCREEN:
         if (deckLength < 1) {
@@ -163,14 +162,12 @@ const Deck = ({doneAnimationRefHome}) => {
         }
         break;
       case CARD_ROLE.OFFSCREEN:
-        console.log('test1');
         if (deckLength < 2) {
           return undefined;
         }
         break;
       case CARD_ROLE.STANDIN:
         if (deckLength < 2) {
-          console.log('skipped');
           return undefined;
         }
         break;
@@ -264,7 +261,7 @@ const Deck = ({doneAnimationRefHome}) => {
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.OFFSCREEN,
-      true,
+      false,
       'initial set offscreen',
     ),
   );
@@ -274,7 +271,7 @@ const Deck = ({doneAnimationRefHome}) => {
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.STANDIN,
-      true,
+      false,
       'initial set standin',
     ),
   );
@@ -283,7 +280,7 @@ const Deck = ({doneAnimationRefHome}) => {
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.UNDERNEATH,
-      true,
+      false,
       'initial set underneath',
     ),
   );
@@ -292,7 +289,7 @@ const Deck = ({doneAnimationRefHome}) => {
       onscreenCardIndexSharedVal.value,
       filteredDeck,
       CARD_ROLE.BASE,
-      true,
+      false,
       'initial set base',
     ),
   );
@@ -313,7 +310,6 @@ const Deck = ({doneAnimationRefHome}) => {
             onscreenCardIndexSharedVal.value,
             filteredDeck,
             CARD_ROLE.OFFSCREEN,
-            true,
           ),
         );
         runOnJS(setStandinCardIndex)(
@@ -449,7 +445,9 @@ const Deck = ({doneAnimationRefHome}) => {
       swipingSessionStartY.value = event.translationY - yOffset;
     })
     .onUpdate(event => {
-      console.log(offscreenCardTranslationX.value);
+      if (global.enableLogging) {
+        console.log(offscreenCardTranslationX.value);
+      }
       if (event.absoluteX > swipingSessionStartX.value - 30) {
         swipingDirection.value = SwipingDirection.OffOfPile;
         onscreenCardTranslationX.value = Math.min(
@@ -537,7 +535,9 @@ const Deck = ({doneAnimationRefHome}) => {
               } else {
                 onscreenCardIndexSharedVal.value = 0;
               }
-              console.log(onscreenCardIndexSharedVal.value);
+              if (global.enableLogging) {
+                console.log(onscreenCardIndexSharedVal.value);
+              }
               // runOnJS(updateCardIndex)(onscreenCardIndex.value);
               runOnJS(resetCardPosn)();
             },
