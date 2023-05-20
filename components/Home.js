@@ -10,7 +10,7 @@ import React, {useEffect, useRef} from 'react';
 import Deck from './Deck';
 import Modal from 'react-native-modal';
 import Done from './Done';
-// import Piles from './Piles';
+import TimeOfDaySettings from './TimeOfDaySettings';
 import Piles2 from './Piles2';
 // import ToolingPage from './ToolingPage';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -101,6 +101,19 @@ const Home = () => {
           options={{
             headerShown: false,
             // tabBarIcon: () => <Entypo name="gauge" size={32} />,
+            tabBarIcon: ({focused}) =>
+              focused ? (
+                <Image source={ProgressIcon} style={styles.icon} />
+              ) : (
+                <Image source={ProgressIconDim} style={styles.icon} />
+              ),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          children={() => <TimeOfDaySettings />}
+          options={{
+            headerShown: false,
             tabBarIcon: ({focused}) =>
               focused ? (
                 <Image source={ProgressIcon} style={styles.icon} />
